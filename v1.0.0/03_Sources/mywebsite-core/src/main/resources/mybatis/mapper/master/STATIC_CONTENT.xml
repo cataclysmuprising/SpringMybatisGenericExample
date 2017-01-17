@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.t3k.products.fams.core.mapper.master.StaticContentMapper">
+	<resultMap type="StaticContentBean" id="StaticContentResult">
+		<id property="id" column="id" />
+ 		<result property="fileType" column="file_type" />
+		<result property="fileName" column="file_name" />
+		<result property="filePath" column="file_path" />
+		<result property="fileSize" column="file_size" />
+		<result property="recordRegId" column="record_reg_id"/>
+		<result property="recordUpdId" column="record_upd_id"/>
+		<result property="recordRegDate" column="record_reg_date"/>
+		<result property="recordUpdDate" column="record_upd_date"/>			
+	</resultMap>
+
+	<sql id="self_table">
+		from tbl_static_content sc
+	</sql>	
+
+	<sql id="columns">
+		select
+		sc.record_reg_id,
+		sc.record_upd_id,
+		sc.record_reg_date,
+		sc.record_upd_date,		
+		sc.id,
+		sc.file_type,
+		sc.file_name,
+		sc.file_path,
+		sc.file_size
+	</sql>
+
+	<sql id="criterias">
+		<where>
+			<if test="id != null">
+				and sc.id = ${id}
+			</if>
+			<if test="fileType != null">
+				and sc.file_type = #{fileType}
+			</if>			
+			<if test="fileName != null">
+				and sc.file_name = #{fileName}
+			</if>			
+			<if test="word != null">
+				and
+				(sc.file_name like '%${word}%'
+				)
+			</if>
+		</where>
+	</sql>
+
+	<sql id="orders">
+		order by
+		<choose>
+			<when test="orderBy == 'fileType'">
+				sc.file_type ${orderAs}
+			</when>		
+			<when test="orderBy == 'fileName'">
+				sc.file_name ${orderAs}
+			</when>
+			<when test="orderBy == 'fileSize'">
+				sc.file_size ${orderAs}
+			</when>			
+			<otherwise>
+				sc.id DESC
+			</otherwise>
+		</choose>
+	</sql>
+
+	<insert id="insert" parameterType="IssueEvidenceBean" useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_static_content (
+		file_type,
+		file_name,
+		file_path,
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date		
+		<if test="fileSize != null">,file_size</if>
+		) values(
+		#{fileType},
+		#{fileName},
+		#{filePath},
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate}			
+		<if test="fileSize != null">,#{fileSize}</if>
+		)
+	</insert>
+
+	<insert id="insertHistory" parameterType="IssueEvidenceBean">
+		insert into tbl_static_content_history (
+		id,
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date,		
+		transaction_date,
+		transaction_type,		
+		file_type,
+		file_name,
+		file_path,
+		file_size
+		) values (
+		#{id},
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate},
+		getDate(),
+		#{transactionType},		
+		#{fileType},
+		#{fileName},
+		#{filePath},
+		#{fileSize}
+		)
+	</insert>
+
+	<update id="update" parameterType="IssueEvidenceBean">
+		update tbl_static_content
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),		
+			<if test="fileType != null">file_type= #{fileType},</if>
+			<if test="fileName != null">file_name=#{fileName},</if>
+			<if test="filePath != null">file_path= #{filePath},</if>
+			<if test="fileSize != null">file_size= #{fileSize}</if>
+		</set>
+		where id = #{id} 
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from tbl_static_content
+		<where>
+			<if test="id != null">
+				 id = #{id}
+			</if>
+			<if test="fileType != null">
+				 and file_type = #{fileType}
+			</if>			
+			<if test="fileName != null">
+				 and file_name = #{fileName}
+			</if>			
+		</where>
+	</delete>
+
+	<select id="selectById" parameterType="int" resultMap="StaticContentResult">
+		<include refid="columns"/>
+		<include refid="self_table"/>
+		where sc.id = #{id} 
+	</select>
+	
+	<select id="selectByCriteria" parameterType="map" resultMap="StaticContentResult">
+		<include refid="columns"/>
+		<include refid="self_table"/> 
+		<include refid="criterias"/>
+		<include refid="orders"/>
+		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
+			offset #{offset} rows
+			fetch next #{limit} rows only;
+		</if>
+	</select>
+
+	<select id="selectCountByCriteria" resultType="int" parameterType="map">
+		select count(distinct a.id)
+		<include refid="self_table"/>
+		<include refid="criterias"/>
+	</select>	
+	
+</mapper>

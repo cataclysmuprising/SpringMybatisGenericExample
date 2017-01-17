@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.mycom.products</groupId>
-		<artifactId>springmvc</artifactId>
+		<artifactId>mywebsite</artifactId>
 		<version>1.0</version>
 	</parent>
-	<artifactId>springmvc-core</artifactId>
+	<artifactId>mywebsite-core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
         <!-- Spring -->
@@ -119,12 +119,6 @@
 					<artifactId>commons-logging</artifactId>
 				</exclusion>
 			</exclusions>		    
-		</dependency>
-		<!-- for barcode report -->
-		<dependency>
-		    <groupId>net.sourceforge.barbecue</groupId>
-		    <artifactId>barbecue</artifactId>
-		    <version>1.5-beta1</version>
 		</dependency>
 	</dependencies>	
 </project>

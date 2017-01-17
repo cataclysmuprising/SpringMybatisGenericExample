@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.t3k.products.fams.core.mapper.config.RoleMapper">
+
+	<resultMap type="RoleBean" id="RoleResult">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="recordRegId" column="record_reg_id"/>
+		<result property="recordUpdId" column="record_upd_id"/>
+		<result property="recordRegDate" column="record_reg_date"/>
+		<result property="recordUpdDate" column="record_upd_date"/>			
+		<association property="actions" column="id" select="com.t3k.products.fams.core.mapper.config.ActionMapper.selectByRoleId" />
+		<association property="users" column="id" select="com.t3k.products.fams.core.mapper.config.UserMapper.selectByRoleId" />		
+	</resultMap>
+
+	<sql id="self_table">
+		from tbl_role r
+	</sql>
+		
+	<sql id="columns">
+		select
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date,		
+		id,
+		name,
+		description
+	</sql>
+
+	<sql id="criterias">
+		<where>
+			<if test="id != null">
+				id = #{id}
+			</if>
+			<if test="name != null">
+				name = #{name}
+			</if>
+			<if test="includeIds != null">
+				AND r.id IN
+			    <foreach item="item" index="index" collection="includeIds" open="(" separator="," close=")">
+			        ${item}
+			    </foreach>
+			</if>						
+			<if test="word != null">
+				and 
+				(name like '%${word}%'
+				or description like '%${word}%')
+			</if>
+		</where>
+	</sql>
+		
+	<sql id="orders">
+		order by
+		<choose>
+			<when test="orderBy == 'id'">
+				id ${orderAs}
+			</when>
+			<when test="orderBy == 'name'">
+				name ${orderAs}
+			</when>			
+			<otherwise>
+				id DESC
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<insert id="insert" parameterType="RoleBean" useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_role(
+		name,
+		description,
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date		
+		) values (
+		#{name},
+		#{description},
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate}		
+		)
+	</insert>
+	
+	<insert id="insertHistory" parameterType="RoleBean">
+		insert into tbl_role_history(
+		id,
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date,		
+		transaction_date,
+		transaction_type,		
+		name,
+		description
+		) values (
+		#{id},
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate},
+		getDate(),
+		#{transactionType},	
+		#{name},
+		#{description}
+		)
+	</insert>	
+
+	<update id="update" parameterType="RoleBean">
+		update tbl_role
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),		
+			<if test="name != null">name= #{name},</if>
+			<if test="description != null">description= #{description},</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from tbl_role
+		<where>
+			<if test="id != null">
+				 id = #{id}
+			</if>
+		</where>
+	</delete>
+
+	<select id="selectById" parameterType="int" resultMap="RoleResult">
+		<include refid="columns" />
+		<include refid="self_table" />
+		where id = #{id}
+	</select>
+
+	<select id="selectByCriteria" parameterType="map" resultMap="RoleResult">
+		<include refid="columns" />
+		<include refid="self_table"/>
+		<include refid="criterias" />
+		<include refid="orders" />
+		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
+			offset #{offset} rows
+			fetch next #{limit} rows only;				
+		</if>	
+	</select>
+	
+	<select id="selectCountByCriteria" resultType="int" parameterType="map">
+		select count(distinct r.id)
+		<include refid="self_table" />
+		<include refid="criterias"/>
+	</select>
+
+	<select id="selectByUserId" parameterType="int" resultMap="RoleResult">
+		select
+		r.id,
+		name
+		from tbl_user_role ur inner join tbl_role r
+		on ur.user_id = #{id} and
+		ur.role_id = r.id
+	</select>
+	
+	<select id="selectByActionId" parameterType="int" resultMap="RoleResult">
+		select
+		r.id,
+		name
+		from tbl_role_action ra inner join tbl_role r
+		on ra.action_id = #{id}
+		and ra.role_id = r.id 
+	</select>	
+</mapper>

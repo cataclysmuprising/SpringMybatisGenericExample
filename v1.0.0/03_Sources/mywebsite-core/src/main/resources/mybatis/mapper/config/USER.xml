@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.t3k.products.fams.core.mapper.config.UserMapper">
+	<resultMap type="UserBean" id="UserResult">
+		<id property="id" column="id" />
+		<result property="recordRegId" column="record_reg_id"/>
+		<result property="recordUpdId" column="record_upd_id"/>
+		<result property="recordRegDate" column="record_reg_date"/>
+		<result property="recordUpdDate" column="record_upd_date"/>			
+		<result property="loginId" column="login_id"/>
+		<result property="age" column="age" />
+		<result property="name" column="name" />
+		<result property="gender" column="gender" />
+		<result property="email" column="email" />
+		<result property="password" column="password" />
+		<result property="nrc" column="nrc" />
+		<result property="phone" column="phone" />
+		<result property="dob" column="dob" jdbcType="DATE"/>
+		<result property="address" column="address" />
+		<result property="contentId" column="content_id" />
+		<result property="lastLoginDate" column="login_date" jdbcType="TIMESTAMP"/>
+		<association property="content" column="content_id" select="com.t3k.products.fams.core.mapper.master.StaticContentMapper.selectById" />
+	</resultMap>
+	
+	<resultMap type="UserBean" id="UserWithRoleResult">
+		<id property="id" column="id" />
+		<result property="loginId" column="login_id"/>
+		<result property="age" column="age" />
+		<result property="name" column="name" />
+		<result property="gender" column="gender" />
+		<result property="email" column="email" />
+		<result property="password" column="password" />
+		<result property="nrc" column="nrc" />
+		<result property="phone" column="phone" />
+		<result property="dob" column="dob" jdbcType="DATE"/>
+		<result property="address" column="address" />
+		<result property="contentId" column="content_id" />
+		<result property="recordRegId" column="record_reg_id"/>
+		<result property="recordUpdId" column="record_upd_id"/>
+		<result property="recordRegDate" column="record_reg_date"/>
+		<result property="recordUpdDate" column="record_upd_date"/>			
+		<result property="lastLoginDate" column="login_date" jdbcType="TIMESTAMP"/>
+		<association property="content" column="content_id" select="com.t3k.products.fams.core.mapper.master.StaticContentMapper.selectById" />
+		<association property="roles" column="id" select="com.t3k.products.fams.core.mapper.config.RoleMapper.selectByUserId" />
+	</resultMap>
+
+	<sql id="self_table">
+		from tbl_user u
+	</sql>	
+
+	<sql id="joined_table">
+		from tbl_user u
+		<if test="roleId != null">
+			inner join tbl_user_role ur
+			on u.id = ur.user_id 
+			and u.id in (select user_id from tbl_user_role where role_id=#{roleId})			
+		</if>
+	</sql>
+			
+	<sql id="columns">
+		select distinct
+		u.id,
+		u.record_reg_id,
+		u.record_upd_id,
+		u.record_reg_date,
+		u.record_upd_date,		
+		login_id,
+		age,
+		name,
+		gender,
+		email,
+		nrc,
+		phone,
+		dob,
+		address,
+		content_id,
+		(select max(login_date) from tbl_login_history history where history.user_id = u.id) as login_date
+	</sql>
+
+	<sql id="criterias">
+		<where>
+			<if test="id != null">
+				 u.id = #{id}
+			</if>		
+			<if test="loginId != null">
+				and login_id = #{loginId}
+			</if>
+			<if test="name != null">
+				and name = #{name}
+			</if>
+			<if test="email != null">
+				and email = #{email}
+			</if>
+			<if test="nrc != null">
+				and nrc = #{nrc}
+			</if>		
+			<if test="phone != null">
+				and phone = #{phone}
+			</if>	
+			<if test="includeIds != null">
+				AND u.id IN
+			    <foreach item="item" index="index" collection="includeIds" open="(" separator="," close=")">
+			        ${item}
+			    </foreach>
+			</if>						
+			<if test="word != null">
+				and 
+				(name like '%${word}%'
+				or email like '%${word}%'
+				or nrc like '%${word}%'
+				or phone like '%${word}%')
+			</if>
+		</where>
+	</sql>
+	
+	<sql id="orders">
+		order by
+		<choose>
+			<when test="orderBy == 'loginId'">
+				login_id ${orderAs}
+			</when>		
+			<when test="orderBy == 'name'">
+				name ${orderAs}
+			</when>
+			<when test="orderBy == 'email'">
+				email ${orderAs}
+			</when>
+			<when test="orderBy == 'nrc'">
+				nrc ${orderAs}
+			</when>	
+			<when test="orderBy == 'phone'">
+				phone ${orderAs}
+			</when>	
+			<when test="orderBy == 'loginDate'">
+				login_date ${orderAs}
+			</when>								
+			<otherwise>
+				login_id DESC
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<insert id="insert" parameterType="UserBean" useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_user (
+		login_id,
+		age,
+		name,
+		gender,
+		email,
+		password,
+		nrc,
+		phone,
+		<if test="dob != null">
+			dob,
+		</if>		
+		<if test="address != null">
+			address,
+		</if>			
+		content_id,
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date		
+		) values (
+		#{loginId},
+		#{age},
+		#{name},
+		#{gender},
+		#{email},
+		#{password},
+		#{nrc},
+		#{phone},
+		<if test="dob != null">
+			#{dob},
+		</if>		
+		<if test="address != null">
+			#{address},
+		</if>			
+		#{contentId},
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate}		
+		)
+	</insert>
+	
+	<insert id="insertHistory" parameterType="UserBean">
+		insert into tbl_user_history (
+		id,
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date,		
+		transaction_date,
+		transaction_type,	
+		login_id,
+		age,
+		name,
+		gender,
+		email,
+		password,
+		nrc,
+		phone,
+		dob,
+		address,
+		content_id
+		) values (
+		#{id},
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate},
+		getDate(),
+		#{transactionType},	
+		#{loginId},
+		#{age},
+		#{name},
+		#{gender},
+		#{email},
+		#{password},
+		#{nrc},
+		#{phone},
+		#{dob},
+		#{address},
+		#{contentId})
+	</insert>	
+
+	<update id="update" parameterType="UserBean">
+		update tbl_user
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),		
+			<if test="age != null">age= #{age},</if>
+			<if test="name != null">name= #{name},</if>
+			<if test="gender != null">gender= #{gender},</if>
+			<if test="email != null">email= #{email},</if>
+			<if test="password != null">password= #{password},</if>
+			<if test="nrc != null">nrc= #{nrc},</if>
+			<if test="phone != null">phone= #{phone},</if>
+			<if test="dob != null">dob= #{dob},</if>
+			<if test="address != null">address = #{address},</if>
+			<if test="contentId != null">content_id = #{contentId},</if>
+		</set>
+		where id = #{id} 
+	</update>
+	
+	<delete id="delete" parameterType="map">
+		delete from tbl_user
+		<where>
+			<if test="id != null">
+				 id = #{id}
+			</if>
+		</where>
+	</delete>
+		
+	<select id="selectById" parameterType="int" resultMap="UserWithRoleResult">
+		<include refid="columns" />
+		,password
+		<include refid="self_table" />
+		where u.id = #{id} 
+	</select>
+	
+	<select id="selectByRoleId" parameterType="int" resultMap="UserResult">
+		select
+		usr.*
+		from tbl_user_role ur inner join tbl_user usr
+		on ur.role_id = #{id} 
+		and ur.user_id = usr.id
+	</select>	
+	
+	<select id="selectByCriteria" parameterType="map" resultMap="UserWithRoleResult">
+		<include refid="columns" />
+		<include refid="joined_table" />
+		<include refid="criterias" />
+		<include refid="orders" />
+		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
+			offset #{offset} rows
+			fetch next #{limit} rows only;
+		</if>	
+	</select>
+	
+	<select id="selectCountByCriteria" resultType="int" parameterType="map">
+		select count(distinct u.id)
+		<include refid="joined_table" />
+		<include refid="criterias" />
+	</select>	
+	
+	<select id="selectByLoginId" parameterType="map" resultMap="UserWithRoleResult">
+		<include refid="columns" />
+		,password
+		<include refid="self_table" />
+		where login_id = #{loginId}
+	</select>
+	
+</mapper>

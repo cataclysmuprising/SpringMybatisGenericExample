@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.t3k.products.fams.core.mapper.master.SettingMapper">
+	<resultMap type="SettingBean" id="SettingMasterResult">
+		<id property="id" column="id"/>
+		<result property="name" column="setting_name"/>
+		<result property="value" column="setting_value"/>
+		<result property="type" column="setting_type"/>
+		<result property="group" column="setting_group"/>
+		<result property="recordRegId" column="record_reg_id"/>
+		<result property="recordUpdId" column="record_upd_id"/>
+		<result property="recordRegDate" column="record_reg_date"/>
+		<result property="recordUpdDate" column="record_upd_date"/>			
+		<result property="subGroup" column="setting_sub_group"/>
+	</resultMap>
+
+	<sql id="self_table">
+		from tbl_setting s
+	</sql>
+	
+	<sql id="columns">
+		select 
+		s.record_reg_id,
+		s.record_upd_id,
+		s.record_reg_date,
+		s.record_upd_date,
+		s.id,
+		s.setting_name,
+		s.setting_value,
+		s.setting_type,
+		s.setting_group,
+		s.setting_sub_group
+	</sql>
+
+	<sql id="criterias">
+		<where>
+			<if test="id != null">
+				 s.id = ${id}
+			</if>
+			<if test="name != null">
+				and s.setting_name = #{name}
+			</if>
+			<if test="value != null">
+				and s.setting_value = #{value}
+			</if>
+			<if test="type != null">
+				and s.setting_type = #{type}
+			</if>
+			<if test="group != null">
+				and s.setting_group = #{group}
+			</if>
+			<if test="subGroup != null">
+				and s.setting_sub_group = #{subGroup}
+			</if>				
+			<if test="word != null">
+				and 
+				(s.setting_name like '%${word}%'
+				or s.setting_value like '%${word}%'
+				or s.setting_type like '%${word}%'
+				or s.setting_group like '%${word}%'
+				or s.setting_sub_group like '%${word}%'
+				)
+			</if>
+		</where>
+	</sql>
+		
+	<sql id="orders">
+		order by
+		<choose>
+			<when test="orderBy == 'id'">
+				id ${orderAs}
+			</when>	
+			<when test="orderBy == 'group'">
+				s.setting_group ${orderAs}
+			</when>	
+			<when test="orderBy == 'subGroup'">
+				s.setting_sub_group ${orderAs}
+			</when>	
+			<when test="orderBy == 'name'">
+				s.setting_name ${orderAs}
+			</when>
+			<otherwise>
+				id DESC
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<insert id="insert" parameterType="SettingBean" useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_setting(
+		setting_name,
+		setting_value,
+		setting_type,
+		setting_group,
+		setting_sub_group,
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date
+		) values (
+		#{name},
+		#{value},
+		#{type},
+		#{group},
+		#{subGroup},
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate}
+		)
+	</insert>
+	
+	<insert id="insertHistory" parameterType="SettingBean">
+		insert into tbl_setting_history(
+		id,
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date,		
+		transaction_date,
+		transaction_type,		
+		setting_name,
+		setting_value,
+		setting_type,
+		setting_group,
+		setting_sub_group
+		) values (
+		#{id},
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate},
+		getDate(),
+		#{transactionType},	
+		#{name},
+		#{value},
+		#{type},
+		#{group},
+		#{subGroup}
+		)
+	</insert>	
+	
+	<update id="update" parameterType="SettingBean">
+		update tbl_setting
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),
+			<if test="name !=null">setting_name=#{name},</if>
+			<if test="value !=null">setting_value=#{value},</if>
+			<if test="type !=null">setting_type=#{type},</if>
+			<if test="group !=null">setting_group=#{group},</if> 
+			<if test="subGroup !=null">setting_sub_group=#{subGroup}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from tbl_setting
+		<where>
+			<if test="id != null">
+				 id = #{id}
+			</if>
+		</where>
+	</delete>
+	
+	<select id="selectById" parameterType="int" resultMap="SettingMasterResult">
+		<include refid="columns" />
+		<include refid="self_table" />
+		where s.id = #{id} 
+	</select>
+	
+	<select id="selectByCriteria" parameterType="map" resultMap="SettingMasterResult">
+		<include refid="columns"/>
+		<include refid="self_table"/>
+		<include refid="criterias"/>
+		<include refid="orders"/>
+		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
+			offset #{offset} rows
+			fetch next #{limit} rows only;
+		</if>
+	</select>
+	
+	<select id="selectCountByCriteria" resultType="int" parameterType="map">
+		select count(distinct s.id)
+		<include refid="self_table"/>
+		<include refid="criterias"/>
+	</select>
+	
+</mapper>

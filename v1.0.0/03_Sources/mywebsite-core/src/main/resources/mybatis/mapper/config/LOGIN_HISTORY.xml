@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.t3k.products.fams.core.mapper.config.LoginHistoryMapper">
+
+	<resultMap type="LoginHistoryBean" id="LoginHistoryResult">
+		<id property="id" column="id" />
+		<result property="recordRegId" column="record_reg_id"/>
+		<result property="recordUpdId" column="record_upd_id"/>
+		<result property="recordRegDate" column="record_reg_date"/>
+		<result property="recordUpdDate" column="record_upd_date"/>			
+		<result property="clientIp" column="client_ip" />
+		<result property="os" column="os" />
+		<result property="browser" column="browser" />
+		<result property="userId" column="user_id" />
+		<result property="loginDate" column="login_date" />
+	</resultMap>
+
+	<sql id="self_table">
+		from tbl_login_history lh
+	</sql>
+		
+	<sql id="columns">
+		select
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date,		
+		id,
+		user_id,
+		login_date,
+		client_ip,
+		os,
+		browser
+	</sql>
+
+	<sql id="criterias">
+		<where>
+			<if test="userId != null">
+				user_id = #{userId}
+			</if>
+		</where>
+	</sql>	
+
+	<sql id="orders">
+		order by
+		<choose>
+			<when test="orderBy == 'id'">
+				id ${orderAs}
+			</when>
+			<when test="orderBy == 'name'">
+				name ${orderAs}
+			</when>
+			<when test="age == 'age'">
+				age ${orderAs}
+			</when>
+			<otherwise>
+				id DESC
+			</otherwise>
+		</choose>
+	</sql>
+		
+	<insert id="insert" parameterType="LoginHistoryBean" useGeneratedKeys="true" keyProperty="id">
+		insert into tbl_login_history(
+		user_id,
+		login_date,
+		client_ip,
+		<if test="os != null">
+			os,
+		</if>
+		<if test="browser != null">
+			browser,
+		</if>
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date		
+		) values (
+		#{userId},
+		#{loginDate},
+		#{clientIp},
+		<if test="os != null">
+			#{os},
+		</if>
+		<if test="browser != null">
+			#{browser},
+		</if>
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate}		
+		)
+	</insert>
+	
+	<update id="update" parameterType="LoginHistoryBean">
+		update tbl_login_history
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),		
+			<if test="userId != null">user_id= #{userId},</if>
+			<if test="loginDate != null">login_date= #{loginDate},</if>
+			<if test="clientIp != null">client_ip= #{clientIp},</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete" parameterType="map">
+		delete from tbl_login_history
+		<where>
+			<if test="id != null">
+				 id = #{id}
+			</if>
+		</where>
+	</delete>
+	
+	<select id="selectById" parameterType="int" resultMap="LoginHistoryResult">
+		<include refid="columns" />
+		<include refid="self_table"/>
+		where lh.id = #{id} 
+	</select>	
+
+	<select id="selectByCriteria" parameterType="map" resultMap="LoginHistoryResult">
+		<include refid="columns"/>
+		<include refid="self_table"/>
+		<include refid="criterias"/>
+		<include refid="orders"/>
+		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
+			offset #{offset} rows
+			fetch next #{limit} rows only;
+		</if>	
+	</select>
+	
+	<select id="selectCountByCriteria" resultType="int" parameterType="map">
+		select count(distinct lh.id)
+		<include refid="self_table"/>
+		<include refid="criterias"/>
+	</select>	
+</mapper>

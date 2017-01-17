@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.t3k.products.fams.core.mapper.config.RoleActionMapper">
+
+	<resultMap type="RoleActionBean" id="RoleActionResult">
+		<result property="actionId" column="action_id" />
+		<result property="roleId" column="role_id" />
+		<result property="recordRegId" column="record_reg_id"/>
+		<result property="recordUpdId" column="record_upd_id"/>
+		<result property="recordRegDate" column="record_reg_date"/>
+		<result property="recordUpdDate" column="record_upd_date"/>			
+		<association property="action" column="action_id" select="com.t3k.products.fams.core.mapper.config.ActionMapper.selectById" />
+		<association property="role" column="role_id" select="com.t3k.products.fams.core.mapper.config.RoleMapper.selectById" />
+	</resultMap>
+
+	<sql id="self_table">
+		from tbl_role_action ra
+	</sql>
+	
+	<sql id="columns">
+		select
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date,		
+		action_id,
+		role_id
+	</sql>
+
+	<sql id="criterias">
+		<where>
+			<if test="roleId != null">
+				and role_id = #{roleId}
+			</if>
+			<if test="actionId != null">
+				and action_id = #{actionId}
+			</if>
+		</where>
+	</sql>
+		
+	<sql id="orders">
+		order by
+		<choose>
+			<when test="orderBy == 'roleId'">
+				role_id ${orderAs}
+			</when>
+			<when test="orderBy == 'actionId'">
+				action_id ${orderAs}
+			</when>
+			<otherwise>
+				role_id DESC
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<insert id="insert" parameterType="RoleActionBean">
+		insert into tbl_role_action(
+		role_id,
+		action_id,
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date		
+		) values (
+		#{role.id},
+		#{action.id},
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate}		
+		)
+	</insert>
+	
+	<insert id="insertHistory" parameterType="RoleActionBean">
+		insert into tbl_role_action_history(
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date,		
+		transaction_date,
+		transaction_type,		
+		role_id,
+		action_id
+		) values (
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate},
+		getDate(),
+		#{transactionType},	
+		#{role.id},
+		#{action.id}
+		)
+	</insert>	
+
+	<update id="update" parameterType="RoleActionBean">
+		update tbl_role_action
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),		
+			<if test="role.id !=null"> role_id= #{role.id},</if>
+			<if test="action.id !=null">action_id= #{action.id},</if>
+		</set>
+		<where>
+			<if test="role.id != null">
+				 role_id = #{role.id}
+			</if>
+			<if test="action.id != null">
+				 and action_id = #{action.id}
+			</if>			
+		</where>
+	</update>
+
+	<delete id="delete" parameterType="map">
+		delete from tbl_role_action
+		<where>
+			<if test="roleId != null">
+				and role_id = ${roleId}
+			</if>
+			<if test="actionId != null">
+				and action_id = ${actionId}
+			</if>			
+		</where>
+	</delete>
+
+	<select id="selectByCriteria" parameterType="map" resultMap="RoleActionResult">
+		<include refid="columns" />
+		<include refid="self_table"/>
+		<include refid="criterias" />
+		<include refid="orders" />
+		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
+			offset #{offset} rows
+			fetch next #{limit} rows only;				
+		</if>	
+	</select>
+	
+	<select id="selectCountByCriteria" resultType="int" parameterType="map">
+		select count(*)
+		<include refid="self_table" />
+		<include refid="criterias"/>
+	</select>	
+
+</mapper>

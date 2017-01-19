@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- ##################### Notice ################################# 
-"selectAll" only use "ActionResult" resultMap. 
-This results don't want to fetch associated roles informations. -->
-<mapper namespace="com.t3k.products.fams.core.mapper.config.ActionMapper">
+<mapper namespace="com.mycom.products.mywebsite.core.mapper.config.ActionMapper">
 	<resultMap type="ActionBean" id="ActionResult">
 		<id property="id" column="id" />
 		<result property="page" column="page" />
@@ -23,7 +20,7 @@ This results don't want to fetch associated roles informations. -->
 		<result property="url" column="url" />
 		<result property="actionType" column="action_type" />
 		<result property="description" column="description" />
-		<association property="roles" column="id" select="com.t3k.products.fams.core.mapper.config.RoleMapper.selectByActionId" />
+		<association property="roles" column="id" select="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.selectByActionId" />
 	</resultMap>
 
 	<sql id="self_table">

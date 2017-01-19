@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.t3k.products.fams.core.mapper.config.UserMapper">
+<mapper namespace="com.mycom.products.mywebsite.core.mapper.config.UserMapper">
 	<resultMap type="UserBean" id="UserResult">
 		<id property="id" column="id" />
 		<result property="recordRegId" column="record_reg_id"/>
@@ -20,7 +20,7 @@
 		<result property="address" column="address" />
 		<result property="contentId" column="content_id" />
 		<result property="lastLoginDate" column="login_date" jdbcType="TIMESTAMP"/>
-		<association property="content" column="content_id" select="com.t3k.products.fams.core.mapper.master.StaticContentMapper.selectById" />
+		<association property="content" column="content_id" select="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.selectById" />
 	</resultMap>
 	
 	<resultMap type="UserBean" id="UserWithRoleResult">
@@ -41,8 +41,8 @@
 		<result property="recordRegDate" column="record_reg_date"/>
 		<result property="recordUpdDate" column="record_upd_date"/>			
 		<result property="lastLoginDate" column="login_date" jdbcType="TIMESTAMP"/>
-		<association property="content" column="content_id" select="com.t3k.products.fams.core.mapper.master.StaticContentMapper.selectById" />
-		<association property="roles" column="id" select="com.t3k.products.fams.core.mapper.config.RoleMapper.selectByUserId" />
+		<association property="content" column="content_id" select="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.selectById" />
+		<association property="roles" column="id" select="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.selectByUserId" />
 	</resultMap>
 
 	<sql id="self_table">

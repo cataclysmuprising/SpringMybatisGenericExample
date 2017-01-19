@@ -19,12 +19,12 @@
 	</settings>  
   	
 	<typeAliases>
-		<package name="com.t3k.products.fams.core.bean"/>
+		<package name="com.mycom.products.mywebsite.core.bean"/>
 	</typeAliases>
  	<typeHandlers>
-		<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.t3k.products.fams.core.bean.config.UserBean$Gender"/>
-		<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.t3k.products.fams.core.bean.config.ActionBean$ActionType"/>
-		<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.t3k.products.fams.core.bean.master.StaticContentBean$FileType"/>
+		<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.mycom.products.mywebsite.core.bean.config.UserBean$Gender"/>
+		<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.mycom.products.mywebsite.core.bean.config.ActionBean$ActionType"/>
+		<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.mycom.products.mywebsite.core.bean.master.StaticContentBean$FileType"/>
 	</typeHandlers>
 	<mappers>
 		<!-- configuration mappers for application needed -->

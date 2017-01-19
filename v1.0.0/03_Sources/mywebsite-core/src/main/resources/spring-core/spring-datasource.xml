@@ -36,6 +36,7 @@
 	        p:validationInterval="${jdbc.validationInterval}"
 	        p:timeBetweenEvictionRunsMillis="${jdbc.timeBetweenEvictionRunsMillis}"
 	        p:maxActive="${jdbc.maxActive}"
+	        p:maxIdle="${jdbc.maxIdle}"
 	        p:minIdle="${jdbc.minIdle}"
 	        p:maxWait="${jdbc.maxWait}"
 	        p:initialSize="${jdbc.initialSize}"
@@ -61,7 +62,7 @@
 
     <!-- scan for mappers and let them be autowired -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.t3k.products.fams.core.mapper" />
+        <property name="basePackage" value="com.mycom.products.mywebsite.core.mapper" />
     </bean>
     
 </beans>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.t3k.products.fams.core.mapper.config.RoleActionMapper">
+<mapper namespace="com.mycom.products.mywebsite.core.mapper.config.RoleActionMapper">
 
 	<resultMap type="RoleActionBean" id="RoleActionResult">
 		<result property="actionId" column="action_id" />
@@ -10,8 +10,8 @@
 		<result property="recordUpdId" column="record_upd_id"/>
 		<result property="recordRegDate" column="record_reg_date"/>
 		<result property="recordUpdDate" column="record_upd_date"/>			
-		<association property="action" column="action_id" select="com.t3k.products.fams.core.mapper.config.ActionMapper.selectById" />
-		<association property="role" column="role_id" select="com.t3k.products.fams.core.mapper.config.RoleMapper.selectById" />
+		<association property="action" column="action_id" select="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.selectById" />
+		<association property="role" column="role_id" select="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.selectById" />
 	</resultMap>
 
 	<sql id="self_table">

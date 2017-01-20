@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class, readOnly = true)
-	@Cacheable(value = "ApplicationCache.User", key = "#criteria.toString()")
+	@Cacheable(value = "ApplicationCache.User", key = "#criteria.toString()", condition = "#criteria != null")
 	public List<UserBean> getByCriteria(Map<String, Object> criteria) throws BusinessException {
 		coreLogger.info(BaseBean.LOGBREAKER);
 		coreLogger.info("Transaction start for fetching 'User' informations with criteria = " + criteria);
@@ -177,7 +177,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class, readOnly = true)
-	@Cacheable(value = "ApplicationCache.User", key = "#criteria.toString().concat('_count')")
+	@Cacheable(value = "ApplicationCache.User", key = "#criteria.toString().concat('_count')", condition = "#criteria != null")
 	public int getCountByCriteria(Map<String, Object> criteria) throws BusinessException {
 		coreLogger.info(BaseBean.LOGBREAKER);
 		coreLogger.info("Transaction start for fetching 'User' counts with criteria = " + criteria);

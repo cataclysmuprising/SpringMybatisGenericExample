@@ -133,7 +133,7 @@ public class RoleActionServiceImpl implements RoleActionService, ApplicationEven
 
 	@Override
 	@Transactional(rollbackFor = Exception.class, readOnly = true)
-	@Cacheable(value = "ApplicationCache.RoleAction", key = "#criteria.toString()")
+	@Cacheable(value = "ApplicationCache.RoleAction", key = "#criteria.toString()", condition = "#criteria != null")
 	public List<RoleActionBean> getByCriteria(Map<String, Object> criteria) throws BusinessException {
 		List<RoleActionBean> results = null;
 		coreLogger.info(BaseBean.LOGBREAKER);
@@ -153,7 +153,7 @@ public class RoleActionServiceImpl implements RoleActionService, ApplicationEven
 
 	@Override
 	@Transactional(rollbackFor = Exception.class, readOnly = true)
-	@Cacheable(value = "ApplicationCache.RoleAction", key = "#criteria.toString().concat('_count')")
+	@Cacheable(value = "ApplicationCache.RoleAction", key = "#criteria.toString().concat('_count')", condition = "#criteria != null")
 	public int getCountByCriteria(Map<String, Object> criteria) throws BusinessException {
 		int count = 0;
 		coreLogger.info(BaseBean.LOGBREAKER);

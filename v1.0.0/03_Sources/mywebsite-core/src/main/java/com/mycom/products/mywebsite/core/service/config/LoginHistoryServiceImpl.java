@@ -119,7 +119,7 @@ public class LoginHistoryServiceImpl implements LoginHistoryService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class, readOnly = true)
-	@Cacheable(value = "ApplicationCache.LoginHistory", key = "#criteria.toString()")
+	@Cacheable(value = "ApplicationCache.LoginHistory", key = "#criteria.toString()", condition = "#criteria != null")
 	public List<LoginHistoryBean> getByCriteria(Map<String, Object> criteria) throws BusinessException {
 		List<LoginHistoryBean> results = null;
 		coreLogger.info(BaseBean.LOGBREAKER);
@@ -139,7 +139,7 @@ public class LoginHistoryServiceImpl implements LoginHistoryService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class, readOnly = true)
-	@Cacheable(value = "ApplicationCache.LoginHistory", key = "#criteria.toString().concat('_count')")
+	@Cacheable(value = "ApplicationCache.LoginHistory", key = "#criteria.toString().concat('_count')", condition = "#criteria != null")
 	public int getCountByCriteria(Map<String, Object> criteria) throws BusinessException {
 		int count = 0;
 		coreLogger.info(BaseBean.LOGBREAKER);

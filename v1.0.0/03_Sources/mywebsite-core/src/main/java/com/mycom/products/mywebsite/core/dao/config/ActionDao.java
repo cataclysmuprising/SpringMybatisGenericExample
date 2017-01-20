@@ -122,7 +122,7 @@ public class ActionDao implements CommonExecutable<ActionBean> {
 		try {
 			return actionMapper.selectAllPageNames();
 		} catch (Exception e) {
-			throw new MyBatisException("Error occured while selecting all Page Names !", e);
+			throw new MyBatisException("Error occured while selecting all Page Names.", e);
 		}
 	}
 

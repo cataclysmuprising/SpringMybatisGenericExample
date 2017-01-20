@@ -31,7 +31,7 @@
 			</run>
 		</groups>
 		<classes>
-			<class name="com.t3k.products.fams.core.config.RoleServiceTest" />
+			<class name="com.mycom.products.mywebsite.core.config.ActionServiceTest" />
 		</classes>
 	</test>
 </suite>

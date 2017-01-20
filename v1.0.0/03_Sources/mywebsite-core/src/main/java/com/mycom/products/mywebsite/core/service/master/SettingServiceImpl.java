@@ -118,7 +118,7 @@ public class SettingServiceImpl implements SettingService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class, readOnly = true)
-	@Cacheable(value = "ApplicationCache.Setting", key = "#criteria.toString()")
+	@Cacheable(value = "ApplicationCache.Setting", key = "#criteria.toString()", condition = "#criteria != null")
 	public List<SettingBean> getByCriteria(Map<String, Object> criteria) throws BusinessException {
 		List<SettingBean> results = null;
 		coreLogger.info(BaseBean.LOGBREAKER);
@@ -138,7 +138,7 @@ public class SettingServiceImpl implements SettingService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class, readOnly = true)
-	@Cacheable(value = "ApplicationCache.Setting", key = "#criteria.toString().concat('_count')")
+	@Cacheable(value = "ApplicationCache.Setting", key = "#criteria.toString().concat('_count')", condition = "#criteria != null")
 	public int getCountByCriteria(Map<String, Object> criteria) throws BusinessException {
 		int count = 0;
 		coreLogger.info(BaseBean.LOGBREAKER);

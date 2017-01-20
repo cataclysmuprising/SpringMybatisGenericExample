@@ -3,7 +3,6 @@ package com.mycom.products.mywebsite.core;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
@@ -47,22 +46,12 @@ public class BaseTestService extends AbstractTransactionalTestNGSpringContextTes
 	@Test
 	private void testMockObject() {
 		try {
-			UserBean user = new UserBean();
-			MockDataGenerator.mock(user, GenerateMode.NESTED);
-			logger.info("After making mock object >>> " + user);
+			UserBean action = new UserBean();
+			MockDataGenerator.mock(action, GenerateMode.SINGLE);
+			logger.info("After making mock object >>> " + action);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	@Test
-	private void testingMockList() {
-		try {
-			Set<UserBean> users = MockDataGenerator.generateMockList(UserBean.class);
-			logger.info("Total mock objects >>> " + users.size());
-			showEntriesOfCollection(users);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

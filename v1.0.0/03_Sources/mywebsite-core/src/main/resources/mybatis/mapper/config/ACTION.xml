@@ -1,166 +1,180 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.ActionMapper">
 	<resultMap type="ActionBean" id="ActionResult">
-		<id property="id" column="id" />
-		<result property="page" column="page" />
-		<result property="actionName" column="action_name" />
-		<result property="displayName" column="display_name" />
-		<result property="url" column="url" />
-		<result property="actionType" column="action_type" />
-		<result property="description" column="description" />
+		<id property="id" 					column="actionId" />
+		<result property="page" 			column="page" />
+		<result property="actionName" 		column="actionName" />
+		<result property="displayName"  	column="display_name" />
+		<result property="url" 				column="url" />
+		<result property="actionType" 		column="action_type" />
+		<result property="description"  	column="actionDescription" />
+		<result property="recordRegId" 		column="record_reg_id"/>
+		<result property="recordUpdId" 		column="record_upd_id"/>
+		<result property="recordRegDate" 	column="record_reg_date"/>
+		<result property="recordUpdDate" 	column="record_upd_date"/>			
+		<collection property="roles" ofType="RoleBean">
+			<id property="id" 				column="roleId" />
+			<result property="name" 		column="roleName" />
+			<result property="description"  column="roleDescription" />			
+		</collection>
 	</resultMap>
 	
-	<resultMap type="ActionBean" id="ActionWithRolesResult">
-		<id property="id" column="id" />
-		<result property="page" column="page" />
-		<result property="actionName" column="action_name" />
-		<result property="displayName" column="display_name" />
-		<result property="url" column="url" />
-		<result property="actionType" column="action_type" />
-		<result property="description" column="description" />
-		<association property="roles" column="id" select="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.selectByActionId" />
-	</resultMap>
-
-	<sql id="self_table">
-		from tbl_action a
+	<sql id="tables">
+		FROM tbl_action action
+		INNER JOIN tbl_role_action roleAction ON action.id=roleAction.action_id
+		INNER JOIN tbl_role role ON roleAction.role_id=role.id
 	</sql>
 		
-	<sql id="joined_tables">
-		from tbl_action a
-		<if test="roleId != null">
-			<choose>
-				<when test="selectType == 'all'">
-					left join tbl_role_action ra
-				</when>
-				<otherwise>
-					inner join tbl_role_action ra
-				</otherwise>
-			</choose>
-			on a.id = ra.action_id and a.id in 
-			(select action_id from tbl_role_action where role_id=#{roleId})
-		</if>
-	</sql>
-	
 	<sql id="columns">
-		select distinct
-		a.id,
-		page,
-		action_name,
-		display_name,
-		url,
-		action_type,
-		description
+		SELECT
+		action.id AS actionId,
+		action.page,
+		action.action_name AS actionName,
+		action.display_name,
+		action.url,
+		action.action_type,
+		action.description AS actionDescription,
+		role.id AS roleId,
+		role.name AS roleName,
+		role.description AS roleDescription
 	</sql>
 
 	<sql id="criterias">
 		<where>
 			<if test="id != null">
-				a.id = #{id}
+				action.id = #{id}
 			</if>
-			<if test="page != null">
-				and page = #{page}
-			</if>
-			<if test="actionType != null">
-				and action_type = #{actionType}
-			</if>	
-			<if test="includeIds != null">
-				AND a.id IN
-			    <foreach item="item" index="index" collection="includeIds" open="(" separator="," close=")">
-			        ${item}
+			<if test="ids != null">
+				AND action.id IN
+			    <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+			        ${id}
 			    </foreach>
-			</if>					
+			</if>			
+			<if test="page != null">
+				AND action.page = #{page}
+			</if>
+			<if test="actionName != null">
+				AND action.action_name = #{actionName}
+			</if>			
+			<if test="actionType != null">
+				AND action.action_type = #{actionType}
+			</if>	
+			<if test="roleId != null">
+				AND role.id = #{roleId}
+			</if>			
 			<if test="word != null">
-			    and
-			    (page like '%${word}%'
-				or action_name like '%${word}%'
-				or display_name like '%${word}%'
-				or url like '%${word}%')
+			    AND
+			    (action.page LIKE '%${word}%'
+				OR action.action_name LIKE '%${word}%'
+				OR action.display_name LIKE '%${word}%'
+				OR action.url LIKE '%${word}%'
+				OR action.description LIKE '%${word}%')
 			</if>
 		</where>
 	</sql>
 			
 	<sql id="orders">
-		order by
+		ORDER BY
 		<choose>
 			<when test="orderBy == 'id'">
-				a.id ${orderAs}
+				action.id ${orderAs}
 			</when>
 			<when test="orderBy == 'page'">
-				page ${orderAs}
+				action.page ${orderAs}
 			</when>
 			<when test="orderBy == 'actionName'">
-				action_name ${orderAs}
+				action.action_name ${orderAs}
 			</when>
 			<when test="orderBy == 'displayName'">
-				display_name ${orderAs}
+				action.display_name ${orderAs}
 			</when>
 			<when test="orderBy == 'actionType'">
-				action_type ${orderAs}
+				action.action_type ${orderAs}
 			</when>						
 			<otherwise>
-				a.id DESC
+				action.id DESC
 			</otherwise>
 		</choose>
 	</sql>
 	
-	<update id="update" parameterType="ActionBean">
-		update tbl_action
-		<set>
-			<if test="page != null">page= #{page},</if>
-			<if test="actionName != null">action_name= #{actionName},</if>
-			<if test="displayName != null">display_name = #{displayName},</if>
-			<if test="actionType != null">action_type = #{actionType},</if>
-			<if test="url != null">url= #{url},</if>
-		</set>
-		where id = #{id}
-	</update>
-
-	<delete id="delete" parameterType="map">
-		delete from tbl_action
-		<where>
-			<if test="id != null">
-				 id = #{id}
-			</if>
-		</where>
-	</delete>
-
-	<select id="selectById" parameterType="int" resultMap="ActionWithRolesResult">
+	<select id="selectById" parameterType="int" resultMap="ActionResult">
 		<include refid="columns" />
-		<include refid="self_table" />
-		where a.id = #{id}
+		<include refid="tables" />
+		WHERE action.id = #{id}
 	</select>
 	
-	<select id="selectByRoleId" parameterType="int" resultMap="ActionResult">
-		select
-		a.*
-		from tbl_role_action ra inner join tbl_action a
-		on ra.role_id = #{id} 
-		and ra.action_id = a.id
-	</select>	
-
-	<select id="selectByCriteria" parameterType="map" resultMap="ActionWithRolesResult">
+	<select id="selectByCriteria" parameterType="map" resultMap="ActionResult">
 		<include refid="columns" />
-		<include refid="joined_tables" />
+		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
 		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
-			offset #{offset} rows
-			fetch next #{limit} rows only;
+			OFFSET #{offset} ROWS
+			FETCH NEXT #{limit} ROWS ONLY;
 		</if>
 	</select>
 
 	<select id="selectCountByCriteria" resultType="int" parameterType="map">
-		select count(distinct a.id)
-		<include refid="joined_tables" />
+		SELECT count(distinct action.id)
+		<include refid="tables" />
 		<include refid="criterias" />
 	</select>
-
+	
 	<select id="selectAllPageNames" resultType="String">
-		select page
-		<include refid="self_table" />
-		group by page
-		order by page desc
+		select action.page
+		<include refid="tables" />
+		GROUP BY action.page
+		ORDER BY action.page DESC
 	</select>
+	
+	<insert id="insert" parameterType="ActionBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO tbl_action(
+		page,
+		action_name,
+		display_name,
+		url,
+		action_type,
+		description,
+		record_reg_id,
+		record_upd_id,
+		record_reg_date,
+		record_upd_date		
+		) values (
+		#{page},
+		#{actionName},
+		#{displayName},
+		#{url},
+		#{actionType},
+		#{description},
+		#{recordRegId},
+		#{recordUpdId},
+		#{recordRegDate},
+		#{recordUpdDate}		
+		)
+	</insert>		
+	
+	<update id="update" parameterType="ActionBean">
+		UPDATE tbl_action
+		<set>
+			<if test="page != null">action.page= #{page},</if>
+			<if test="actionName != null">action.action_name= #{actionName},</if>
+			<if test="displayName != null">action.display_name = #{displayName},</if>
+			<if test="actionType != null">action.action_type = #{actionType},</if>
+			<if test="url != null">url= #{url},</if>
+			<if test="description != null">description= #{description},</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="map">
+		<if test="id != null">
+			DELETE FROM tbl_action
+			<where>
+				<if test="id != null">
+					 id = #{id}
+				</if>
+			</where>		
+		</if>
+	</delete>	
 </mapper>

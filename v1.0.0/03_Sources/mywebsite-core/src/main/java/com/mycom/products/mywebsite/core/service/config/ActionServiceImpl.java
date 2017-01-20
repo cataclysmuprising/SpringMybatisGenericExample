@@ -180,7 +180,7 @@ public class ActionServiceImpl implements ActionService, ApplicationEventPublish
 	}
 
 	@Override
-	@Cacheable(value = "ApplicationCache.Action", key = "#criteria.toString()")
+	@Cacheable(value = "ApplicationCache.Action", key = "#criteria.toString()", condition = "#criteria != null")
 	@Transactional(rollbackFor = Exception.class, readOnly = true)
 	public List<ActionBean> getByCriteria(Map<String, Object> criteria) throws BusinessException {
 		List<ActionBean> actions = null;
@@ -201,7 +201,7 @@ public class ActionServiceImpl implements ActionService, ApplicationEventPublish
 
 	@Override
 	@Transactional(rollbackFor = Exception.class, readOnly = true)
-	@Cacheable(value = "ApplicationCache.Action", key = "#criteria.toString().concat('_count')")
+	@Cacheable(value = "ApplicationCache.Action", key = "#criteria.toString().concat('_count')", condition = "#criteria != null")
 	public int getCountByCriteria(Map<String, Object> criteria) throws BusinessException {
 		coreLogger.info(BaseBean.LOGBREAKER);
 		coreLogger.info("Transaction start for fetching 'Action' counts with criteria = " + criteria);

@@ -1,132 +1,199 @@
 package com.mycom.products.mywebsite.core.dao.config;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
-import com.mycom.products.mywebsite.core.bean.BaseBean.TransactionType;
 import com.mycom.products.mywebsite.core.bean.config.RoleActionBean;
-import com.mycom.products.mywebsite.core.dao.CommonExecutable;
+import com.mycom.products.mywebsite.core.dao.XGenericDao;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.exception.MyBatisException;
-import com.mycom.products.mywebsite.core.exception.SavingHistoryRecordFailedException;
 import com.mycom.products.mywebsite.core.mapper.config.RoleActionMapper;
 
 @Repository
-public class RoleActionDao implements CommonExecutable<RoleActionBean> {
+public class RoleActionDao implements XGenericDao<RoleActionBean> {
 
 	@Autowired
 	private RoleActionMapper roleActionMapper;
+	private Logger logger = Logger.getLogger(this.getClass());
 
 	@Override
-	public int insert(RoleActionBean roleAction, int loginUserId) throws MyBatisException, DuplicatedEntryException {
+	public int insert(RoleActionBean roleAction, int recordRegId) throws DuplicatedEntryException, MyBatisException {
 		try {
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			roleAction.setRecordRegDate(now);
 			roleAction.setRecordUpdDate(now);
-			roleAction.setRecordRegId(loginUserId);
-			roleAction.setRecordUpdId(loginUserId);
-			roleAction.setTransactionType(TransactionType.INSERT);
+			roleAction.setRecordRegId(recordRegId);
+			roleAction.setRecordUpdId(recordRegId);
 			roleActionMapper.insert(roleAction);
-			roleActionMapper.insertHistory(roleAction);
 		} catch (DuplicateKeyException e) {
-			throw new DuplicatedEntryException("Insertion process was failed due to Unique Key constraint.", e);
+			String errorMsg = "Insertion process was failed due to Unique Key constraint.";
+			logger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
-			throw new MyBatisException("Error occured while inserting RoleActionBean data ==> " + roleAction, e);
+			String errorMsg = "Error occured while inserting 'RoleAction' data ==> " + roleAction;
+			logger.error(errorMsg, e);
+			throw new MyBatisException(errorMsg, e);
 		}
 		return roleAction.getId();
 	}
 
 	@Override
-	public int update(RoleActionBean roleAction, int loginUserId) throws MyBatisException, DuplicatedEntryException {
+	public void insert(List<RoleActionBean> roleActions,
+			int recordRegId) throws DuplicatedEntryException, MyBatisException {
+		for (RoleActionBean roleAction : roleActions) {
+			try {
+				Timestamp now = new Timestamp(System.currentTimeMillis());
+				roleAction.setRecordRegDate(now);
+				roleAction.setRecordUpdDate(now);
+				roleAction.setRecordRegId(recordRegId);
+				roleAction.setRecordUpdId(recordRegId);
+				roleActionMapper.insert(roleAction);
+			} catch (DuplicateKeyException e) {
+				String errorMsg = "Insertion process was failed due to Unique Key constraint.";
+				logger.error(errorMsg, e);
+				throw new DuplicatedEntryException(errorMsg, e);
+			} catch (Exception e) {
+				String errorMsg = "Error occured while inserting 'RoleAction' data ==> " + roleAction;
+				logger.error(errorMsg, e);
+				throw new MyBatisException(errorMsg, e);
+			}
+		}
+
+	}
+
+	@Override
+	public int insert(int roleId, int actionId, int recordRegId) throws DuplicatedEntryException, MyBatisException {
 		try {
-			roleAction.setRecordUpdId(loginUserId);
-			HashMap<String, Object> criteria = new HashMap<>();
-			if (roleAction.getRoleId() > 0) {
-				criteria.put("roleId", roleAction.getRoleId());
-			}
-			if (roleAction.getRole() != null && roleAction.getRole().getId() > 0) {
-				criteria.put("roleId", roleAction.getRole().getId());
-			}
-			if (roleAction.getActionId() > 0) {
-				criteria.put("actionId", roleAction.getActionId());
-			}
-			if (roleAction.getAction() != null && roleAction.getAction().getId() > 0) {
-				criteria.put("actionId", roleAction.getAction().getId());
-			}
-			List<RoleActionBean> oldDatas = roleActionMapper.selectByCriteria(criteria);
-			if (oldDatas == null) {
-				throw new SavingHistoryRecordFailedException();
-			}
-			for (RoleActionBean data : oldDatas) {
-				data.setTransactionType(TransactionType.UPDATE);
-				data.setRecordUpdId(loginUserId);
-				roleActionMapper.insertHistory(data);
-			}
-			return roleActionMapper.update(roleAction);
+			return roleActionMapper.insert(roleId, actionId, recordRegId);
 		} catch (DuplicateKeyException e) {
-			throw new DuplicatedEntryException("Updating process was failed due to Unique Key constraint.", e);
-		} catch (SavingHistoryRecordFailedException e) {
-			// nothing to do yet
-			return 0;
+			String errorMsg = "Insertion process was failed due to Unique Key constraint.";
+			logger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
-			throw new MyBatisException("Error occured while updating RoleActionBean data ==> " + roleAction, e);
+			String errorMsg = "Error occured while inserting 'RoleAction' data ==> roleId = " + roleId + " , actionId = " + actionId;
+			logger.error(errorMsg, e);
+			throw new MyBatisException(errorMsg, e);
+		}
+	}
+
+	@Override
+	public int delete(int roleId, int actionId,
+			int recordUpdId) throws ConsistencyViolationException, MyBatisException {
+		try {
+			return roleActionMapper.delete(roleId, actionId);
+		} catch (DataIntegrityViolationException e) {
+			String errorMsg = "Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency.";
+			logger.error(errorMsg, e);
+			throw new ConsistencyViolationException(errorMsg, e);
+		} catch (Exception e) {
+			String errorMsg = "Error occured while deleting 'RoleAction' data with ==> roleId = " + roleId + " , actionId = " + actionId;
+			logger.error(errorMsg, e);
+			throw new MyBatisException(errorMsg, e);
 		}
 	}
 
 	@Override
 	public int delete(Map<String, Object> criteria,
-			int loginUserId) throws MyBatisException, ConsistencyViolationException {
+			int recordUpdId) throws ConsistencyViolationException, MyBatisException {
 		try {
-			List<RoleActionBean> roleActions = roleActionMapper.selectByCriteria(criteria);
-			if (roleActions == null) {
-				throw new SavingHistoryRecordFailedException();
-			}
-			if (roleActions != null && roleActions.size() > 0) {
-				for (RoleActionBean roleAction : roleActions) {
-					roleAction.setTransactionType(TransactionType.DELETE);
-					roleAction.setRecordUpdId(loginUserId);
-					roleActionMapper.insertHistory(roleAction);
-				}
-			}
 			return roleActionMapper.delete(criteria);
 		} catch (DataIntegrityViolationException e) {
-			throw new ConsistencyViolationException("Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency.", e);
-		} catch (SavingHistoryRecordFailedException e) {
-			// nothing to do yet
-			return 0;
+			String errorMsg = "Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency.";
+			logger.error(errorMsg, e);
+			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (Exception e) {
-			throw new MyBatisException("Error occured while deleting RoleActionBean data ==> " + criteria, e);
+			String errorMsg = "Error occured while deleting 'User' data with criteria ==> " + criteria;
+			logger.error(errorMsg, e);
+			throw new MyBatisException(errorMsg, e);
 		}
 	}
 
 	@Override
-	public RoleActionBean selectById(int id) throws MyBatisException {
-		return null;
+	public void merge(int roleId, List<Integer> actionIds,
+			int recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, MyBatisException {
+		List<Integer> insertIds = new ArrayList<>();
+		List<Integer> removeIds = new ArrayList<>();
+		List<Integer> oldRelatedActions = select(roleId);
+		if (oldRelatedActions != null && oldRelatedActions.size() > 0) {
+			for (Integer actionId : actionIds) {
+				if (!oldRelatedActions.contains(actionId)) {
+					insertIds.add(actionId);
+				}
+			}
+
+			for (Integer actionId : oldRelatedActions) {
+				if (!actionIds.contains(actionId)) {
+					removeIds.add(actionId);
+				}
+			}
+		}
+		if (removeIds.size() > 0) {
+			for (Integer actionId : removeIds) {
+				roleActionMapper.delete(roleId, actionId);
+			}
+		}
+
+		if (insertIds.size() > 0) {
+			for (Integer actionId : insertIds) {
+				roleActionMapper.insert(roleId, actionId, recordUpdId);
+			}
+		}
+
 	}
 
 	@Override
-	public List<RoleActionBean> selectByCriteria(Map<String, Object> criteria) throws MyBatisException {
+	public List<Integer> select(int roleId) throws MyBatisException {
 		try {
-			return roleActionMapper.selectByCriteria(criteria);
+			Map<String, Object> criteria = new HashMap<>();
+			criteria.put("roleId", roleId);
+			return roleActionMapper.select(criteria);
 		} catch (Exception e) {
-			throw new MyBatisException("Error occured while selecting users by criteria." + criteria, e);
+			String errorMsg = "Error occured while selecting related 'Action' keys with roleId ==> " + roleId;
+			logger.error(errorMsg, e);
+			throw new MyBatisException(errorMsg, e);
 		}
 	}
 
 	@Override
-	public int selectCountByCriteria(Map<String, Object> criteria) throws MyBatisException {
+	public RoleActionBean select(int roleId, int actionId) throws MyBatisException {
 		try {
-			return roleActionMapper.selectCountByCriteria(criteria);
+			return roleActionMapper.select(roleId, actionId);
 		} catch (Exception e) {
-			throw new MyBatisException("Error occured while select all RoleAction counts by criteria " + criteria, e);
+			String errorMsg = "Error occured while selecting single 'RoleAction' information with ==> roleId = " + roleId + " , actionId = " + actionId;
+			logger.error(errorMsg, e);
+			throw new MyBatisException(errorMsg, e);
+		}
+	}
+
+	@Override
+	public List<RoleActionBean> selectList(Map<String, Object> criteria) throws MyBatisException {
+		try {
+			return roleActionMapper.selectList(criteria);
+		} catch (Exception e) {
+			String errorMsg = "Error occured while selecting multiple 'RoleAction' informations with criteria ==> " + criteria;
+			logger.error(errorMsg, e);
+			throw new MyBatisException(errorMsg, e);
+		}
+	}
+
+	@Override
+	public int selectCounts(Map<String, Object> criteria) throws MyBatisException {
+		try {
+			return roleActionMapper.selectCounts(criteria);
+		} catch (Exception e) {
+			String errorMsg = "Error occured while counting 'RoleAction' records with criteria ==> " + criteria;
+			logger.error(errorMsg, e);
+			throw new MyBatisException(errorMsg, e);
 		}
 	}
 }

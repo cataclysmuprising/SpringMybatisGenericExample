@@ -17,12 +17,10 @@ public class SavingHistoryRecordFailedException extends RuntimeException {
 
 	public SavingHistoryRecordFailedException(final String message, final Throwable cause) {
 		super(message, cause);
-		cause.printStackTrace();
 	}
 
 	public SavingHistoryRecordFailedException(final Throwable cause) {
 		super(cause);
-		cause.printStackTrace();
 	}
 
 }

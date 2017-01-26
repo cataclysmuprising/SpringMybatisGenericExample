@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ibm.icu.text.SimpleDateFormat;
 
 public class BaseBean implements Serializable {
 	private static final long serialVersionUID = 5987804145999725843L;

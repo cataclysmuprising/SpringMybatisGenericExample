@@ -13,12 +13,10 @@ public class MyBatisException extends Exception {
 
 	public MyBatisException(final String message, final Throwable cause) {
 		super(message, cause);
-		cause.printStackTrace();
 	}
 
 	public MyBatisException(final Throwable cause) {
 		super(cause);
-		cause.printStackTrace();
 	}
 
 }

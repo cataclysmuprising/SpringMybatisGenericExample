@@ -13,12 +13,10 @@ public class ConsistencyViolationException extends Exception {
 
 	public ConsistencyViolationException(final String message, final Throwable cause) {
 		super(message, cause);
-		cause.printStackTrace();
 	}
 
 	public ConsistencyViolationException(final Throwable cause) {
 		super(cause);
-		cause.printStackTrace();
 	}
 
 }

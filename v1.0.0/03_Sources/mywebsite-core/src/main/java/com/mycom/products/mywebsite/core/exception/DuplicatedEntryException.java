@@ -13,12 +13,10 @@ public class DuplicatedEntryException extends Exception {
 
 	public DuplicatedEntryException(final String message, final Throwable cause) {
 		super(message, cause);
-		cause.printStackTrace();
 	}
 
 	public DuplicatedEntryException(final Throwable cause) {
 		super(cause);
-		cause.printStackTrace();
 	}
 
 }

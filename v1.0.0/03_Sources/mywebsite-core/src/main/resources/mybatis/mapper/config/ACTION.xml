@@ -97,14 +97,21 @@
 			</otherwise>
 		</choose>
 	</sql>
-	
-	<select id="selectById" parameterType="int" resultMap="ActionResult">
+
+	<select id="selectByPrimaryKey" parameterType="int" resultMap="ActionResult">
 		<include refid="columns" />
 		<include refid="tables" />
-		WHERE action.id = #{id}
+		WHERE 
+			action.id = #{id}
+	</select>
+		
+	<select id="selectSingleRecord" parameterType="map" resultMap="ActionResult">
+		<include refid="columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
 	</select>
 	
-	<select id="selectByCriteria" parameterType="map" resultMap="ActionResult">
+	<select id="selectMultiRecords" parameterType="map" resultMap="ActionResult">
 		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
@@ -115,7 +122,7 @@
 		</if>
 	</select>
 
-	<select id="selectCountByCriteria" resultType="int" parameterType="map">
+	<select id="selectCounts" resultType="int" parameterType="map">
 		SELECT count(distinct action.id)
 		<include refid="tables" />
 		<include refid="criterias" />
@@ -127,54 +134,4 @@
 		GROUP BY action.page
 		ORDER BY action.page DESC
 	</select>
-	
-	<insert id="insert" parameterType="ActionBean" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO tbl_action(
-		page,
-		action_name,
-		display_name,
-		url,
-		action_type,
-		description,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date		
-		) values (
-		#{page},
-		#{actionName},
-		#{displayName},
-		#{url},
-		#{actionType},
-		#{description},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate}		
-		)
-	</insert>		
-	
-	<update id="update" parameterType="ActionBean">
-		UPDATE tbl_action
-		<set>
-			<if test="page != null">action.page= #{page},</if>
-			<if test="actionName != null">action.action_name= #{actionName},</if>
-			<if test="displayName != null">action.display_name = #{displayName},</if>
-			<if test="actionType != null">action.action_type = #{actionType},</if>
-			<if test="url != null">url= #{url},</if>
-			<if test="description != null">description= #{description},</if>
-		</set>
-		WHERE id = #{id}
-	</update>
-
-	<delete id="delete" parameterType="map">
-		<if test="id != null">
-			DELETE FROM tbl_action
-			<where>
-				<if test="id != null">
-					 id = #{id}
-				</if>
-			</where>		
-		</if>
-	</delete>	
 </mapper>

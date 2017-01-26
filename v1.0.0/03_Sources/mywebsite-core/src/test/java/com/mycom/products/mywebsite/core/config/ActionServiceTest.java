@@ -8,15 +8,15 @@ import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.BaseTestService;
 import com.mycom.products.mywebsite.core.bean.config.ActionBean;
-import com.mycom.products.mywebsite.core.service.config.ActionService;
+import com.mycom.products.mywebsite.core.dao.config.ActionDao;
 
 public class ActionServiceTest extends BaseTestService {
 	@Autowired
-	private ActionService actionService;
+	private ActionDao actionService;
 
 	@Test(groups = { "fetch" })
 	public void testSelectAll() throws Exception {
-		List<ActionBean> results = actionService.getByCriteria(null);
+		List<ActionBean> results = actionService.selectMultiRecords(null);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);

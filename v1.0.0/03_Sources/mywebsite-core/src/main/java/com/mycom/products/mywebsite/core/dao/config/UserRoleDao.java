@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.dao.config;
 
 import java.sql.Timestamp;
@@ -15,8 +20,8 @@ import org.springframework.stereotype.Repository;
 import com.mycom.products.mywebsite.core.bean.config.UserRoleBean;
 import com.mycom.products.mywebsite.core.dao.XGenericDao;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
+import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.exception.MyBatisException;
 import com.mycom.products.mywebsite.core.mapper.config.UserRoleMapper;
 
 @Repository
@@ -24,11 +29,12 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 
 	@Autowired
 	private UserRoleMapper userRoleMapper;
-	private Logger logger = Logger.getLogger(this.getClass());
+	private Logger daoLogger = Logger.getLogger(this.getClass());
 
 	@Override
-	public int insert(UserRoleBean userRole, int recordRegId) throws DuplicatedEntryException, MyBatisException {
+	public int insert(UserRoleBean userRole, int recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
+			daoLogger.debug("[START] : >>> --- Inserting single 'UserRole' informations ---");
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			userRole.setRecordRegDate(now);
 			userRole.setRecordUpdDate(now);
@@ -36,20 +42,22 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			userRole.setRecordUpdId(recordRegId);
 			userRoleMapper.insert(userRole);
 		} catch (DuplicateKeyException e) {
-			String errorMsg = "Insertion process was failed due to Unique Key constraint.";
-			logger.error(errorMsg, e);
+			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
+			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while inserting 'UserRole' data ==> " + userRole;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while inserting 'UserRole' data ==> " + userRole + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Inserting single 'UserRole' informations with new Id # " + userRole.getId() + " ---");
 		return userRole.getId();
 	}
 
 	@Override
 	public void insert(List<UserRoleBean> userRoles,
-			int recordRegId) throws DuplicatedEntryException, MyBatisException {
+			int recordRegId) throws DAOException, DuplicatedEntryException {
+		daoLogger.debug("[START] : >>> --- Inserting multi 'UserRole' informations ---");
 		for (UserRoleBean userRole : userRoles) {
 			try {
 				Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -59,71 +67,84 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 				userRole.setRecordUpdId(recordRegId);
 				userRoleMapper.insert(userRole);
 			} catch (DuplicateKeyException e) {
-				String errorMsg = "Insertion process was failed due to Unique Key constraint.";
-				logger.error(errorMsg, e);
+				String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
+				daoLogger.error(errorMsg, e);
 				throw new DuplicatedEntryException(errorMsg, e);
 			} catch (Exception e) {
-				String errorMsg = "Error occured while inserting 'UserRole' data ==> " + userRole;
-				logger.error(errorMsg, e);
-				throw new MyBatisException(errorMsg, e);
+				String errorMsg = "xxx Error occured while inserting 'UserRole' data ==> " + userRole + " xxx";
+				daoLogger.error(errorMsg, e);
+				throw new DAOException(errorMsg, e);
 			}
 		}
-
+		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'UserRole' informations ---");
 	}
 
 	@Override
-	public int insert(int userId, int roleId, int recordRegId) throws DuplicatedEntryException, MyBatisException {
+	public void insert(int userId, int roleId, int recordRegId) throws DuplicatedEntryException, DAOException {
+		daoLogger.debug("[START] : >>> --- Inserting single 'UserRole' informations ---");
 		try {
-			return userRoleMapper.insert(userId, roleId, recordRegId);
+			userRoleMapper.insert(userId, roleId, recordRegId);
 		} catch (DuplicateKeyException e) {
-			String errorMsg = "Insertion process was failed due to Unique Key constraint.";
-			logger.error(errorMsg, e);
+			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
+			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while inserting 'UserRole' data ==> userId = " + userId + " , roleId = " + roleId;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while inserting 'UserRole' data ==> userId = " + userId + " , roleId = " + roleId + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Inserting single 'UserRole' informations ---");
 	}
 
 	@Override
 	public int delete(int userId, int roleId,
-			int recordUpdId) throws ConsistencyViolationException, MyBatisException {
+			int recordUpdId) throws ConsistencyViolationException, DAOException {
+		daoLogger.debug("[START] : >>> --- Deleting single 'UserRole' informations with ==> userId " + userId + " , roleId = " + roleId + " ---");
+		int effectedRows = 0;
 		try {
-			return userRoleMapper.delete(userId, roleId);
+			effectedRows = userRoleMapper.delete(userId, roleId);
 		} catch (DataIntegrityViolationException e) {
-			String errorMsg = "Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency.";
-			logger.error(errorMsg, e);
+			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
+			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while deleting 'UserRole' data with ==> userId = " + userId + " , roleId = " + roleId;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while deleting 'UserRole' data with ==> userId = " + userId + " , roleId = " + roleId + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Deleting single 'UserRole' informations with ==> userId " + userId + " , roleId = " + roleId + " ---");
+		return effectedRows;
 	}
 
 	@Override
 	public int delete(Map<String, Object> criteria,
-			int recordUpdId) throws ConsistencyViolationException, MyBatisException {
+			int recordUpdId) throws ConsistencyViolationException, DAOException {
+		daoLogger.debug("[START] : >>> --- Deleting 'UserRole' informations with criteria  ---");
+		int effectedRows = 0;
 		try {
-			return userRoleMapper.delete(criteria);
+			effectedRows = userRoleMapper.delete(criteria);
 		} catch (DataIntegrityViolationException e) {
-			String errorMsg = "Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency.";
-			logger.error(errorMsg, e);
+			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
+			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while deleting 'User' data with criteria ==> " + criteria;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while deleting 'UserRole' data with criteria ==> " + criteria + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Deleting 'UserRole' informations with criteria  ---");
+		return effectedRows;
 	}
 
 	@Override
 	public void merge(int userId, List<Integer> roleIds,
-			int recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, MyBatisException {
+			int recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, DAOException {
+		daoLogger.debug("[START] : >>> --- Merging  'UserRole' informations for userId # =" + userId + " with related roleIds =" + roleIds + " ---");
 		List<Integer> insertIds = new ArrayList<>();
 		List<Integer> removeIds = new ArrayList<>();
-		List<Integer> oldRelatedActions = select(userId);
+		daoLogger.debug("[START] : $1 --- Fetching old related roleIds for userId # " + userId + " ---");
+		List<Integer> oldRelatedActions = selectByKey1(userId);
+		daoLogger.debug("[FINISH] : $1 --- Fetching old related roleIds for userId # " + userId + " ==> " + oldRelatedActions + " ---");
 		if (oldRelatedActions != null && oldRelatedActions.size() > 0) {
 			for (Integer roleId : roleIds) {
 				if (!oldRelatedActions.contains(roleId)) {
@@ -137,63 +158,102 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 				}
 			}
 		}
+		daoLogger.debug("[FINISH] : $2 --- Removing  related roleIds[ " + removeIds + " ] for userId # " + userId + " these have been no longer used  ---");
 		if (removeIds.size() > 0) {
-			for (Integer roleId : removeIds) {
-				userRoleMapper.delete(userId, roleId);
-			}
+			HashMap<String, Object> criteria = new HashMap<>();
+			criteria.put("roleIds", removeIds);
+			userRoleMapper.delete(criteria);
 		}
+		daoLogger.debug("[FINISH] : $2 --- Removing  related roleIds[ " + removeIds + " ] for userId # " + userId + " these have been no longer used  ---");
 
+		daoLogger.debug("[START] : $3 --- Inserting newly selected roleIds[ " + insertIds + " ] for userId # " + userId + " ---");
 		if (insertIds.size() > 0) {
 			for (Integer roleId : insertIds) {
 				userRoleMapper.insert(userId, roleId, recordUpdId);
 			}
 		}
+		daoLogger.debug("[FINISH] : $3 --- Inserting newly selected roleIds[ " + insertIds + " ] for userId # " + userId + " ---");
+
+		daoLogger.debug("[FINISH] : <<< --- Merging 'UserRole' informations for userId # =" + userId + " with related roleIds =" + roleIds.toArray() + " ---");
 
 	}
 
 	@Override
-	public List<Integer> select(int userId) throws MyBatisException {
+	public List<Integer> selectByKey1(int key1) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching related roleIds with userId # " + key1 + " ---");
+		List<Integer> roleIds = null;
 		try {
 			Map<String, Object> criteria = new HashMap<>();
-			criteria.put("userId", userId);
-			return userRoleMapper.select(criteria);
+			criteria.put("userId", key1);
+			roleIds = userRoleMapper.select(criteria);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while selecting related 'Action' keys with userId ==> " + userId;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while fetching related 'Action' keys with userId ==> " + key1 + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Fetching related roleIds with userId # " + key1 + " ---");
+		return roleIds;
 	}
 
 	@Override
-	public UserRoleBean select(int userId, int roleId) throws MyBatisException {
+	public List<Integer> selectByKey2(int key2) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching related userIds with roleId # " + key2 + " ---");
+		List<Integer> userIds = null;
 		try {
-			return userRoleMapper.select(userId, roleId);
+			Map<String, Object> criteria = new HashMap<>();
+			criteria.put("roleId", key2);
+			userIds = userRoleMapper.select(criteria);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while selecting single 'UserRole' information with ==> userId = " + userId + " , roleId = " + roleId;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while fetching related 'Role' keys with roleId ==> " + key2 + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Fetching related userIds with roleId # " + key2 + " ---");
+		return userIds;
 	}
 
 	@Override
-	public List<UserRoleBean> selectList(Map<String, Object> criteria) throws MyBatisException {
+	public UserRoleBean select(int userId, int roleId) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " ---");
+		UserRoleBean userRole = null;
 		try {
-			return userRoleMapper.selectList(criteria);
+			userRole = userRoleMapper.select(userId, roleId);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while selecting multiple 'UserRole' informations with criteria ==> " + criteria;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " ---");
+		return userRole;
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria) throws MyBatisException {
+	public List<UserRoleBean> selectList(Map<String, Object> criteria) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching multi 'UserRole' informations with criteria ---");
+		List<UserRoleBean> results = null;
 		try {
-			return userRoleMapper.selectCounts(criteria);
+			results = userRoleMapper.selectList(criteria);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while counting 'UserRole' records with criteria ==> " + criteria;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while fetching multiple 'UserRole' informations with criteria ==> " + criteria + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Fetching multi 'UserRole' informations with criteria ---");
+		return results;
+	}
+
+	@Override
+	public int selectCounts(Map<String, Object> criteria) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching 'UserRole' counts with criteria ---");
+		int count = 0;
+		try {
+			count = userRoleMapper.selectCounts(criteria);
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while counting 'UserRole' records with criteria ==> " + criteria + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
+		}
+		daoLogger.debug("[FINISH] : <<< --- Fetching 'UserRole' counts with criteria ---");
+		return count;
 	}
 }

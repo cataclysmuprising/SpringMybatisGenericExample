@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.dao;
 
 import java.util.List;
@@ -5,27 +10,29 @@ import java.util.Map;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
+import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.exception.MyBatisException;
 
 public interface XGenericDao<T extends BaseBean> extends InsertableDao<T> {
 
-	public int insert(int key1, int key2, int recordRegId) throws DuplicatedEntryException, MyBatisException;
+	public void insert(int key1, int key2, int recordRegId) throws DuplicatedEntryException, DAOException;
 
-	public int delete(int key1, int key2, int recordUpdId) throws ConsistencyViolationException, MyBatisException;
+	public int delete(int key1, int key2, int recordUpdId) throws ConsistencyViolationException, DAOException;
 
 	public int delete(Map<String, Object> criteria,
-			int recordUpdId) throws ConsistencyViolationException, MyBatisException;
+			int recordUpdId) throws ConsistencyViolationException, DAOException;
 
 	public void merge(int mainKey, List<Integer> relatedKeys,
-			int recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, MyBatisException;
+			int recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, DAOException;
 
-	public List<Integer> select(int key) throws MyBatisException;
+	public List<Integer> selectByKey1(int key1) throws DAOException;
 
-	public T select(int key1, int key2) throws MyBatisException;
+	public List<Integer> selectByKey2(int key2) throws DAOException;
 
-	public List<T> selectList(Map<String, Object> criteria) throws MyBatisException;
+	public T select(int key1, int key2) throws DAOException;
 
-	public int selectCounts(Map<String, Object> criteria) throws MyBatisException;
+	public List<T> selectList(Map<String, Object> criteria) throws DAOException;
+
+	public int selectCounts(Map<String, Object> criteria) throws DAOException;
 
 }

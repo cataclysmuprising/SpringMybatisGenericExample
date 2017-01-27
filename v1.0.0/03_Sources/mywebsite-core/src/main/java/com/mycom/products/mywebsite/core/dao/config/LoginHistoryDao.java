@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.dao.config;
 
 import java.sql.Timestamp;
@@ -9,11 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
+import com.mycom.products.mywebsite.core.bean.BaseBean.TransactionType;
 import com.mycom.products.mywebsite.core.bean.config.LoginHistoryBean;
 import com.mycom.products.mywebsite.core.dao.InsertableDao;
 import com.mycom.products.mywebsite.core.dao.SelectableDao;
+import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.exception.MyBatisException;
 import com.mycom.products.mywebsite.core.mapper.config.LoginHistoryMapper;
 
 @Repository
@@ -21,33 +27,36 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, Selecta
 
 	@Autowired
 	private LoginHistoryMapper loginHistoryMapper;
-	private Logger logger = Logger.getLogger(this.getClass());
+	private Logger daoLogger = Logger.getLogger(this.getClass());
 
 	@Override
-	public int insert(LoginHistoryBean loginHistory,
-			int recordRegId) throws MyBatisException, DuplicatedEntryException {
+	public int insert(LoginHistoryBean loginHistory, int recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
+			daoLogger.debug("[START] : >>> --- Inserting single 'LoginHistory' informations ---");
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			loginHistory.setRecordRegDate(now);
 			loginHistory.setRecordUpdDate(now);
 			loginHistory.setRecordRegId(recordRegId);
 			loginHistory.setRecordUpdId(recordRegId);
+			loginHistory.setTransactionType(TransactionType.INSERT);
 			loginHistoryMapper.insert(loginHistory);
 		} catch (DuplicateKeyException e) {
-			String errorMsg = "Insertion process was failed due to Unique Key constraint.";
-			logger.error(errorMsg, e);
+			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
+			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while inserting 'LoginHistory' data ==> " + loginHistory;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while inserting 'LoginHistory' data ==> " + loginHistory + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Inserting single 'LoginHistory' informations with new Id # " + loginHistory.getId() + " ---");
 		return loginHistory.getId();
 	}
 
 	@Override
 	public void insert(List<LoginHistoryBean> loginHistorys,
-			int recordRegId) throws MyBatisException, DuplicatedEntryException {
+			int recordRegId) throws DAOException, DuplicatedEntryException {
+		daoLogger.debug("[START] : >>> --- Inserting multi 'LoginHistory' informations ---");
 		for (LoginHistoryBean loginHistory : loginHistorys) {
 			try {
 				Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -55,60 +64,78 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, Selecta
 				loginHistory.setRecordUpdDate(now);
 				loginHistory.setRecordRegId(recordRegId);
 				loginHistory.setRecordUpdId(recordRegId);
+				loginHistory.setTransactionType(TransactionType.INSERT);
 				loginHistoryMapper.insert(loginHistory);
 			} catch (DuplicateKeyException e) {
-				String errorMsg = "Insertion process was failed due to Unique Key constraint.";
-				logger.error(errorMsg, e);
+				String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
+				daoLogger.error(errorMsg, e);
 				throw new DuplicatedEntryException(errorMsg, e);
 			} catch (Exception e) {
-				String errorMsg = "Error occured while inserting 'LoginHistory' data ==> " + loginHistory;
-				logger.error(errorMsg, e);
-				throw new MyBatisException(errorMsg, e);
+				String errorMsg = "xxx Error occured while inserting 'LoginHistory' data ==> " + loginHistory + " xxx";
+				daoLogger.error(errorMsg, e);
+				throw new DAOException(errorMsg, e);
 			}
 		}
+		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'LoginHistory' informations ---");
 	}
 
 	@Override
-	public LoginHistoryBean select(int primaryKey) throws MyBatisException {
+	public LoginHistoryBean select(int primaryKey) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching 'LoginHistory' informations with primaryKey # " + primaryKey + " ---");
+		LoginHistoryBean loginHistory = new LoginHistoryBean();
 		try {
-			return loginHistoryMapper.selectByPrimaryKey(primaryKey);
+			loginHistory = loginHistoryMapper.selectByPrimaryKey(primaryKey);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while selecting single 'LoginHistory' information with primaryKey ==> " + primaryKey;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while fetching single 'LoginHistory' informations with primaryKey ==> " + primaryKey + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Fetching 'LoginHistory' informations with primaryKey # " + primaryKey + " ---");
+		return loginHistory;
 	}
 
 	@Override
-	public LoginHistoryBean select(Map<String, Object> criteria) throws MyBatisException {
+	public LoginHistoryBean select(Map<String, Object> criteria) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching single 'LoginHistory' informations with criteria ---");
+		LoginHistoryBean loginHistory = new LoginHistoryBean();
 		try {
-			return loginHistoryMapper.selectSingleRecord(criteria);
+			loginHistory = loginHistoryMapper.selectSingleRecord(criteria);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while selecting single 'LoginHistory' information with criteria ==> " + criteria;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while fetching single 'LoginHistory' informations with criteria ==> " + criteria + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Fetching single 'LoginHistory' informations with criteria ---");
+		return loginHistory;
 	}
 
 	@Override
-	public List<LoginHistoryBean> selectList(Map<String, Object> criteria) throws MyBatisException {
+	public List<LoginHistoryBean> selectList(Map<String, Object> criteria) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching multi 'LoginHistory' informations with criteria ---");
+		List<LoginHistoryBean> loginHistorys = null;
 		try {
-			return loginHistoryMapper.selectMultiRecords(criteria);
+			loginHistorys = loginHistoryMapper.selectMultiRecords(criteria);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while selecting multiple 'LoginHistory' informations with criteria ==> " + criteria;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while fetching multiple 'LoginHistory' informations with criteria ==> " + criteria + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Fetching multi 'LoginHistory' informations with criteria ---");
+		return loginHistorys;
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria) throws MyBatisException {
+	public int selectCounts(Map<String, Object> criteria) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching 'LoginHistory' counts with criteria ---");
+		int count = 0;
 		try {
-			return loginHistoryMapper.selectCounts(criteria);
+			count = loginHistoryMapper.selectCounts(criteria);
 		} catch (Exception e) {
-			String errorMsg = "Error occured while counting 'LoginHistory' records with criteria ==> " + criteria;
-			logger.error(errorMsg, e);
-			throw new MyBatisException(errorMsg, e);
+			String errorMsg = "xxx Error occured while counting 'LoginHistory' records with criteria ==> " + criteria + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
+		daoLogger.debug("[FINISH] : <<< --- Fetching 'LoginHistory' counts with criteria ---");
+		return count;
 	}
 }

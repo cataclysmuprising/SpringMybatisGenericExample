@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.config;
 
 import java.util.List;
@@ -16,7 +21,7 @@ public class ActionServiceTest extends BaseTestService {
 
 	@Test(groups = { "fetch" })
 	public void testSelectAll() throws Exception {
-		List<ActionBean> results = actionService.selectMultiRecords(null);
+		List<ActionBean> results = actionService.selectList(null);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);

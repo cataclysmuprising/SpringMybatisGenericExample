@@ -6,7 +6,7 @@ import java.util.Map;
 import com.mycom.products.mywebsite.core.bean.BaseBean;
 
 public interface XGenericMapper<T extends BaseBean> extends InsertableMapper<T> {
-	public int insert(int key1, int key2, int recordRegId);
+	public void insert(int key1, int key2, int recordRegId);
 
 	public int delete(int key1, int key2);
 

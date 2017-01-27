@@ -102,7 +102,7 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 		try {
 			setting.setRecordUpdId(recordUpdId);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history before update on major table ---");
-			SettingBean oldData = settingMapper.selectByPrimaryKey(setting.getId());
+			SettingBean oldData = settingMapper.selectByPrimaryKey(setting.getId(), FetchMode.LAZY);
 			if (oldData == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -135,7 +135,7 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 			try {
 				setting.setRecordUpdId(recordUpdId);
 				daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history before update on major table ---");
-				SettingBean oldData = settingMapper.selectByPrimaryKey(setting.getId());
+				SettingBean oldData = settingMapper.selectByPrimaryKey(setting.getId(), FetchMode.LAZY);
 				if (oldData == null) {
 					throw new SaveHistoryFailedException();
 				}
@@ -168,7 +168,7 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 		int totalEffectedRows = 0;
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history before update on major table ---");
-			SettingBean oldData = settingMapper.selectByPrimaryKey(primaryKey);
+			SettingBean oldData = settingMapper.selectByPrimaryKey(primaryKey, FetchMode.LAZY);
 			if (oldData == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -201,7 +201,7 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 		daoLogger.debug("[START] : >>> --- Deleting 'Setting' informations with criteria  ---");
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history before delete on major table ---");
-			List<SettingBean> settings = settingMapper.selectMultiRecords(criteria);
+			List<SettingBean> settings = settingMapper.selectMultiRecords(criteria, FetchMode.LAZY);
 			if (settings == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -232,11 +232,11 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public SettingBean select(int primaryKey) throws DAOException {
+	public SettingBean select(int primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Setting' informations with primaryKey # " + primaryKey + " ---");
 		SettingBean setting = new SettingBean();
 		try {
-			setting = settingMapper.selectByPrimaryKey(primaryKey);
+			setting = settingMapper.selectByPrimaryKey(primaryKey, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Setting' informations with primaryKey ==> " + primaryKey + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -247,11 +247,11 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public SettingBean select(Map<String, Object> criteria) throws DAOException {
+	public SettingBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'Setting' informations with criteria ---");
 		SettingBean setting = new SettingBean();
 		try {
-			setting = settingMapper.selectSingleRecord(criteria);
+			setting = settingMapper.selectSingleRecord(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Setting' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -262,11 +262,11 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public List<SettingBean> selectList(Map<String, Object> criteria) throws DAOException {
+	public List<SettingBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'Setting' informations with criteria ---");
 		List<SettingBean> settings = null;
 		try {
-			settings = settingMapper.selectMultiRecords(criteria);
+			settings = settingMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'Setting' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -277,11 +277,11 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria) throws DAOException {
+	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Setting' counts with criteria ---");
 		int count = 0;
 		try {
-			count = settingMapper.selectCounts(criteria);
+			count = settingMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'Setting' records with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);

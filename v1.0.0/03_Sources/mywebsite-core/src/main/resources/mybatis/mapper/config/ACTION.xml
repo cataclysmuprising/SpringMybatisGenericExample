@@ -12,18 +12,20 @@
 		<result property="recordRegId" 		column="record_reg_id"/>
 		<result property="recordUpdId" 		column="record_upd_id"/>
 		<result property="recordRegDate" 	column="record_reg_date"/>
-		<result property="recordUpdDate" 	column="record_upd_date"/>			
+		<result property="recordUpdDate" 	column="record_upd_date"/>		
 		<collection property="roles" ofType="RoleBean">
 			<id property="id" 				column="roleId" />
 			<result property="name" 		column="roleName" />
 			<result property="description"  column="roleDescription" />			
-		</collection>
+		</collection>		
 	</resultMap>
 	
 	<sql id="tables">
 		FROM tbl_action action
-		INNER JOIN tbl_role_action roleAction ON action.id=roleAction.action_id
-		INNER JOIN tbl_role role ON roleAction.role_id=role.id
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			LEFT JOIN tbl_role_action roleAction ON action.id=roleAction.action_id
+			LEFT JOIN tbl_role role ON roleAction.role_id=role.id
+		</if>
 	</sql>
 		
 	<sql id="columns">
@@ -34,63 +36,67 @@
 		action.display_name,
 		action.url,
 		action.action_type,
-		action.description AS actionDescription,
-		role.id AS roleId,
-		role.name AS roleName,
-		role.description AS roleDescription
+		action.description AS actionDescription
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			,role.id AS roleId
+			,role.name AS roleName
+			,role.description AS roleDescription
+		</if>
 	</sql>
 
 	<sql id="criterias">
-		<where>
-			<if test="id != null">
-				action.id = #{id}
-			</if>
-			<if test="ids != null">
-				AND action.id IN
-			    <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
-			        ${id}
-			    </foreach>
-			</if>			
-			<if test="page != null">
-				AND action.page = #{page}
-			</if>
-			<if test="actionName != null">
-				AND action.action_name = #{actionName}
-			</if>			
-			<if test="actionType != null">
-				AND action.action_type = #{actionType}
-			</if>	
-			<if test="roleId != null">
-				AND role.id = #{roleId}
-			</if>			
-			<if test="word != null">
-			    AND
-			    (action.page LIKE '%${word}%'
-				OR action.action_name LIKE '%${word}%'
-				OR action.display_name LIKE '%${word}%'
-				OR action.url LIKE '%${word}%'
-				OR action.description LIKE '%${word}%')
-			</if>
-		</where>
+		<if test="criteria != null">
+			<where>
+				<if test="criteria.id != null">
+					action.id = #{criteria.id}
+				</if>
+				<if test="criteria.ids != null">
+					AND action.id IN
+				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>			
+				<if test="criteria.page != null">
+					AND action.page = #{criteria.page}
+				</if>
+				<if test="criteria.actionName != null">
+					AND action.action_name = #{criteria.actionName}
+				</if>			
+				<if test="criteria.actionType != null">
+					AND action.action_type = #{criteria.actionType}
+				</if>	
+				<if test="fetchMode !=null and fetchMode.name() == 'EAGER' and criteria.roleId != null">
+					AND role.id = #{criteria.roleId}
+				</if>			
+				<if test="criteria.word != null">
+				    AND
+				    (action.page LIKE '%${criteria.word}%'
+					OR action.action_name LIKE '%${criteria.word}%'
+					OR action.display_name LIKE '%${criteria.word}%'
+					OR action.url LIKE '%${criteria.word}%'
+					OR action.description LIKE '%${criteria.word}%')
+				</if>
+			</where>
+		</if>
 	</sql>
 			
 	<sql id="orders">
 		ORDER BY
 		<choose>
-			<when test="orderBy == 'id'">
-				action.id ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'id'">
+				action.id ${criteria.orderAs}
 			</when>
-			<when test="orderBy == 'page'">
-				action.page ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'page'">
+				action.page ${criteria.orderAs}
 			</when>
-			<when test="orderBy == 'actionName'">
-				action.action_name ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'actionName'">
+				action.action_name ${criteria.orderAs}
 			</when>
-			<when test="orderBy == 'displayName'">
-				action.display_name ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'displayName'">
+				action.display_name ${criteria.orderAs}
 			</when>
-			<when test="orderBy == 'actionType'">
-				action.action_type ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'actionType'">
+				action.action_type ${criteria.orderAs}
 			</when>						
 			<otherwise>
 				action.id DESC
@@ -98,38 +104,38 @@
 		</choose>
 	</sql>
 
-	<select id="selectByPrimaryKey" parameterType="int" resultMap="ActionResult">
+	<select id="selectByPrimaryKey" resultMap="ActionResult">
 		<include refid="columns" />
 		<include refid="tables" />
 		WHERE 
-			action.id = #{id}
+			action.id = #{primaryKey}
 	</select>
 		
-	<select id="selectSingleRecord" parameterType="map" resultMap="ActionResult">
+	<select id="selectSingleRecord" resultMap="ActionResult">
 		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
 	</select>
 	
-	<select id="selectMultiRecords" parameterType="map" resultMap="ActionResult">
+	<select id="selectMultiRecords" resultMap="ActionResult">
 		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
-			OFFSET #{offset} ROWS
-			FETCH NEXT #{limit} ROWS ONLY;
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>
 	</select>
 
-	<select id="selectCounts" resultType="int" parameterType="map">
-		SELECT count(distinct action.id)
+	<select id="selectCounts"  resultType="int">
+		SELECT count(DISTINCT action.id)
 		<include refid="tables" />
 		<include refid="criterias" />
 	</select>
 	
 	<select id="selectAllPageNames" resultType="String">
-		select action.page
+		SELECT action.page
 		<include refid="tables" />
 		GROUP BY action.page
 		ORDER BY action.page DESC

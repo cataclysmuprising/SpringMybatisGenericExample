@@ -80,11 +80,11 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, Selecta
 	}
 
 	@Override
-	public LoginHistoryBean select(int primaryKey) throws DAOException {
+	public LoginHistoryBean select(int primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'LoginHistory' informations with primaryKey # " + primaryKey + " ---");
 		LoginHistoryBean loginHistory = new LoginHistoryBean();
 		try {
-			loginHistory = loginHistoryMapper.selectByPrimaryKey(primaryKey);
+			loginHistory = loginHistoryMapper.selectByPrimaryKey(primaryKey, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'LoginHistory' informations with primaryKey ==> " + primaryKey + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -95,11 +95,11 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, Selecta
 	}
 
 	@Override
-	public LoginHistoryBean select(Map<String, Object> criteria) throws DAOException {
+	public LoginHistoryBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'LoginHistory' informations with criteria ---");
 		LoginHistoryBean loginHistory = new LoginHistoryBean();
 		try {
-			loginHistory = loginHistoryMapper.selectSingleRecord(criteria);
+			loginHistory = loginHistoryMapper.selectSingleRecord(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'LoginHistory' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -110,11 +110,11 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, Selecta
 	}
 
 	@Override
-	public List<LoginHistoryBean> selectList(Map<String, Object> criteria) throws DAOException {
+	public List<LoginHistoryBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'LoginHistory' informations with criteria ---");
 		List<LoginHistoryBean> loginHistorys = null;
 		try {
-			loginHistorys = loginHistoryMapper.selectMultiRecords(criteria);
+			loginHistorys = loginHistoryMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'LoginHistory' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -125,11 +125,11 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, Selecta
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria) throws DAOException {
+	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'LoginHistory' counts with criteria ---");
 		int count = 0;
 		try {
-			count = loginHistoryMapper.selectCounts(criteria);
+			count = loginHistoryMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'LoginHistory' records with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);

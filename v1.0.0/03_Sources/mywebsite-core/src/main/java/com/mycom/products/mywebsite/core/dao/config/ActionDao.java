@@ -25,11 +25,11 @@ public class ActionDao implements SelectableDao<ActionBean> {
 	private Logger daoLogger = Logger.getLogger(this.getClass());
 
 	@Override
-	public ActionBean select(int primaryKey) throws DAOException {
+	public ActionBean select(int primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Action' informations with primaryKey # " + primaryKey + " ---");
 		ActionBean action = new ActionBean();
 		try {
-			action = actionMapper.selectByPrimaryKey(primaryKey);
+			action = actionMapper.selectByPrimaryKey(primaryKey, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Action' informations with primaryKey ==> " + primaryKey + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -40,11 +40,11 @@ public class ActionDao implements SelectableDao<ActionBean> {
 	}
 
 	@Override
-	public ActionBean select(Map<String, Object> criteria) throws DAOException {
+	public ActionBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'Action' informations with criteria ---");
 		ActionBean action = new ActionBean();
 		try {
-			action = actionMapper.selectSingleRecord(criteria);
+			action = actionMapper.selectSingleRecord(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Action' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -55,11 +55,11 @@ public class ActionDao implements SelectableDao<ActionBean> {
 	}
 
 	@Override
-	public List<ActionBean> selectList(Map<String, Object> criteria) throws DAOException {
+	public List<ActionBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'Action' informations with criteria ---");
 		List<ActionBean> actions = null;
 		try {
-			actions = actionMapper.selectMultiRecords(criteria);
+			actions = actionMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'Action' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -70,11 +70,11 @@ public class ActionDao implements SelectableDao<ActionBean> {
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria) throws DAOException {
+	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Action' counts with criteria ---");
 		int count = 0;
 		try {
-			count = actionMapper.selectCounts(criteria);
+			count = actionMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'Action' records with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);

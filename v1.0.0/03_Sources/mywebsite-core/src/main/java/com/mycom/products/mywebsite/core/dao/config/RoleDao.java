@@ -102,7 +102,7 @@ public class RoleDao implements CommonGenericDao<RoleBean> {
 		try {
 			role.setRecordUpdId(recordUpdId);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Role' informations in history before update on major table ---");
-			RoleBean oldData = roleMapper.selectByPrimaryKey(role.getId());
+			RoleBean oldData = roleMapper.selectByPrimaryKey(role.getId(), FetchMode.LAZY);
 			if (oldData == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -135,7 +135,7 @@ public class RoleDao implements CommonGenericDao<RoleBean> {
 			try {
 				role.setRecordUpdId(recordUpdId);
 				daoLogger.debug("[HISTORY][START] : $1 --- Save 'Role' informations in history before update on major table ---");
-				RoleBean oldData = roleMapper.selectByPrimaryKey(role.getId());
+				RoleBean oldData = roleMapper.selectByPrimaryKey(role.getId(), FetchMode.LAZY);
 				if (oldData == null) {
 					throw new SaveHistoryFailedException();
 				}
@@ -168,7 +168,7 @@ public class RoleDao implements CommonGenericDao<RoleBean> {
 		int totalEffectedRows = 0;
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Role' informations in history before update on major table ---");
-			RoleBean oldData = roleMapper.selectByPrimaryKey(primaryKey);
+			RoleBean oldData = roleMapper.selectByPrimaryKey(primaryKey, FetchMode.LAZY);
 			if (oldData == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -201,7 +201,7 @@ public class RoleDao implements CommonGenericDao<RoleBean> {
 		daoLogger.debug("[START] : >>> --- Deleting 'Role' informations with criteria  ---");
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Role' informations in history before delete on major table ---");
-			List<RoleBean> roles = roleMapper.selectMultiRecords(criteria);
+			List<RoleBean> roles = roleMapper.selectMultiRecords(criteria, FetchMode.LAZY);
 			if (roles == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -232,11 +232,11 @@ public class RoleDao implements CommonGenericDao<RoleBean> {
 	}
 
 	@Override
-	public RoleBean select(int primaryKey) throws DAOException {
+	public RoleBean select(int primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Role' informations with primaryKey # " + primaryKey + " ---");
 		RoleBean role = new RoleBean();
 		try {
-			role = roleMapper.selectByPrimaryKey(primaryKey);
+			role = roleMapper.selectByPrimaryKey(primaryKey, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Role' informations with primaryKey ==> " + primaryKey + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -247,11 +247,11 @@ public class RoleDao implements CommonGenericDao<RoleBean> {
 	}
 
 	@Override
-	public RoleBean select(Map<String, Object> criteria) throws DAOException {
+	public RoleBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'Role' informations with criteria ---");
 		RoleBean role = new RoleBean();
 		try {
-			role = roleMapper.selectSingleRecord(criteria);
+			role = roleMapper.selectSingleRecord(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Role' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -262,11 +262,11 @@ public class RoleDao implements CommonGenericDao<RoleBean> {
 	}
 
 	@Override
-	public List<RoleBean> selectList(Map<String, Object> criteria) throws DAOException {
+	public List<RoleBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'Role' informations with criteria ---");
 		List<RoleBean> roles = null;
 		try {
-			roles = roleMapper.selectMultiRecords(criteria);
+			roles = roleMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'Role' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -277,11 +277,11 @@ public class RoleDao implements CommonGenericDao<RoleBean> {
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria) throws DAOException {
+	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Role' counts with criteria ---");
 		int count = 0;
 		try {
-			count = roleMapper.selectCounts(criteria);
+			count = roleMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'Role' records with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);

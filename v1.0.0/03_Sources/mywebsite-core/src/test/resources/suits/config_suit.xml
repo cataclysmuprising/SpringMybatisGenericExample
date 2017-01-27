@@ -31,7 +31,7 @@
 			</run>
 		</groups>
 		<classes>
-			<class name="com.mycom.products.mywebsite.core.config.ActionServiceTest" />
+			<class name="com.mycom.products.mywebsite.core.daoTest.config.ActionDaoTest" />
 		</classes>
 	</test>
 </suite>

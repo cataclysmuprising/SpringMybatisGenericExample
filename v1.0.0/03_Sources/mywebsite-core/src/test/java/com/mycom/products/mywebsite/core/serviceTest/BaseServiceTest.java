@@ -1,4 +1,9 @@
-package com.mycom.products.mywebsite.core;
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
+package com.mycom.products.mywebsite.core.serviceTest;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -12,13 +17,14 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.mycom.products.mywebsite.core.MockDataGenerator;
 import com.mycom.products.mywebsite.core.MockDataGenerator.GenerateMode;
 import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.bean.config.UserBean;
 
 @Transactional
 @ContextConfiguration(locations = { "classpath:spring-test-context.xml" })
-public class BaseTestService extends AbstractTransactionalTestNGSpringContextTests {
+public class BaseServiceTest extends AbstractTransactionalTestNGSpringContextTests {
 	protected Logger logger = Logger.getLogger("stdout");
 	protected static final int TEST_CREATE_USER_ID = 10009;
 	protected static final int TEST_UPDATE_USER_ID = 90001;

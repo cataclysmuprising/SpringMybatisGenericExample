@@ -102,7 +102,7 @@ public class UserDao implements CommonGenericDao<UserBean> {
 		try {
 			user.setRecordUpdId(recordUpdId);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history before update on major table ---");
-			UserBean oldData = userMapper.selectByPrimaryKey(user.getId());
+			UserBean oldData = userMapper.selectByPrimaryKey(user.getId(), FetchMode.LAZY);
 			if (oldData == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -135,7 +135,7 @@ public class UserDao implements CommonGenericDao<UserBean> {
 			try {
 				user.setRecordUpdId(recordUpdId);
 				daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history before update on major table ---");
-				UserBean oldData = userMapper.selectByPrimaryKey(user.getId());
+				UserBean oldData = userMapper.selectByPrimaryKey(user.getId(), FetchMode.LAZY);
 				if (oldData == null) {
 					throw new SaveHistoryFailedException();
 				}
@@ -168,7 +168,7 @@ public class UserDao implements CommonGenericDao<UserBean> {
 		int totalEffectedRows = 0;
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history before update on major table ---");
-			UserBean oldData = userMapper.selectByPrimaryKey(primaryKey);
+			UserBean oldData = userMapper.selectByPrimaryKey(primaryKey, FetchMode.LAZY);
 			if (oldData == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -201,7 +201,7 @@ public class UserDao implements CommonGenericDao<UserBean> {
 		daoLogger.debug("[START] : >>> --- Deleting 'User' informations with criteria  ---");
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history before delete on major table ---");
-			List<UserBean> users = userMapper.selectMultiRecords(criteria);
+			List<UserBean> users = userMapper.selectMultiRecords(criteria, FetchMode.LAZY);
 			if (users == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -232,11 +232,11 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public UserBean select(int primaryKey) throws DAOException {
+	public UserBean select(int primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'User' informations with primaryKey # " + primaryKey + " ---");
 		UserBean user = new UserBean();
 		try {
-			user = userMapper.selectByPrimaryKey(primaryKey);
+			user = userMapper.selectByPrimaryKey(primaryKey, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'User' informations with primaryKey ==> " + primaryKey + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -247,11 +247,11 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public UserBean select(Map<String, Object> criteria) throws DAOException {
+	public UserBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'User' informations with criteria ---");
 		UserBean user = new UserBean();
 		try {
-			user = userMapper.selectSingleRecord(criteria);
+			user = userMapper.selectSingleRecord(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'User' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -262,11 +262,11 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public List<UserBean> selectList(Map<String, Object> criteria) throws DAOException {
+	public List<UserBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'User' informations with criteria ---");
 		List<UserBean> users = null;
 		try {
-			users = userMapper.selectMultiRecords(criteria);
+			users = userMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'User' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -277,11 +277,11 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria) throws DAOException {
+	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'User' counts with criteria ---");
 		int count = 0;
 		try {
-			count = userMapper.selectCounts(criteria);
+			count = userMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'User' records with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);

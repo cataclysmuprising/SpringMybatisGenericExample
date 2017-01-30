@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.bean.config;
 
 import java.io.Serializable;
@@ -12,6 +17,7 @@ public class LoginHistoryBean extends BaseBean implements Serializable {
 	private String browser;
 	private Timestamp loginDate;
 	private int userId;
+	private UserBean user;
 
 	public String getClientIp() {
 		return clientIp;
@@ -51,6 +57,19 @@ public class LoginHistoryBean extends BaseBean implements Serializable {
 
 	public void setBrowser(String browser) {
 		this.browser = browser;
+	}
+
+	public UserBean getUser() {
+		return user;
+	}
+
+	public void setUser(UserBean user) {
+		this.user = user;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("LoginHistoryBean [clientIp=%s, os=%s, browser=%s, loginDate=%s, userId=%s, user=%s, MetaDatas=%s]", clientIp, os, browser, loginDate, userId, user, super.toString());
 	}
 
 }

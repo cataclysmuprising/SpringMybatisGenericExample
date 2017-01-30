@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.bean.config;
 
 import java.util.List;
@@ -85,7 +90,7 @@ public class ActionBean extends BaseBean implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "ActionBean [page=" + page + ", actionName=" + actionName + ", displayName=" + displayName + ", url=" + url + ", roleIds=" + roleIds + ", roles=" + roles + ", actionType=" + actionType + ", description=" + description + "]";
+		return String.format("ActionBean [page=%s, actionName=%s, displayName=%s, url=%s, roleIds=%s, roles=%s, actionType=%s, description=%s, MetaDatas=%s]", page, actionName, displayName, url, roleIds, roles, actionType, description, super.toString());
 	}
 
 }

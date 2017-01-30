@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.bean.config;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean;
@@ -53,7 +58,7 @@ public class RoleActionBean extends BaseBean implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "RoleActionBean [roleId=" + roleId + ", actionId=" + actionId + ", role=" + role + ", action=" + action + "]";
+		return String.format("RoleActionBean [roleId=%s, actionId=%s, role=%s, action=%s, MetaDatas=%s]", roleId, actionId, role, action, super.toString());
 	}
 
 }

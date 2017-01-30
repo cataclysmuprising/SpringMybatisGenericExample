@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.bean.config;
 
 import java.io.Serializable;
@@ -182,7 +187,7 @@ public class UserBean extends BaseBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "UserBean [age=" + age + ", loginId=" + loginId + ", name=" + name + ", email=" + email + ", password=" + password + ", confirmPassword=" + confirmPassword + ", phone=" + phone + ", nrc=" + nrc + ", roleIds=" + roleIds + ", gender=" + gender + ", dob=" + dob + ", address=" + address + ", roles=" + roles + ", dobAsString=" + dobAsString + ", lastLoginDate=" + lastLoginDate + ", contentId=" + contentId + ", content=" + content + "]";
+		return String.format("UserBean [age=%s, loginId=%s, name=%s, email=%s, password=%s, confirmPassword=%s, phone=%s, nrc=%s, roleIds=%s, gender=%s, dob=%s, address=%s, roles=%s, dobAsString=%s, lastLoginDate=%s, contentId=%s, content=%s, MetaDatas=%s]", age, loginId, name, email, password, confirmPassword, phone, nrc, roleIds, gender, dob, address, roles, dobAsString, lastLoginDate, contentId, content, super.toString());
 	}
 
 }

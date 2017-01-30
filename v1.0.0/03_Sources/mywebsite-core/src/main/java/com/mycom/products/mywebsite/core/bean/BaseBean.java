@@ -1,7 +1,11 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.bean;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -101,20 +105,7 @@ public class BaseBean implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		Class<?> thisClass = null;
-		try {
-			thisClass = Class.forName(this.getClass().getName());
-			Field[] memberFields = thisClass.getDeclaredFields();
-			sb.append(this.getClass().getSimpleName() + " [ ");
-			for (Field field : memberFields) {
-				field.setAccessible(true);
-				sb.append(field.getName() + " = " + field.get(this) + ", ");
-			}
-			sb.append("]");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return sb.toString();
+		return String.format("<<< id=%s, recordRegId=%s, recordUpdId=%s, recordRegDate=%s, recordUpdDate=%s >>>", id, recordRegId, recordUpdId, recordRegDate, recordUpdDate);
 	}
+
 }

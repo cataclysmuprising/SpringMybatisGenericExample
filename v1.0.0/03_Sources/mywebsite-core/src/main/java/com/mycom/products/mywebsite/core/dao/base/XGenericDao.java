@@ -3,7 +3,7 @@
  * @Since 1.0
  * 
  */
-package com.mycom.products.mywebsite.core.dao;
+package com.mycom.products.mywebsite.core.dao.base;
 
 import java.util.List;
 import java.util.Map;

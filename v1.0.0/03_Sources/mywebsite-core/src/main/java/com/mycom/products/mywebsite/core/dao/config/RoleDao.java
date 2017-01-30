@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean.TransactionType;
 import com.mycom.products.mywebsite.core.bean.config.RoleBean;
-import com.mycom.products.mywebsite.core.dao.CommonGenericDao;
+import com.mycom.products.mywebsite.core.dao.base.CommonGenericDao;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
@@ -176,7 +176,7 @@ public class RoleDao implements CommonGenericDao<RoleBean> {
 			oldData.setRecordUpdId(recordUpdId);
 			roleMapper.saveHistory(oldData);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
-			totalEffectedRows = roleMapper.delete(primaryKey);
+			totalEffectedRows = roleMapper.deleteByPrimaryKey(primaryKey);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
 			daoLogger.error(errorMsg, e);
@@ -213,7 +213,7 @@ public class RoleDao implements CommonGenericDao<RoleBean> {
 				}
 			}
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
-			totalEffectedRows = roleMapper.delete(criteria);
+			totalEffectedRows = roleMapper.deleteByCriteria(criteria);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
 			daoLogger.error(errorMsg, e);

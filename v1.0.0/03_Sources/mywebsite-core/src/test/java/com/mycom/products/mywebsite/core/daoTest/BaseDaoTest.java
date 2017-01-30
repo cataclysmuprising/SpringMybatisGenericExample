@@ -19,7 +19,6 @@ import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.MockDataGenerator;
 import com.mycom.products.mywebsite.core.MockDataGenerator.GenerateMode;
-import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.bean.config.UserBean;
 
 @Transactional
@@ -39,7 +38,7 @@ public class BaseDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 		logger.info("----- Testing method '" + method.getName() + "' has finished. -----");
 	}
 
-	protected <T extends BaseBean> void showEntriesOfCollection(Collection<T> collection) {
+	protected <T> void showEntriesOfCollection(Collection<T> collection) {
 		if (collection != null) {
 			Iterator<?> iterator = collection.iterator();
 			while (iterator.hasNext()) {

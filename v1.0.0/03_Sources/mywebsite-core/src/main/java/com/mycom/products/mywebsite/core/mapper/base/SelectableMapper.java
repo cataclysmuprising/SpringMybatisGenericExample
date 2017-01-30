@@ -3,7 +3,7 @@
  * @Since 1.0
  * 
  */
-package com.mycom.products.mywebsite.core.mapper;
+package com.mycom.products.mywebsite.core.mapper.base;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean;
-import com.mycom.products.mywebsite.core.dao.SelectableDao.FetchMode;
+import com.mycom.products.mywebsite.core.dao.base.SelectableDao.FetchMode;
 
 public interface SelectableMapper<T extends BaseBean> {
 

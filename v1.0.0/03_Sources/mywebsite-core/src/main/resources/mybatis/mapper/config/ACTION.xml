@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.ActionMapper">
-	<resultMap type="ActionBean" id="ActionResult">
+	<resultMap type="ActionBean" id="Parent_ActionResult">
 		<id property="id" 					column="actionId" />
 		<result property="page" 			column="page" />
 		<result property="actionName" 		column="actionName" />
@@ -9,15 +10,14 @@
 		<result property="url" 				column="url" />
 		<result property="actionType" 		column="action_type" />
 		<result property="description"  	column="actionDescription" />
+	</resultMap>
+	
+	<resultMap type="ActionBean" id="ActionResult" extends="Parent_ActionResult">
 		<result property="recordRegId" 		column="record_reg_id"/>
 		<result property="recordUpdId" 		column="record_upd_id"/>
 		<result property="recordRegDate" 	column="record_reg_date"/>
 		<result property="recordUpdDate" 	column="record_upd_date"/>		
-		<collection property="roles" ofType="RoleBean">
-			<id property="id" 				column="roleId" />
-			<result property="name" 		column="roleName" />
-			<result property="description"  column="roleDescription" />			
-		</collection>		
+		<collection property="roles"  ofType="RoleBean" resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
 	</resultMap>
 	
 	<sql id="tables">
@@ -27,9 +27,15 @@
 			LEFT JOIN tbl_role role ON roleAction.role_id=role.id
 		</if>
 	</sql>
-		
-	<sql id="columns">
-		SELECT
+
+	<sql id="meta_columns">
+		action.record_reg_id,
+		action.record_upd_id,
+		action.record_reg_date,
+		action.record_upd_date,	
+	</sql>
+			
+	<sql id="main_columns">
 		action.id AS actionId,
 		action.page,
 		action.action_name AS actionName,
@@ -37,18 +43,21 @@
 		action.url,
 		action.action_type,
 		action.description AS actionDescription
-		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
-			,role.id AS roleId
-			,role.name AS roleName
-			,role.description AS roleDescription
-		</if>
 	</sql>
-
+	
+	<sql id="columns">
+		<include refid="meta_columns" />
+		<include refid="main_columns" />
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.main_columns" />
+		</if>		
+	</sql>
+	
 	<sql id="criterias">
 		<if test="criteria != null">
 			<where>
 				<if test="criteria.id != null">
-					action.id = #{criteria.id}
+					AND action.id = #{criteria.id}
 				</if>
 				<if test="criteria.ids != null">
 					AND action.id IN
@@ -70,11 +79,11 @@
 				</if>			
 				<if test="criteria.word != null">
 				    AND
-				    (action.page LIKE '%${criteria.word}%'
-					OR action.action_name LIKE '%${criteria.word}%'
+				    (action.page 		   LIKE '%${criteria.word}%'
+					OR action.action_name  LIKE '%${criteria.word}%'
 					OR action.display_name LIKE '%${criteria.word}%'
-					OR action.url LIKE '%${criteria.word}%'
-					OR action.description LIKE '%${criteria.word}%')
+					OR action.url 		   LIKE '%${criteria.word}%'
+					OR action.description  LIKE '%${criteria.word}%')
 				</if>
 			</where>
 		</if>
@@ -105,6 +114,7 @@
 	</sql>
 
 	<select id="selectByPrimaryKey" resultMap="ActionResult">
+		SELECT
 		<include refid="columns" />
 		<include refid="tables" />
 		WHERE 
@@ -112,12 +122,14 @@
 	</select>
 		
 	<select id="selectSingleRecord" resultMap="ActionResult">
+		SELECT
 		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
 	</select>
 	
 	<select id="selectMultiRecords" resultMap="ActionResult">
+		SELECT
 		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
@@ -136,7 +148,7 @@
 	
 	<select id="selectAllPageNames" resultType="String">
 		SELECT action.page
-		<include refid="tables" />
+		FROM tbl_action action
 		GROUP BY action.page
 		ORDER BY action.page DESC
 	</select>

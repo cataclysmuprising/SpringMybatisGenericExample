@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.bean.master;
 
 import java.io.Serializable;
@@ -54,6 +59,7 @@ public class SettingBean extends BaseBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return "SettingBean [name=" + name + ", value=" + value + ", type=" + type + ", group=" + group + ", subGroup=" + subGroup + "]";
+		return String.format("SettingBean [name=%s, value=%s, type=%s, group=%s, subGroup=%s, MetaDatas=%s]", name, value, type, group, subGroup, super.toString());
 	}
+
 }

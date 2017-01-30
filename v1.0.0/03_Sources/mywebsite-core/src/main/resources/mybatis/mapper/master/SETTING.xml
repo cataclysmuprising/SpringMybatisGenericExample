@@ -2,86 +2,100 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.master.SettingMapper">
-	<resultMap type="SettingBean" id="SettingMasterResult">
-		<id property="id" column="id"/>
-		<result property="name" column="setting_name"/>
-		<result property="value" column="setting_value"/>
-		<result property="type" column="setting_type"/>
-		<result property="group" column="setting_group"/>
-		<result property="recordRegId" column="record_reg_id"/>
-		<result property="recordUpdId" column="record_upd_id"/>
-		<result property="recordRegDate" column="record_reg_date"/>
-		<result property="recordUpdDate" column="record_upd_date"/>			
-		<result property="subGroup" column="setting_sub_group"/>
+
+	<resultMap type="SettingBean" id="Parent_SettingResult">
+		<id 	property="id" 				column="id"/>
+		<result property="name" 			column="setting_name"/>
+		<result property="value" 			column="setting_value"/>
+		<result property="type" 			column="setting_type"/>
+		<result property="group" 			column="setting_group"/>
+		<result property="subGroup" 		column="setting_sub_group"/>
+	</resultMap>
+	
+	<resultMap type="SettingBean" id="SettingResult" extends="Parent_SettingResult">
+		<result property="recordRegId"  	column="record_reg_id"/>
+		<result property="recordUpdId"  	column="record_upd_id"/>
+		<result property="recordRegDate" 	column="record_reg_date"/>
+		<result property="recordUpdDate" 	column="record_upd_date"/>			
 	</resultMap>
 
-	<sql id="self_table">
-		from tbl_setting s
+	<sql id="tables">
+		FROM tbl_setting setting
 	</sql>
-	
-	<sql id="columns">
-		select 
-		s.record_reg_id,
-		s.record_upd_id,
-		s.record_reg_date,
-		s.record_upd_date,
-		s.id,
-		s.setting_name,
-		s.setting_value,
-		s.setting_type,
-		s.setting_group,
-		s.setting_sub_group
+
+	<sql id="meta_columns">
+		setting.record_reg_id,
+		setting.record_upd_id,
+		setting.record_reg_date,
+		setting.record_upd_date,
+	</sql>
+		
+	<sql id="main_columns">
+		setting.id,
+		setting.setting_name,
+		setting.setting_value,
+		setting.setting_type,
+		setting.setting_group,
+		setting.setting_sub_group
 	</sql>
 
 	<sql id="criterias">
-		<where>
-			<if test="id != null">
-				 s.id = ${id}
-			</if>
-			<if test="name != null">
-				and s.setting_name = #{name}
-			</if>
-			<if test="value != null">
-				and s.setting_value = #{value}
-			</if>
-			<if test="type != null">
-				and s.setting_type = #{type}
-			</if>
-			<if test="group != null">
-				and s.setting_group = #{group}
-			</if>
-			<if test="subGroup != null">
-				and s.setting_sub_group = #{subGroup}
-			</if>				
-			<if test="word != null">
-				and 
-				(s.setting_name like '%${word}%'
-				or s.setting_value like '%${word}%'
-				or s.setting_type like '%${word}%'
-				or s.setting_group like '%${word}%'
-				or s.setting_sub_group like '%${word}%'
-				)
-			</if>
-		</where>
+		<if test="criteria != null">
+			<where>
+				<if test="criteria.id != null">
+					AND setting.id = ${criteria.id}
+				</if>
+				<if test="criteria.ids != null">
+					AND setting.id IN
+				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>				
+				<if test="criteria.name != null">
+					AND setting.setting_name = #{criteria.name}
+				</if>
+				<if test="criteria.value != null">
+					AND setting.setting_value = #{criteria.value}
+				</if>
+				<if test="criteria.type != null">
+					AND setting.setting_type = #{criteria.type}
+				</if>
+				<if test="criteria.group != null">
+					AND setting.setting_group = #{criteria.group}
+				</if>
+				<if test="criteria.subGroup != null">
+					AND setting.setting_sub_group = #{criteria.subGroup}
+				</if>				
+				<if test="criteria.word != null">
+					AND 
+					(setting.setting_name 		 LIKE '%${criteria.word}%'
+					OR setting.setting_value 	 LIKE '%${criteria.word}%'
+					OR setting.setting_type 	 LIKE '%${criteria.word}%'
+					OR setting.setting_group 	 LIKE '%${criteria.word}%'
+					OR setting.setting_sub_group LIKE '%${criteria.word}%'
+					)
+				</if>
+			</where>
+		</if>
 	</sql>
 		
 	<sql id="orders">
-		order by
+		ORDER BY
 		<choose>
-			<when test="orderBy == 'id'">
-				id ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'id'">
+				setting.id ${criteria.orderAs}
 			</when>	
-			<when test="orderBy == 'group'">
-				s.setting_group ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'group'">
+				setting.setting_group ${criteria.orderAs}
 			</when>	
-			<when test="orderBy == 'subGroup'">
-				s.setting_sub_group ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'subGroup'">
+				setting.setting_sub_group ${criteria.orderAs}
 			</when>	
-			<when test="orderBy == 'name'">
-				s.setting_name ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'name'">
+				setting.setting_name ${criteria.orderAs}
 			</when>
 			<otherwise>
-				id DESC
+				setting.id DESC
 			</otherwise>
 		</choose>
 	</sql>
@@ -163,27 +177,40 @@
 		</where>
 	</delete>
 	
-	<select id="selectById" parameterType="int" resultMap="SettingMasterResult">
-		<include refid="columns" />
-		<include refid="self_table" />
-		where s.id = #{id} 
+	<select id="selectByPrimaryKey" resultMap="SettingResult">
+		SELECT
+		<include refid="meta_columns" />
+		<include refid="main_columns" />
+		<include refid="tables" />
+		WHERE 
+			setting.id = #{primaryKey}
+	</select>
+		
+	<select id="selectSingleRecord" resultMap="SettingResult">
+		SELECT
+		<include refid="meta_columns" />
+		<include refid="main_columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
 	</select>
 	
-	<select id="selectByCriteria" parameterType="map" resultMap="SettingMasterResult">
-		<include refid="columns"/>
-		<include refid="self_table"/>
-		<include refid="criterias"/>
-		<include refid="orders"/>
-		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
-			offset #{offset} rows
-			fetch next #{limit} rows only;
+	<select id="selectMultiRecords" resultMap="SettingResult">
+		SELECT
+		<include refid="meta_columns" />
+		<include refid="main_columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
+		<include refid="orders" />
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>
 	</select>
-	
-	<select id="selectCountByCriteria" resultType="int" parameterType="map">
-		select count(distinct s.id)
-		<include refid="self_table"/>
-		<include refid="criterias"/>
+
+	<select id="selectCounts" resultType="int">
+		SELECT count(DISTINCT setting.id)
+		<include refid="tables" />
+		<include refid="criterias" />
 	</select>
 	
 </mapper>

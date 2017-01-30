@@ -3,170 +3,109 @@
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.RoleMapper">
 
-	<resultMap type="RoleBean" id="RoleResult">
-		<id property="id" column="id" />
-		<result property="name" column="name" />
-		<result property="description" column="description" />
-		<result property="recordRegId" column="record_reg_id"/>
-		<result property="recordUpdId" column="record_upd_id"/>
-		<result property="recordRegDate" column="record_reg_date"/>
-		<result property="recordUpdDate" column="record_upd_date"/>			
-		<association property="actions" column="id" select="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.selectByRoleId" />
-		<association property="users" column="id" select="com.mycom.products.mywebsite.core.mapper.config.UserMapper.selectByRoleId" />		
+	<resultMap type="RoleBean" id="Parent_RoleResult">
+		<id 	property="id" 				column="roleId" />
+		<result property="name" 			column="name" />
+		<result property="description"  	column="description" />
+	</resultMap>
+	
+	<resultMap type="RoleBean" id="RoleResult" extends="Parent_RoleResult">
+		<result property="recordRegId"  	column="record_reg_id"/>
+		<result property="recordUpdId"  	column="record_upd_id"/>
+		<result property="recordRegDate" 	column="record_reg_date"/>
+		<result property="recordUpdDate" 	column="record_upd_date"/>			
 	</resultMap>
 
-	<sql id="self_table">
-		from tbl_role r
+	<sql id="tables">
+		FROM tbl_role role
 	</sql>
-		
-	<sql id="columns">
-		select
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date,		
-		id,
-		name,
-		description
+
+	<sql id="meta_columns">
+		role.record_reg_id,
+		role.record_upd_id,
+		role.record_reg_date,
+		role.record_upd_date,	
+	</sql>
+			
+	<sql id="main_columns">
+		role.id AS roleId,
+		role.name,
+		role.description
 	</sql>
 
 	<sql id="criterias">
-		<where>
-			<if test="id != null">
-				id = #{id}
-			</if>
-			<if test="name != null">
-				name = #{name}
-			</if>
-			<if test="includeIds != null">
-				AND r.id IN
-			    <foreach item="item" index="index" collection="includeIds" open="(" separator="," close=")">
-			        ${item}
-			    </foreach>
-			</if>						
-			<if test="word != null">
-				and 
-				(name like '%${word}%'
-				or description like '%${word}%')
-			</if>
-		</where>
+		<if test="criteria != null">
+			<where>
+				<if test="criteria.id != null">
+					role.id = #{criteria.id}
+				</if>
+				<if test="criteria.name != null">
+					role.name = #{criteria.name}
+				</if>
+				<if test="criteria.ids != null">
+					AND role.id IN
+				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>						
+				<if test="criteria.word != null">
+					AND 
+					(role.name 		    LIKE '%${criteria.word}%'
+					or role.description LIKE '%${criteria.word}%')
+				</if>
+			</where>
+		</if>
 	</sql>
 		
 	<sql id="orders">
-		order by
+		ORDER BY
 		<choose>
-			<when test="orderBy == 'id'">
-				id ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'id'">
+				role.id ${criteria.orderAs}
 			</when>
-			<when test="orderBy == 'name'">
-				name ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'name'">
+				role.name ${criteria.orderAs}
 			</when>			
 			<otherwise>
-				id DESC
+				role.id DESC
 			</otherwise>
 		</choose>
 	</sql>
 	
-	<insert id="insert" parameterType="RoleBean" useGeneratedKeys="true" keyProperty="id">
-		insert into tbl_role(
-		name,
-		description,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date		
-		) values (
-		#{name},
-		#{description},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate}		
-		)
-	</insert>
-	
-	<insert id="insertHistory" parameterType="RoleBean">
-		insert into tbl_role_history(
-		id,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date,		
-		transaction_date,
-		transaction_type,		
-		name,
-		description
-		) values (
-		#{id},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate},
-		getDate(),
-		#{transactionType},	
-		#{name},
-		#{description}
-		)
-	</insert>	
-
-	<update id="update" parameterType="RoleBean">
-		update tbl_role
-		<set>
-			record_upd_id = #{recordUpdId},
-			record_upd_date = getDate(),		
-			<if test="name != null">name= #{name},</if>
-			<if test="description != null">description= #{description},</if>
-		</set>
-		where id = #{id}
-	</update>
-
-	<delete id="delete" parameterType="map">
-		delete from tbl_role
-		<where>
-			<if test="id != null">
-				 id = #{id}
-			</if>
-		</where>
-	</delete>
-
-	<select id="selectById" parameterType="int" resultMap="RoleResult">
-		<include refid="columns" />
-		<include refid="self_table" />
-		where id = #{id}
+	<select id="selectByPrimaryKey" resultMap="RoleResult">
+		SELECT
+		<include refid="meta_columns" />
+		<include refid="main_columns" />
+		<include refid="tables" />
+		WHERE 
+			role.id = #{primaryKey}
 	</select>
-
-	<select id="selectByCriteria" parameterType="map" resultMap="RoleResult">
-		<include refid="columns" />
-		<include refid="self_table"/>
+		
+	<select id="selectSingleRecord" resultMap="RoleResult">
+		SELECT
+		<include refid="meta_columns" />
+		<include refid="main_columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
+	
+	<select id="selectMultiRecords" resultMap="RoleResult">
+		SELECT
+		<include refid="meta_columns" />
+		<include refid="main_columns" />
+		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
-			offset #{offset} rows
-			fetch next #{limit} rows only;				
-		</if>	
-	</select>
-	
-	<select id="selectCountByCriteria" resultType="int" parameterType="map">
-		select count(distinct r.id)
-		<include refid="self_table" />
-		<include refid="criterias"/>
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
+		</if>
 	</select>
 
-	<select id="selectByUserId" parameterType="int" resultMap="RoleResult">
-		select
-		r.id,
-		name
-		from tbl_user_role ur inner join tbl_role r
-		on ur.user_id = #{id} and
-		ur.role_id = r.id
-	</select>
-	
-	<select id="selectByActionId" parameterType="int" resultMap="RoleResult">
-		select
-		r.id,
-		name
-		from tbl_role_action ra inner join tbl_role r
-		on ra.action_id = #{id}
-		and ra.role_id = r.id 
+	<select id="selectCounts" resultType="int">
+		SELECT count(DISTINCT role.id)
+		<include refid="tables" />
+		<include refid="criterias" />
 	</select>	
+	
 </mapper>

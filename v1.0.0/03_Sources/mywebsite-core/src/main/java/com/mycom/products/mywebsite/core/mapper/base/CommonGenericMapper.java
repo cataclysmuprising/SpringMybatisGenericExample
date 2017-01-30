@@ -3,7 +3,7 @@
  * @Since 1.0
  * 
  */
-package com.mycom.products.mywebsite.core.mapper;
+package com.mycom.products.mywebsite.core.mapper.base;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean;
 

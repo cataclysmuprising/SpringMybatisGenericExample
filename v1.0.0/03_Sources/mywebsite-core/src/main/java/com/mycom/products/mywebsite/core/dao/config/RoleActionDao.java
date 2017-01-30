@@ -18,7 +18,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import com.mycom.products.mywebsite.core.bean.config.RoleActionBean;
-import com.mycom.products.mywebsite.core.dao.XGenericDao;
+import com.mycom.products.mywebsite.core.dao.base.XGenericDao;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
@@ -102,7 +102,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		daoLogger.debug("[START] : >>> --- Deleting single 'RoleAction' informations with ==> roleId " + roleId + " , actionId = " + actionId + " ---");
 		int effectedRows = 0;
 		try {
-			effectedRows = roleActionMapper.delete(roleId, actionId);
+			effectedRows = roleActionMapper.deleteByKeys(roleId, actionId);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
 			daoLogger.error(errorMsg, e);
@@ -122,7 +122,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		daoLogger.debug("[START] : >>> --- Deleting 'RoleAction' informations with criteria  ---");
 		int effectedRows = 0;
 		try {
-			effectedRows = roleActionMapper.delete(criteria);
+			effectedRows = roleActionMapper.deleteByCriteria(criteria);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
 			daoLogger.error(errorMsg, e);
@@ -162,7 +162,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		if (removeIds.size() > 0) {
 			HashMap<String, Object> criteria = new HashMap<>();
 			criteria.put("actionIds", removeIds);
-			roleActionMapper.delete(criteria);
+			roleActionMapper.deleteByCriteria(criteria);
 		}
 		daoLogger.debug("[FINISH] : $2 --- Removing  related actionIds[ " + removeIds + " ] for roleId # " + roleId + " these have been no longer used  ---");
 
@@ -185,7 +185,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		try {
 			Map<String, Object> criteria = new HashMap<>();
 			criteria.put("roleId", key1);
-			actionIds = roleActionMapper.select(criteria);
+			actionIds = roleActionMapper.selectRelatedKeys(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching related 'Action' keys with roleId ==> " + key1 + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -202,7 +202,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		try {
 			Map<String, Object> criteria = new HashMap<>();
 			criteria.put("actionId", key2);
-			roleIds = roleActionMapper.select(criteria);
+			roleIds = roleActionMapper.selectRelatedKeys(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching related 'Role' keys with actionId ==> " + key2 + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -217,7 +217,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		daoLogger.debug("[START] : >>> --- Fetching single 'RoleAction' informations with ==> roleId = " + roleId + " , actionId = " + actionId + " ---");
 		RoleActionBean roleAction = null;
 		try {
-			roleAction = roleActionMapper.select(roleId, actionId);
+			roleAction = roleActionMapper.selectByKeys(roleId, actionId);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'RoleAction' informations with ==> roleId = " + roleId + " , actionId = " + actionId + " xxx";
 			daoLogger.error(errorMsg, e);

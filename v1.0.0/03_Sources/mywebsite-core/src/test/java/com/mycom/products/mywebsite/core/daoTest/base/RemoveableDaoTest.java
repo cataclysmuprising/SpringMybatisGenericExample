@@ -1,0 +1,19 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
+package com.mycom.products.mywebsite.core.daoTest.base;
+
+import java.util.Map;
+
+import com.mycom.products.mywebsite.core.bean.BaseBean;
+import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
+import com.mycom.products.mywebsite.core.exception.DAOException;
+
+public interface RemoveableDaoTest<T extends BaseBean> {
+	public int delete(int primaryKey, int recordUpdId) throws ConsistencyViolationException, DAOException;
+
+	public int delete(Map<String, Object> criteria,
+			int recordUpdId) throws ConsistencyViolationException, DAOException;
+}

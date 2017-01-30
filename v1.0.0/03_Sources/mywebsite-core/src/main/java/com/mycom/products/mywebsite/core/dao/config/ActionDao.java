@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.mycom.products.mywebsite.core.bean.config.ActionBean;
-import com.mycom.products.mywebsite.core.dao.SelectableDao;
+import com.mycom.products.mywebsite.core.dao.base.SelectableDao;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.mapper.config.ActionMapper;
 
@@ -82,5 +82,19 @@ public class ActionDao implements SelectableDao<ActionBean> {
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'Action' counts with criteria ---");
 		return count;
+	}
+
+	public List<String> selectAllPageNames() throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching all 'PageNames' ---");
+		List<String> pageNames = null;
+		try {
+			pageNames = actionMapper.selectAllPageNames();
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while fetching 'PageNames' xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
+		}
+		daoLogger.debug("[FINISH] : <<< --- Fetching all 'PageNames' ---");
+		return pageNames;
 	}
 }

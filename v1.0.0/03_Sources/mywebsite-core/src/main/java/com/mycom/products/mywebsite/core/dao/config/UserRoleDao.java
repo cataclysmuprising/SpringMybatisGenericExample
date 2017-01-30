@@ -18,7 +18,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import com.mycom.products.mywebsite.core.bean.config.UserRoleBean;
-import com.mycom.products.mywebsite.core.dao.XGenericDao;
+import com.mycom.products.mywebsite.core.dao.base.XGenericDao;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
@@ -102,7 +102,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 		daoLogger.debug("[START] : >>> --- Deleting single 'UserRole' informations with ==> userId " + userId + " , roleId = " + roleId + " ---");
 		int effectedRows = 0;
 		try {
-			effectedRows = userRoleMapper.delete(userId, roleId);
+			effectedRows = userRoleMapper.deleteByKeys(userId, roleId);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
 			daoLogger.error(errorMsg, e);
@@ -122,7 +122,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 		daoLogger.debug("[START] : >>> --- Deleting 'UserRole' informations with criteria  ---");
 		int effectedRows = 0;
 		try {
-			effectedRows = userRoleMapper.delete(criteria);
+			effectedRows = userRoleMapper.deleteByCriteria(criteria);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
 			daoLogger.error(errorMsg, e);
@@ -162,7 +162,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 		if (removeIds.size() > 0) {
 			HashMap<String, Object> criteria = new HashMap<>();
 			criteria.put("roleIds", removeIds);
-			userRoleMapper.delete(criteria);
+			userRoleMapper.deleteByCriteria(criteria);
 		}
 		daoLogger.debug("[FINISH] : $2 --- Removing  related roleIds[ " + removeIds + " ] for userId # " + userId + " these have been no longer used  ---");
 
@@ -185,7 +185,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 		try {
 			Map<String, Object> criteria = new HashMap<>();
 			criteria.put("userId", key1);
-			roleIds = userRoleMapper.select(criteria);
+			roleIds = userRoleMapper.selectRelatedKeys(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching related 'Action' keys with userId ==> " + key1 + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -202,7 +202,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 		try {
 			Map<String, Object> criteria = new HashMap<>();
 			criteria.put("roleId", key2);
-			userIds = userRoleMapper.select(criteria);
+			userIds = userRoleMapper.selectRelatedKeys(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching related 'Role' keys with roleId ==> " + key2 + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -217,7 +217,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 		daoLogger.debug("[START] : >>> --- Fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " ---");
 		UserRoleBean userRole = null;
 		try {
-			userRole = userRoleMapper.select(userId, roleId);
+			userRole = userRoleMapper.selectByKeys(userId, roleId);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " xxx";
 			daoLogger.error(errorMsg, e);

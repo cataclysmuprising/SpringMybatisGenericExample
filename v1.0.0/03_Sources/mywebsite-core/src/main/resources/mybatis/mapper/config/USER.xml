@@ -2,147 +2,141 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.UserMapper">
-	<resultMap type="UserBean" id="UserResult">
-		<id property="id" column="id" />
-		<result property="recordRegId" column="record_reg_id"/>
-		<result property="recordUpdId" column="record_upd_id"/>
-		<result property="recordRegDate" column="record_reg_date"/>
-		<result property="recordUpdDate" column="record_upd_date"/>			
-		<result property="loginId" column="login_id"/>
-		<result property="age" column="age" />
-		<result property="name" column="name" />
-		<result property="gender" column="gender" />
-		<result property="email" column="email" />
-		<result property="password" column="password" />
-		<result property="nrc" column="nrc" />
-		<result property="phone" column="phone" />
-		<result property="dob" column="dob" jdbcType="DATE"/>
-		<result property="address" column="address" />
-		<result property="contentId" column="content_id" />
-		<result property="lastLoginDate" column="login_date" jdbcType="TIMESTAMP"/>
-		<association property="content" column="content_id" select="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.selectById" />
+
+	<resultMap type="UserBean" id="Parent_UserResult">
+		<id 	property="id" 				column="userId" />
+		<result property="loginId" 			column="login_id"/>
+		<result property="age" 				column="age" />
+		<result property="name" 			column="name" />
+		<result property="gender" 			column="gender" />
+		<result property="email" 			column="email" />
+		<result property="password" 		column="password" />
+		<result property="nrc" 				column="nrc" />
+		<result property="phone" 			column="phone" />
+		<result property="dob" 				column="dob" jdbcType="DATE"/>
+		<result property="address" 			column="address" />
+		<result property="contentId" 		column="content_id" />
+		<result property="lastLoginDate" 	column="lastLoginDate" jdbcType="TIMESTAMP"/>
 	</resultMap>
 	
-	<resultMap type="UserBean" id="UserWithRoleResult">
-		<id property="id" column="id" />
-		<result property="loginId" column="login_id"/>
-		<result property="age" column="age" />
-		<result property="name" column="name" />
-		<result property="gender" column="gender" />
-		<result property="email" column="email" />
-		<result property="password" column="password" />
-		<result property="nrc" column="nrc" />
-		<result property="phone" column="phone" />
-		<result property="dob" column="dob" jdbcType="DATE"/>
-		<result property="address" column="address" />
-		<result property="contentId" column="content_id" />
-		<result property="recordRegId" column="record_reg_id"/>
-		<result property="recordUpdId" column="record_upd_id"/>
-		<result property="recordRegDate" column="record_reg_date"/>
-		<result property="recordUpdDate" column="record_upd_date"/>			
-		<result property="lastLoginDate" column="login_date" jdbcType="TIMESTAMP"/>
-		<association property="content" column="content_id" select="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.selectById" />
-		<association property="roles" column="id" select="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.selectByUserId" />
+	<resultMap type="UserBean" id="UserResult" extends="Parent_UserResult">
+		<result property="recordRegId" 		column="record_reg_id"/>
+		<result property="recordUpdId" 		column="record_upd_id"/>
+		<result property="recordRegDate" 	column="record_reg_date"/>
+		<result property="recordUpdDate" 	column="record_upd_date"/>			
+		<association property="content" 	javaType="StaticContentBean"  resultMap="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.Parent_StaticContentResult" />
+		<collection property="roles" 		javaType="RoleBean" 		  resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
 	</resultMap>
-
-	<sql id="self_table">
-		from tbl_user u
-	</sql>	
-
-	<sql id="joined_table">
-		from tbl_user u
-		<if test="roleId != null">
-			inner join tbl_user_role ur
-			on u.id = ur.user_id 
-			and u.id in (select user_id from tbl_user_role where role_id=#{roleId})			
+	
+	<sql id="tables">
+		FROM tbl_user usr
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			LEFT JOIN tbl_user_role userRole ON usr.id = usrRole.user_id 
+			LEFT JOIN tbl_static_content content ON usr.content_id = content.id
 		</if>
 	</sql>
-			
+
+	<sql id="meta_columns">
+		usr.record_reg_id,
+		usr.record_upd_id,
+		usr.record_reg_date,
+		usr.record_upd_date,
+	</sql>
+				
+	<sql id="main_columns">
+		usr.id AS userId,
+		usr.login_id,
+		usr.age,
+		usr.name,
+		usr.gender,
+		usr.email,
+		usr.nrc,
+		usr.phone,
+		usr.dob,
+		usr.address,
+		usr.content_id,
+		(SELECT MAX(login_date) FROM tbl_login_history history WHERE history.user_id = usr.id) AS lastLoginDate
+	</sql>
+	
 	<sql id="columns">
-		select distinct
-		u.id,
-		u.record_reg_id,
-		u.record_upd_id,
-		u.record_reg_date,
-		u.record_upd_date,		
-		login_id,
-		age,
-		name,
-		gender,
-		email,
-		nrc,
-		phone,
-		dob,
-		address,
-		content_id,
-		(select max(login_date) from tbl_login_history history where history.user_id = u.id) as login_date
+		<include refid="meta_columns" />
+		<include refid="main_columns" />
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			,<include refid="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.main_columns" />
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.main_columns" />
+		</if>		
 	</sql>
 
 	<sql id="criterias">
-		<where>
-			<if test="id != null">
-				 u.id = #{id}
-			</if>		
-			<if test="loginId != null">
-				and login_id = #{loginId}
-			</if>
-			<if test="name != null">
-				and name = #{name}
-			</if>
-			<if test="email != null">
-				and email = #{email}
-			</if>
-			<if test="nrc != null">
-				and nrc = #{nrc}
-			</if>		
-			<if test="phone != null">
-				and phone = #{phone}
-			</if>	
-			<if test="includeIds != null">
-				AND u.id IN
-			    <foreach item="item" index="index" collection="includeIds" open="(" separator="," close=")">
-			        ${item}
-			    </foreach>
-			</if>						
-			<if test="word != null">
-				and 
-				(name like '%${word}%'
-				or email like '%${word}%'
-				or nrc like '%${word}%'
-				or phone like '%${word}%')
-			</if>
-		</where>
+		<if test="criteria != null">
+			<where>
+				<if test="criteria.id != null">
+					AND usr.id = #{criteria.id}
+				</if>		
+				<if test="criteria.loginId != null">
+					AND usr.login_id = #{criteria.loginId}
+				</if>
+				<if test="criteria.name != null">
+					AND usr.name = #{criteria.name}
+				</if>
+				<if test="criteria.email != null">
+					AND usr.email = #{criteria.email}
+				</if>
+				<if test="criteria.nrc != null">
+					AND usr.nrc = #{criteria.nrc}
+				</if>		
+				<if test="criteria.phone != null">
+					AND usr.phone = #{criteria.phone}
+				</if>	
+				<if test="criteria.ids != null">
+					AND usr.id IN
+				    <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
+				        ${item}
+				    </foreach>
+				</if>						
+				<if test="criteria.word != null">
+					AND 
+					(usr.name    LIKE 	'%${criteria.word}%'
+					OR usr.email LIKE  '%${criteria.word}%'
+					OR usr.nrc   LIKE  '%${criteria.word}%'
+					OR usr.phone LIKE  '%${criteria.word}%')
+				</if>
+			</where>
+		</if>
 	</sql>
 	
 	<sql id="orders">
-		order by
+		ORDER BY
 		<choose>
-			<when test="orderBy == 'loginId'">
-				login_id ${orderAs}
-			</when>		
-			<when test="orderBy == 'name'">
-				name ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'id'">
+				usr.id ${criteria.orderAs}
 			</when>
-			<when test="orderBy == 'email'">
-				email ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'loginId'">
+				usr.login_id ${criteria.orderAs}
+			</when>						
+			<when test="criteria !=null and criteria.orderBy == 'name'">
+				usr.name ${criteria.orderAs}
 			</when>
-			<when test="orderBy == 'nrc'">
-				nrc ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'email'">
+				usr.email ${criteria.orderAs}
+			</when>
+			<when test="criteria !=null and criteria.orderBy == 'nrc'">
+				usr.nrc ${criteria.orderAs}
 			</when>	
-			<when test="orderBy == 'phone'">
-				phone ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'phone'">
+				usr.phone ${criteria.orderAs}
 			</when>	
-			<when test="orderBy == 'loginDate'">
-				login_date ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'loginDate'">
+				usr.login_date ${criteria.orderAs}
 			</when>								
 			<otherwise>
-				login_id DESC
+				usr.id DESC
 			</otherwise>
 		</choose>
 	</sql>
 	
 	<insert id="insert" parameterType="UserBean" useGeneratedKeys="true" keyProperty="id">
-		insert into tbl_user (
+		INSERT INTO tbl_user (
 		login_id,
 		age,
 		name,
@@ -186,7 +180,7 @@
 	</insert>
 	
 	<insert id="insertHistory" parameterType="UserBean">
-		insert into tbl_user_history (
+		INSERT INTO tbl_user_history (
 		id,
 		record_reg_id,
 		record_upd_id,
@@ -227,10 +221,10 @@
 	</insert>	
 
 	<update id="update" parameterType="UserBean">
-		update tbl_user
+		UPDATE tbl_user
 		<set>
-			record_upd_id = #{recordUpdId},
-			record_upd_date = getDate(),		
+			usr.record_upd_id = #{recordUpdId},
+			usr.record_upd_date = getDate(),		
 			<if test="age != null">age= #{age},</if>
 			<if test="name != null">name= #{name},</if>
 			<if test="gender != null">gender= #{gender},</if>
@@ -242,55 +236,49 @@
 			<if test="address != null">address = #{address},</if>
 			<if test="contentId != null">content_id = #{contentId},</if>
 		</set>
-		where id = #{id} 
+		WHERE usr.id = #{id} 
 	</update>
 	
 	<delete id="delete" parameterType="map">
-		delete from tbl_user
+		DELETE FROM tbl_user
 		<where>
 			<if test="id != null">
-				 id = #{id}
+				 usr.id = #{id}
 			</if>
 		</where>
 	</delete>
-		
-	<select id="selectById" parameterType="int" resultMap="UserWithRoleResult">
+	
+	<select id="selectByPrimaryKey" resultMap="UserResult">
+		SELECT
 		<include refid="columns" />
-		,password
-		<include refid="self_table" />
-		where u.id = #{id} 
+		<include refid="tables" />
+		WHERE 
+			usr.id = #{primaryKey}
+	</select>
+		
+	<select id="selectSingleRecord" resultMap="UserResult">
+		SELECT
+		<include refid="columns" />
+		<include refid="tables" />
+		<include refid="criterias" />
 	</select>
 	
-	<select id="selectByRoleId" parameterType="int" resultMap="UserResult">
-		select
-		usr.*
-		from tbl_user_role ur inner join tbl_user usr
-		on ur.role_id = #{id} 
-		and ur.user_id = usr.id
-	</select>	
-	
-	<select id="selectByCriteria" parameterType="map" resultMap="UserWithRoleResult">
+	<select id="selectMultiRecords" resultMap="UserResult">
+		SELECT
 		<include refid="columns" />
-		<include refid="joined_table" />
+		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
-			offset #{offset} rows
-			fetch next #{limit} rows only;
-		</if>	
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
+		</if>
 	</select>
-	
-	<select id="selectCountByCriteria" resultType="int" parameterType="map">
-		select count(distinct u.id)
-		<include refid="joined_table" />
+
+	<select id="selectCounts" resultType="int">
+		SELECT count(DISTINCT usr.id)
+		<include refid="tables" />
 		<include refid="criterias" />
 	</select>	
-	
-	<select id="selectByLoginId" parameterType="map" resultMap="UserWithRoleResult">
-		<include refid="columns" />
-		,password
-		<include refid="self_table" />
-		where login_id = #{loginId}
-	</select>
-	
+		
 </mapper>

@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.bean.master;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean;
@@ -47,7 +52,7 @@ public class StaticContentBean extends BaseBean {
 
 	@Override
 	public String toString() {
-		return "StaticContentBean [fileName=" + fileName + ", filePath=" + filePath + ", fileSize=" + fileSize + ", fileType=" + fileType + "]";
+		return String.format("StaticContentBean [fileName=%s, filePath=%s, fileSize=%s, fileType=%s, MetaDatas=%s]", fileName, filePath, fileSize, fileType, super.toString());
 	}
 
 }

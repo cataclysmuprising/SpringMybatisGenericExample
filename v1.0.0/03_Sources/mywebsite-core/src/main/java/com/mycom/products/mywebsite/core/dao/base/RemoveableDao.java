@@ -12,8 +12,8 @@ import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException
 import com.mycom.products.mywebsite.core.exception.DAOException;
 
 public interface RemoveableDao<T extends BaseBean> {
-	public int delete(int primaryKey, int recordUpdId) throws ConsistencyViolationException, DAOException;
+	public long delete(long primaryKey, long recordUpdId) throws ConsistencyViolationException, DAOException;
 
-	public int delete(Map<String, Object> criteria,
-			int recordUpdId) throws ConsistencyViolationException, DAOException;
+	public long delete(Map<String, Object> criteria,
+			long recordUpdId) throws ConsistencyViolationException, DAOException;
 }

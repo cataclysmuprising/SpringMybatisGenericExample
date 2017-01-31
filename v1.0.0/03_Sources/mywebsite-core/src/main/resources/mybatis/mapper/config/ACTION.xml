@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.ActionMapper">
-	<resultMap type="ActionBean" id="Parent_ActionResult">
-		<id property="id" 					column="actionId" />
+	<resultMap  type="ActionBean" 			id="Parent_ActionResult">
+		<id 	property="id" 				column="actionId" />
 		<result property="page" 			column="page" />
 		<result property="actionName" 		column="actionName" />
 		<result property="displayName"  	column="display_name" />
@@ -12,19 +12,19 @@
 		<result property="description"  	column="actionDescription" />
 	</resultMap>
 	
-	<resultMap type="ActionBean" id="ActionResult" extends="Parent_ActionResult">
-		<result property="recordRegId" 		column="record_reg_id"/>
-		<result property="recordUpdId" 		column="record_upd_id"/>
-		<result property="recordRegDate" 	column="record_reg_date"/>
-		<result property="recordUpdDate" 	column="record_upd_date"/>		
-		<collection property="roles"  ofType="RoleBean" resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
+	<resultMap 		type="ActionBean" 			id="ActionResult" 	extends="Parent_ActionResult">
+		<result 	property="recordRegId" 		column="record_reg_id"/>
+		<result 	property="recordUpdId" 		column="record_upd_id"/>
+		<result 	property="recordRegDate" 	column="record_reg_date"/>
+		<result 	property="recordUpdDate" 	column="record_upd_date"/>		
+		<collection property="roles"  			ofType="RoleBean" 	resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
 	</resultMap>
 	
 	<sql id="tables">
-		FROM tbl_action action
+		FROM mjr_action action
 		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
-			LEFT JOIN tbl_role_action roleAction ON action.id=roleAction.action_id
-			LEFT JOIN tbl_role role ON roleAction.role_id=role.id
+			LEFT JOIN mjr_role_action roleAction ON action.id=roleAction.action_id
+			LEFT JOIN mjr_role role ON roleAction.role_id=role.id
 		</if>
 	</sql>
 
@@ -140,7 +140,7 @@
 		</if>
 	</select>
 
-	<select id="selectCounts"  resultType="int">
+	<select id="selectCounts" resultType="long">
 		SELECT count(DISTINCT action.id)
 		<include refid="tables" />
 		<include refid="criterias" />
@@ -148,7 +148,7 @@
 	
 	<select id="selectAllPageNames" resultType="String">
 		SELECT action.page
-		FROM tbl_action action
+		FROM mjr_action action
 		GROUP BY action.page
 		ORDER BY action.page DESC
 	</select>

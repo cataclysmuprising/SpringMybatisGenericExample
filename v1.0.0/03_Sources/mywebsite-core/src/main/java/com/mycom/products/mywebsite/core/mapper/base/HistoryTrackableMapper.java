@@ -6,5 +6,5 @@
 package com.mycom.products.mywebsite.core.mapper.base;
 
 public interface HistoryTrackableMapper<T> {
-	public int saveHistory(T record);
+	public void saveHistory(T record);
 }

@@ -22,12 +22,12 @@ public class BaseBean implements Serializable {
 		INSERT, UPDATE, DELETE;
 	}
 
-	private int id;
+	private long id;
 
 	@JsonIgnore
-	private int recordRegId;
+	private long recordRegId;
 	@JsonIgnore
-	private int recordUpdId;
+	private long recordUpdId;
 	@JsonIgnore
 	private Timestamp recordRegDate;
 	@JsonIgnore
@@ -35,19 +35,19 @@ public class BaseBean implements Serializable {
 	@JsonIgnore
 	private TransactionType transactionType;
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
-	public int getRecordRegId() {
+	public long getRecordRegId() {
 		return recordRegId;
 	}
 
-	public void setRecordRegId(int recordRegId) {
+	public void setRecordRegId(long recordRegId) {
 		this.recordRegId = recordRegId;
 	}
 
@@ -67,11 +67,11 @@ public class BaseBean implements Serializable {
 		this.transactionType = transactionType;
 	}
 
-	public int getRecordUpdId() {
+	public long getRecordUpdId() {
 		return recordUpdId;
 	}
 
-	public void setRecordUpdId(int recordUpdId) {
+	public void setRecordUpdId(long recordUpdId) {
 		this.recordUpdId = recordUpdId;
 	}
 

@@ -12,26 +12,18 @@ import com.mycom.products.mywebsite.core.bean.BaseBean;
 
 public class LoginHistoryBean extends BaseBean implements Serializable {
 	private static final long serialVersionUID = 3454068909862152769L;
-	private String clientIp;
+	private String ipAddress;
 	private String os;
-	private String browser;
+	private String userAgent;
 	private Timestamp loginDate;
-	private int userId;
+	private long userId;
 	private UserBean user;
 
-	public String getClientIp() {
-		return clientIp;
-	}
-
-	public void setClientIp(String clientIp) {
-		this.clientIp = clientIp;
-	}
-
-	public int getUserId() {
+	public long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
@@ -51,14 +43,6 @@ public class LoginHistoryBean extends BaseBean implements Serializable {
 		this.os = os;
 	}
 
-	public String getBrowser() {
-		return browser;
-	}
-
-	public void setBrowser(String browser) {
-		this.browser = browser;
-	}
-
 	public UserBean getUser() {
 		return user;
 	}
@@ -67,9 +51,25 @@ public class LoginHistoryBean extends BaseBean implements Serializable {
 		this.user = user;
 	}
 
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("LoginHistoryBean [clientIp=%s, os=%s, browser=%s, loginDate=%s, userId=%s, user=%s, MetaDatas=%s]", clientIp, os, browser, loginDate, userId, user, super.toString());
+		return String.format("LoginHistoryBean [ipAddress=%s, os=%s, userAgent=%s, loginDate=%s, userId=%s, user=%s, toString()=%s]", ipAddress, os, userAgent, loginDate, userId, user, super.toString());
 	}
 
 }

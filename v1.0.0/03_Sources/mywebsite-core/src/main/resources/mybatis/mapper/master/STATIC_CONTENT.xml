@@ -3,7 +3,7 @@
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper">
 
-	<resultMap type="StaticContentBean" id="Parent_StaticContentResult">
+	<resultMap  type="StaticContentBean" id="Parent_StaticContentResult">
 		<id 	property="id" 			 column="contentId" />
  		<result property="fileType" 	 column="file_type" />
 		<result property="fileName" 	 column="file_name" />
@@ -11,7 +11,7 @@
 		<result property="fileSize" 	 column="file_size" />
 	</resultMap>
 	
-	<resultMap type="StaticContentBean" id="StaticContentResult" extends="Parent_StaticContentResult">
+	<resultMap  type="StaticContentBean" id="StaticContentResult" extends="Parent_StaticContentResult">
 		<result property="recordRegId"   column="record_reg_id"/>
 		<result property="recordUpdId" 	 column="record_upd_id"/>
 		<result property="recordRegDate" column="record_reg_date"/>
@@ -19,7 +19,7 @@
 	</resultMap>
 
 	<sql id="tables">
-		FROM tbl_static_content content
+		FROM mjr_static_content content
 	</sql>	
 	
 	<sql id="meta_columns">
@@ -36,6 +36,11 @@
 		content.file_path,
 		content.file_size
 	</sql>
+	
+	<sql id="columns">
+		<include refid="meta_columns" />
+		<include refid="main_columns" />	
+	</sql>	
 
 	<sql id="criterias">
 		<if test="criteria != null">
@@ -54,10 +59,16 @@
 				</if>			
 				<if test="criteria.fileName != null">
 					AND content.file_name = #{criteria.fileName}
-				</if>			
+				</if>
+				<if test="criteria.fileSize != null">
+					AND content.file_size = #{criteria.fileSize}
+				</if>							
 				<if test="criteria.word != null">
 					AND
-					(content.file_name LIKE '%${criteria.word}%'
+					(content.file_type 	 LIKE '%${criteria.word}%'
+					OR content.file_name LIKE '%${criteria.word}%'
+					OR content.file_size LIKE '%${criteria.word}%'
+					OR content.file_path LIKE '%${criteria.word}%'
 					)
 				</if>
 			</where>
@@ -83,7 +94,7 @@
 	</sql>
 
 	<insert id="insert" parameterType="StaticContentBean" useGeneratedKeys="true" keyProperty="id">
-		insert into tbl_static_content (
+		insert into mjr_static_content (
 		file_type,
 		file_name,
 		file_path,
@@ -105,7 +116,7 @@
 	</insert>
 
 	<insert id="insertHistory" parameterType="StaticContentBean">
-		insert into tbl_static_content_history (
+		insert into mjr_static_content_history (
 		id,
 		record_reg_id,
 		record_upd_id,
@@ -133,7 +144,7 @@
 	</insert>
 
 	<update id="update" parameterType="StaticContentBean">
-		update tbl_static_content
+		update mjr_static_content
 		<set>
 			record_upd_id = #{recordUpdId},
 			record_upd_date = getDate(),		
@@ -146,7 +157,7 @@
 	</update>
 
 	<delete id="delete" parameterType="map">
-		delete from tbl_static_content
+		delete from mjr_static_content
 		<where>
 			<if test="id != null">
 				 id = #{id}
@@ -162,8 +173,7 @@
 
 	<select id="selectByPrimaryKey" resultMap="StaticContentResult">
 		SELECT
-		<include refid="meta_columns" />
-		<include refid="main_columns" />
+		<include refid="columns" />
 		<include refid="tables" />
 		WHERE 
 			content.id = #{primaryKey}
@@ -171,16 +181,14 @@
 		
 	<select id="selectSingleRecord" resultMap="StaticContentResult">
 		SELECT
-		<include refid="meta_columns" />
-		<include refid="main_columns" />
+		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
 	</select>
 	
 	<select id="selectMultiRecords" resultMap="StaticContentResult">
 		SELECT
-		<include refid="meta_columns" />
-		<include refid="main_columns" />
+		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
@@ -190,7 +198,7 @@
 		</if>
 	</select>
 
-	<select id="selectCounts" resultType="int">
+	<select id="selectCounts" resultType="long">
 		SELECT count(DISTINCT content.id)
 		<include refid="tables" />
 		<include refid="criterias" />

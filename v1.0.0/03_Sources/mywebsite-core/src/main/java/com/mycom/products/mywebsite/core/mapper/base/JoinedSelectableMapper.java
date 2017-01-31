@@ -11,11 +11,11 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean;
-import com.mycom.products.mywebsite.core.dao.base.SelectableDao.FetchMode;
+import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public interface SelectableMapper<T extends BaseBean> {
+public interface JoinedSelectableMapper<T extends BaseBean> {
 
-	public T selectByPrimaryKey(@Param("primaryKey") int primaryKey, @Param("fetchMode") FetchMode fetchMode);
+	public T selectByPrimaryKey(@Param("primaryKey") long primaryKey, @Param("fetchMode") FetchMode fetchMode);
 
 	public T selectSingleRecord(@Param("criteria") Map<String, Object> criteria,
 			@Param("fetchMode") FetchMode fetchMode);
@@ -23,6 +23,6 @@ public interface SelectableMapper<T extends BaseBean> {
 	public List<T> selectMultiRecords(@Param("criteria") Map<String, Object> criteria,
 			@Param("fetchMode") FetchMode fetchMode);
 
-	public int selectCounts(@Param("criteria") Map<String, Object> criteria, @Param("fetchMode") FetchMode fetchMode);
+	public long selectCounts(@Param("criteria") Map<String, Object> criteria, @Param("fetchMode") FetchMode fetchMode);
 
 }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.mycom.products.mywebsite.core.bean.BaseBean.TransactionType;
 import com.mycom.products.mywebsite.core.bean.master.SettingBean;
 import com.mycom.products.mywebsite.core.dao.base.CommonGenericDao;
+import com.mycom.products.mywebsite.core.dao.base.StandAloneSelectableDao;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
@@ -25,7 +26,7 @@ import com.mycom.products.mywebsite.core.exception.SaveHistoryFailedException;
 import com.mycom.products.mywebsite.core.mapper.master.SettingMapper;
 
 @Repository
-public class SettingDao implements CommonGenericDao<SettingBean> {
+public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSelectableDao<SettingBean> {
 
 	@Autowired
 	private SettingMapper settingMapper;
@@ -33,7 +34,7 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	private Logger daoLogger = Logger.getLogger(this.getClass());
 
 	@Override
-	public int insert(SettingBean setting, int recordRegId) throws DAOException, DuplicatedEntryException {
+	public long insert(SettingBean setting, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'Setting' informations ---");
 			Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -64,7 +65,7 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public void insert(List<SettingBean> settings, int recordRegId) throws DAOException, DuplicatedEntryException {
+	public void insert(List<SettingBean> settings, long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'Setting' informations ---");
 		for (SettingBean setting : settings) {
 			try {
@@ -96,13 +97,13 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public int update(SettingBean setting, int recordUpdId) throws DAOException, DuplicatedEntryException {
-		int totalEffectedRows = 0;
+	public long update(SettingBean setting, long recordUpdId) throws DAOException, DuplicatedEntryException {
+		long totalEffectedRows = 0;
 		daoLogger.debug("[START] : >>> --- Updating single 'Setting' informations ---");
 		try {
 			setting.setRecordUpdId(recordUpdId);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history before update on major table ---");
-			SettingBean oldData = settingMapper.selectByPrimaryKey(setting.getId(), FetchMode.LAZY);
+			SettingBean oldData = settingMapper.selectByPrimaryKey(setting.getId());
 			if (oldData == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -129,13 +130,13 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public void update(List<SettingBean> settings, int recordUpdId) throws DAOException, DuplicatedEntryException {
+	public void update(List<SettingBean> settings, long recordUpdId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Updating multi 'Setting' informations ---");
 		for (SettingBean setting : settings) {
 			try {
 				setting.setRecordUpdId(recordUpdId);
 				daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history before update on major table ---");
-				SettingBean oldData = settingMapper.selectByPrimaryKey(setting.getId(), FetchMode.LAZY);
+				SettingBean oldData = settingMapper.selectByPrimaryKey(setting.getId());
 				if (oldData == null) {
 					throw new SaveHistoryFailedException();
 				}
@@ -162,13 +163,13 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public int delete(int primaryKey,
-			int recordUpdId) throws DAOException, ConsistencyViolationException {
+	public long delete(long primaryKey,
+			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'Setting' informations with primaryKey # " + primaryKey + " ---");
-		int totalEffectedRows = 0;
+		long totalEffectedRows = 0;
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history before update on major table ---");
-			SettingBean oldData = settingMapper.selectByPrimaryKey(primaryKey, FetchMode.LAZY);
+			SettingBean oldData = settingMapper.selectByPrimaryKey(primaryKey);
 			if (oldData == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -195,13 +196,13 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public int delete(Map<String, Object> criteria,
-			int recordUpdId) throws DAOException, ConsistencyViolationException {
-		int totalEffectedRows = 0;
+	public long delete(Map<String, Object> criteria,
+			long recordUpdId) throws DAOException, ConsistencyViolationException {
+		long totalEffectedRows = 0;
 		daoLogger.debug("[START] : >>> --- Deleting 'Setting' informations with criteria  ---");
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history before delete on major table ---");
-			List<SettingBean> settings = settingMapper.selectMultiRecords(criteria, FetchMode.LAZY);
+			List<SettingBean> settings = settingMapper.selectMultiRecords(criteria);
 			if (settings == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -232,11 +233,11 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public SettingBean select(int primaryKey, FetchMode fetchMode) throws DAOException {
+	public SettingBean select(long primaryKey) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Setting' informations with primaryKey # " + primaryKey + " ---");
 		SettingBean setting = new SettingBean();
 		try {
-			setting = settingMapper.selectByPrimaryKey(primaryKey, fetchMode);
+			setting = settingMapper.selectByPrimaryKey(primaryKey);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Setting' informations with primaryKey ==> " + primaryKey + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -247,11 +248,11 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public SettingBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
+	public SettingBean select(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'Setting' informations with criteria ---");
 		SettingBean setting = new SettingBean();
 		try {
-			setting = settingMapper.selectSingleRecord(criteria, fetchMode);
+			setting = settingMapper.selectSingleRecord(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Setting' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -262,11 +263,11 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public List<SettingBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
+	public List<SettingBean> selectList(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'Setting' informations with criteria ---");
 		List<SettingBean> settings = null;
 		try {
-			settings = settingMapper.selectMultiRecords(criteria, fetchMode);
+			settings = settingMapper.selectMultiRecords(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'Setting' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -277,11 +278,11 @@ public class SettingDao implements CommonGenericDao<SettingBean> {
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
+	public long selectCounts(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Setting' counts with criteria ---");
-		int count = 0;
+		long count = 0;
 		try {
-			count = settingMapper.selectCounts(criteria, fetchMode);
+			count = settingMapper.selectCounts(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'Setting' records with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);

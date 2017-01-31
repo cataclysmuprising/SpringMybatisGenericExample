@@ -18,7 +18,7 @@ public class UserBean extends BaseBean implements Serializable {
 	private static final long serialVersionUID = -6106913047232092123L;
 
 	public enum Gender {
-		MALE, FEMALE;
+		MALE, FEMALE, OTHER;
 	}
 
 	private Integer age;

@@ -14,13 +14,13 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.bean.config.ActionBean;
-import com.mycom.products.mywebsite.core.dao.base.SelectableDao.FetchMode;
 import com.mycom.products.mywebsite.core.dao.config.ActionDao;
 import com.mycom.products.mywebsite.core.daoTest.BaseDaoTest;
-import com.mycom.products.mywebsite.core.daoTest.base.SelectableDaoTest;
+import com.mycom.products.mywebsite.core.daoTest.base.JoinedSelectableDaoTest;
 import com.mycom.products.mywebsite.core.exception.DAOException;
+import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class ActionDaoTest extends BaseDaoTest implements SelectableDaoTest<ActionBean> {
+public class ActionDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest {
 	@Autowired
 	private ActionDao actionDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -46,7 +46,7 @@ public class ActionDaoTest extends BaseDaoTest implements SelectableDaoTest<Acti
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectAllCount() throws DAOException {
-		int count = actionDao.selectCounts(null, null);
+		long count = actionDao.selectCounts(null, null);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
 	}
@@ -61,7 +61,7 @@ public class ActionDaoTest extends BaseDaoTest implements SelectableDaoTest<Acti
 		// criteria.put("actionName", "userAdd");
 		// criteria.put("actionType", ActionType.SUB);
 		// criteria.put("word", "user");
-		int count = actionDao.selectCounts(criteria, FetchMode.LAZY);
+		long count = actionDao.selectCounts(criteria, FetchMode.LAZY);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
 	}
@@ -77,7 +77,7 @@ public class ActionDaoTest extends BaseDaoTest implements SelectableDaoTest<Acti
 		// criteria.put("actionName", "userAdd");
 		// criteria.put("actionType", ActionType.SUB);
 		// criteria.put("word", "user");
-		int count = actionDao.selectCounts(criteria, FetchMode.EAGER);
+		long count = actionDao.selectCounts(criteria, FetchMode.EAGER);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
 	}
@@ -94,7 +94,7 @@ public class ActionDaoTest extends BaseDaoTest implements SelectableDaoTest<Acti
 		// criteria.put("word", "user");
 		criteria.put("offset", 0);
 		criteria.put("limit", 5);
-		criteria.put("orderBy", "actionName");
+		criteria.put("orderBy", "page");
 		criteria.put("orderAs", "desc");
 		List<ActionBean> results = actionDao.selectList(criteria, FetchMode.LAZY);
 		Assert.assertNotNull(results);
@@ -115,7 +115,7 @@ public class ActionDaoTest extends BaseDaoTest implements SelectableDaoTest<Acti
 		// criteria.put("word", "user");
 		criteria.put("offset", 0);
 		criteria.put("limit", 5);
-		criteria.put("orderBy", "actionName");
+		criteria.put("orderBy", "page");
 		criteria.put("orderAs", "desc");
 		List<ActionBean> results = actionDao.selectList(criteria, FetchMode.EAGER);
 		Assert.assertNotNull(results);

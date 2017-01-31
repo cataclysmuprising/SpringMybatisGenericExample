@@ -8,5 +8,5 @@ package com.mycom.products.mywebsite.core.mapper.base;
 import com.mycom.products.mywebsite.core.bean.BaseBean;
 
 public interface InsertableMapper<T extends BaseBean> {
-	public int insert(T record);
+	public long insert(T record);
 }

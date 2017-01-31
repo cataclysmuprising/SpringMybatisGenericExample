@@ -7,6 +7,7 @@ package com.mycom.products.mywebsite.core.mapper.master;
 
 import com.mycom.products.mywebsite.core.bean.master.SettingBean;
 import com.mycom.products.mywebsite.core.mapper.base.CommonGenericMapper;
+import com.mycom.products.mywebsite.core.mapper.base.StandAloneSelectableMapper;
 
-public interface SettingMapper extends CommonGenericMapper<SettingBean> {
+public interface SettingMapper extends CommonGenericMapper<SettingBean>, StandAloneSelectableMapper<SettingBean> {
 }

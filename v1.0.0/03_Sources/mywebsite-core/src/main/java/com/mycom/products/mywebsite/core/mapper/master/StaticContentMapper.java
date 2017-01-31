@@ -7,7 +7,8 @@ package com.mycom.products.mywebsite.core.mapper.master;
 
 import com.mycom.products.mywebsite.core.bean.master.StaticContentBean;
 import com.mycom.products.mywebsite.core.mapper.base.CommonGenericMapper;
+import com.mycom.products.mywebsite.core.mapper.base.StandAloneSelectableMapper;
 
-public interface StaticContentMapper extends CommonGenericMapper<StaticContentBean> {
-
+public interface StaticContentMapper
+		extends CommonGenericMapper<StaticContentBean>, StandAloneSelectableMapper<StaticContentBean> {
 }

@@ -11,20 +11,21 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean;
+import com.mycom.products.mywebsite.core.util.FetchMode;
 
 public interface XGenericMapper<T extends BaseBean> extends InsertableMapper<T> {
-	public void insert(int key1, int key2, int recordRegId);
+	public void insert(long key1, long key2, long recordRegId);
 
-	public int deleteByKeys(@Param("key1") int key1, @Param("key2") int key2);
+	public long deleteByKeys(@Param("key1") long key1, @Param("key2") long key2);
 
-	public int deleteByCriteria(@Param("criteria") Map<String, Object> criteria);
+	public long deleteByCriteria(@Param("criteria") Map<String, Object> criteria);
 
 	public List<Integer> selectRelatedKeys(@Param("criteria") Map<String, Object> criteria);
 
-	public T selectByKeys(@Param("key1") int key1, @Param("key2") int key2);
+	public T selectByKeys(@Param("key1") long key1, @Param("key2") long key2, FetchMode fetchMode);
 
-	public List<T> selectList(@Param("criteria") Map<String, Object> criteria);
+	public List<T> selectList(@Param("criteria") Map<String, Object> criteria, FetchMode fetchMode);
 
-	public int selectCounts(@Param("criteria") Map<String, Object> criteria);
+	public long selectCounts(@Param("criteria") Map<String, Object> criteria);
 
 }

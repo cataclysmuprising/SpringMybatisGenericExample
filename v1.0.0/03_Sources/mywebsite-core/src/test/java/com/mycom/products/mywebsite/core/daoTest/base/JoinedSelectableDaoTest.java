@@ -5,10 +5,9 @@
  */
 package com.mycom.products.mywebsite.core.daoTest.base;
 
-import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 
-public interface SelectableDaoTest<T extends BaseBean> {
+public interface JoinedSelectableDaoTest {
 
 	public void testSelectAllWithLazyMode() throws DAOException;
 

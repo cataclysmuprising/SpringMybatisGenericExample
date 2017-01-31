@@ -3,7 +3,7 @@
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.UserMapper">
 
-	<resultMap type="UserBean" id="Parent_UserResult">
+	<resultMap  type="UserBean" 			id="Parent_UserResult">
 		<id 	property="id" 				column="userId" />
 		<result property="loginId" 			column="login_id"/>
 		<result property="age" 				column="age" />
@@ -19,20 +19,21 @@
 		<result property="lastLoginDate" 	column="lastLoginDate" jdbcType="TIMESTAMP"/>
 	</resultMap>
 	
-	<resultMap type="UserBean" id="UserResult" extends="Parent_UserResult">
-		<result property="recordRegId" 		column="record_reg_id"/>
-		<result property="recordUpdId" 		column="record_upd_id"/>
-		<result property="recordRegDate" 	column="record_reg_date"/>
-		<result property="recordUpdDate" 	column="record_upd_date"/>			
-		<association property="content" 	javaType="StaticContentBean"  resultMap="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.Parent_StaticContentResult" />
-		<collection property="roles" 		javaType="RoleBean" 		  resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
+	<resultMap  	 type="UserBean" 			id="UserResult" extends="Parent_UserResult">
+		<result 	 property="recordRegId" 	column="record_reg_id"/>
+		<result  	 property="recordUpdId" 	column="record_upd_id"/>
+		<result 	 property="recordRegDate" 	column="record_reg_date"/>
+		<result 	 property="recordUpdDate" 	column="record_upd_date"/>			
+		<association property="content" 		javaType="StaticContentBean"  resultMap="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.Parent_StaticContentResult" />
+		<collection  property="roles" 			ofType="RoleBean" 		  resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
 	</resultMap>
 	
 	<sql id="tables">
-		FROM tbl_user usr
+		FROM mjr_user usr
 		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
-			LEFT JOIN tbl_user_role userRole ON usr.id = usrRole.user_id 
-			LEFT JOIN tbl_static_content content ON usr.content_id = content.id
+			LEFT JOIN mjr_user_role userRole ON usr.id = userRole.user_id 
+			LEFT JOIN mjr_role role ON userRole.role_id = role.id
+			LEFT JOIN mjr_static_content content ON usr.content_id = content.id
 		</if>
 	</sql>
 
@@ -55,7 +56,7 @@
 		usr.dob,
 		usr.address,
 		usr.content_id,
-		(SELECT MAX(login_date) FROM tbl_login_history history WHERE history.user_id = usr.id) AS lastLoginDate
+		(SELECT MAX(login_date) FROM mjr_login_history history WHERE history.user_id = usr.id) AS lastLoginDate
 	</sql>
 	
 	<sql id="columns">
@@ -72,7 +73,13 @@
 			<where>
 				<if test="criteria.id != null">
 					AND usr.id = #{criteria.id}
-				</if>		
+				</if>	
+				<if test="criteria.ids != null">
+					AND usr.id IN
+				    <foreach item="item" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${item}
+				    </foreach>
+				</if>					
 				<if test="criteria.loginId != null">
 					AND usr.login_id = #{criteria.loginId}
 				</if>
@@ -87,20 +94,29 @@
 				</if>		
 				<if test="criteria.phone != null">
 					AND usr.phone = #{criteria.phone}
-				</if>	
-				<if test="criteria.ids != null">
-					AND usr.id IN
-				    <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">
-				        ${item}
-				    </foreach>
-				</if>						
+				</if>
+				<if test="criteria.gender != null">
+					AND usr.gender = #{criteria.gender}
+				</if>					
 				<if test="criteria.word != null">
 					AND 
-					(usr.name    LIKE 	'%${criteria.word}%'
-					OR usr.email LIKE  '%${criteria.word}%'
-					OR usr.nrc   LIKE  '%${criteria.word}%'
-					OR usr.phone LIKE  '%${criteria.word}%')
+					(usr.login_id LIKE  '%${criteria.word}%'
+					OR usr.name   LIKE  '%${criteria.word}%'
+					OR usr.email  LIKE  '%${criteria.word}%'
+					OR usr.nrc    LIKE  '%${criteria.word}%'
+					OR usr.phone  LIKE  '%${criteria.word}%')
 				</if>
+				<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+					<if test="criteria.roleId != null">
+						role.id = #{criteria.roleId}
+					</if>				
+					<if test="criteria.roleName != null">
+						role.name = #{criteria.roleName}
+					</if>
+					<if test="criteria.contentId != null">
+						content.id = #{criteria.contentId}
+					</if>										
+				</if>				
 			</where>
 		</if>
 	</sql>
@@ -127,7 +143,7 @@
 				usr.phone ${criteria.orderAs}
 			</when>	
 			<when test="criteria !=null and criteria.orderBy == 'loginDate'">
-				usr.login_date ${criteria.orderAs}
+				lastLoginDate ${criteria.orderAs}
 			</when>								
 			<otherwise>
 				usr.id DESC
@@ -136,7 +152,7 @@
 	</sql>
 	
 	<insert id="insert" parameterType="UserBean" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO tbl_user (
+		INSERT INTO mjr_user (
 		login_id,
 		age,
 		name,
@@ -180,7 +196,7 @@
 	</insert>
 	
 	<insert id="insertHistory" parameterType="UserBean">
-		INSERT INTO tbl_user_history (
+		INSERT INTO mjr_user_history (
 		id,
 		record_reg_id,
 		record_upd_id,
@@ -221,7 +237,7 @@
 	</insert>	
 
 	<update id="update" parameterType="UserBean">
-		UPDATE tbl_user
+		UPDATE mjr_user
 		<set>
 			usr.record_upd_id = #{recordUpdId},
 			usr.record_upd_date = getDate(),		
@@ -240,7 +256,7 @@
 	</update>
 	
 	<delete id="delete" parameterType="map">
-		DELETE FROM tbl_user
+		DELETE FROM mjr_user
 		<where>
 			<if test="id != null">
 				 usr.id = #{id}
@@ -275,7 +291,7 @@
 		</if>
 	</select>
 
-	<select id="selectCounts" resultType="int">
+	<select id="selectCounts" resultType="long">
 		SELECT count(DISTINCT usr.id)
 		<include refid="tables" />
 		<include refid="criterias" />

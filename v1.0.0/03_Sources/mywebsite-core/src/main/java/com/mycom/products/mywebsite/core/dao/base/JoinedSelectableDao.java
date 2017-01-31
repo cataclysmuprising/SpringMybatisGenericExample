@@ -10,17 +10,14 @@ import java.util.Map;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.exception.DAOException;
+import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public interface SelectableDao<T extends BaseBean> {
-	public enum FetchMode {
-		LAZY, EAGER;
-	}
-
-	public T select(int primaryKey, FetchMode fetchMode) throws DAOException;
+public interface JoinedSelectableDao<T extends BaseBean> {
+	public T select(long primaryKey, FetchMode fetchMode) throws DAOException;
 
 	public T select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException;
 
 	public List<T> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException;
 
-	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException;
+	public long selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException;
 }

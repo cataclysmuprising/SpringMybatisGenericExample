@@ -3,21 +3,29 @@
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.RoleMapper">
 
-	<resultMap type="RoleBean" id="Parent_RoleResult">
+	<resultMap  type="RoleBean" 				id="Parent_RoleResult">
 		<id 	property="id" 				column="roleId" />
-		<result property="name" 			column="name" />
-		<result property="description"  	column="description" />
+		<result property="name" 			column="roleName" />
+		<result property="description"  	column="roleDescription" />
 	</resultMap>
 	
-	<resultMap type="RoleBean" id="RoleResult" extends="Parent_RoleResult">
+	<resultMap  type="RoleBean" 			id="RoleResult" extends="Parent_RoleResult">
 		<result property="recordRegId"  	column="record_reg_id"/>
 		<result property="recordUpdId"  	column="record_upd_id"/>
 		<result property="recordRegDate" 	column="record_reg_date"/>
-		<result property="recordUpdDate" 	column="record_upd_date"/>			
+		<result property="recordUpdDate" 	column="record_upd_date"/>	
+		<collection property="users"  			ofType="UserBean" 	resultMap="com.mycom.products.mywebsite.core.mapper.config.UserMapper.Parent_UserResult" />
+		<collection property="actions"  		ofType="ActionBean" resultMap="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.Parent_ActionResult" />		
 	</resultMap>
 
 	<sql id="tables">
-		FROM tbl_role role
+		FROM mjr_role role
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			LEFT JOIN mjr_user_role userRole ON role.id = userRole.role_id
+			LEFT JOIN mjr_user usr ON userRole.user_id = usr.id
+			LEFT JOIN mjr_role_action roleAction ON role.id = roleAction.role_id
+			LEFT JOIN mjr_action action ON roleAction.action_id = action.id 
+		</if>		
 	</sql>
 
 	<sql id="meta_columns">
@@ -29,9 +37,18 @@
 			
 	<sql id="main_columns">
 		role.id AS roleId,
-		role.name,
-		role.description
+		role.name AS roleName,
+		role.description AS roleDescription
 	</sql>
+	
+	<sql id="columns">
+		<include refid="meta_columns" />
+		<include refid="main_columns" />	
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.UserMapper.main_columns" />
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.main_columns" />
+		</if>		
+	</sql>	
 
 	<sql id="criterias">
 		<if test="criteria != null">
@@ -39,19 +56,27 @@
 				<if test="criteria.id != null">
 					role.id = #{criteria.id}
 				</if>
-				<if test="criteria.name != null">
-					role.name = #{criteria.name}
-				</if>
 				<if test="criteria.ids != null">
 					AND role.id IN
 				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
 				        ${id}
 				    </foreach>
-				</if>						
+				</if>				
+				<if test="criteria.name != null">
+					role.name = #{criteria.name}
+				</if>
 				<if test="criteria.word != null">
 					AND 
 					(role.name 		    LIKE '%${criteria.word}%'
-					or role.description LIKE '%${criteria.word}%')
+					OR role.description LIKE '%${criteria.word}%')
+				</if>
+				<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+					<if test="criteria.userId != null">
+						usr.id = #{criteria.userId}
+					</if>				
+					<if test="criteria.actionId != null">
+						action.id = #{criteria.actionId}
+					</if>					
 				</if>
 			</where>
 		</if>
@@ -74,8 +99,7 @@
 	
 	<select id="selectByPrimaryKey" resultMap="RoleResult">
 		SELECT
-		<include refid="meta_columns" />
-		<include refid="main_columns" />
+		<include refid="columns" />
 		<include refid="tables" />
 		WHERE 
 			role.id = #{primaryKey}
@@ -83,16 +107,14 @@
 		
 	<select id="selectSingleRecord" resultMap="RoleResult">
 		SELECT
-		<include refid="meta_columns" />
-		<include refid="main_columns" />
+		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
 	</select>
 	
 	<select id="selectMultiRecords" resultMap="RoleResult">
 		SELECT
-		<include refid="meta_columns" />
-		<include refid="main_columns" />
+		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
@@ -102,7 +124,7 @@
 		</if>
 	</select>
 
-	<select id="selectCounts" resultType="int">
+	<select id="selectCounts" resultType="long">
 		SELECT count(DISTINCT role.id)
 		<include refid="tables" />
 		<include refid="criterias" />

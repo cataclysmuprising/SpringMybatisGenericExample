@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.bean.config;
 
 import java.util.ArrayList;
@@ -20,7 +25,7 @@ public class LoggedUserBean implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 		for (String role : roles) {
 			authorities.add(new SimpleGrantedAuthority(role));
 		}
@@ -44,7 +49,7 @@ public class LoggedUserBean implements UserDetails {
 		return user.getName();
 	}
 
-	public int getId() {
+	public long getId() {
 		return user.getId();
 	}
 

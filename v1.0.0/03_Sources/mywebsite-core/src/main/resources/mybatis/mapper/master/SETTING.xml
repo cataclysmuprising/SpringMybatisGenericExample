@@ -3,8 +3,8 @@
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.master.SettingMapper">
 
-	<resultMap type="SettingBean" id="Parent_SettingResult">
-		<id 	property="id" 				column="id"/>
+	<resultMap  type="SettingBean" 			id="Parent_SettingResult">
+		<id 	property="id" 				column="settingId"/>
 		<result property="name" 			column="setting_name"/>
 		<result property="value" 			column="setting_value"/>
 		<result property="type" 			column="setting_type"/>
@@ -12,7 +12,7 @@
 		<result property="subGroup" 		column="setting_sub_group"/>
 	</resultMap>
 	
-	<resultMap type="SettingBean" id="SettingResult" extends="Parent_SettingResult">
+	<resultMap  type="SettingBean" 			id="SettingResult" 		extends="Parent_SettingResult">
 		<result property="recordRegId"  	column="record_reg_id"/>
 		<result property="recordUpdId"  	column="record_upd_id"/>
 		<result property="recordRegDate" 	column="record_reg_date"/>
@@ -20,7 +20,7 @@
 	</resultMap>
 
 	<sql id="tables">
-		FROM tbl_setting setting
+		FROM mjr_setting setting
 	</sql>
 
 	<sql id="meta_columns">
@@ -31,13 +31,18 @@
 	</sql>
 		
 	<sql id="main_columns">
-		setting.id,
+		setting.id AS settingId,
 		setting.setting_name,
 		setting.setting_value,
 		setting.setting_type,
 		setting.setting_group,
 		setting.setting_sub_group
 	</sql>
+	
+	<sql id="columns">
+		<include refid="meta_columns" />
+		<include refid="main_columns" />	
+	</sql>	
 
 	<sql id="criterias">
 		<if test="criteria != null">
@@ -101,7 +106,7 @@
 	</sql>
 	
 	<insert id="insert" parameterType="SettingBean" useGeneratedKeys="true" keyProperty="id">
-		insert into tbl_setting(
+		insert into mjr_setting(
 		setting_name,
 		setting_value,
 		setting_type,
@@ -125,7 +130,7 @@
 	</insert>
 	
 	<insert id="insertHistory" parameterType="SettingBean">
-		insert into tbl_setting_history(
+		insert into mjr_setting_history(
 		id,
 		record_reg_id,
 		record_upd_id,
@@ -155,7 +160,7 @@
 	</insert>	
 	
 	<update id="update" parameterType="SettingBean">
-		update tbl_setting
+		update mjr_setting
 		<set>
 			record_upd_id = #{recordUpdId},
 			record_upd_date = getDate(),
@@ -169,7 +174,7 @@
 	</update>
 
 	<delete id="delete" parameterType="map">
-		delete from tbl_setting
+		delete from mjr_setting
 		<where>
 			<if test="id != null">
 				 id = #{id}
@@ -179,8 +184,7 @@
 	
 	<select id="selectByPrimaryKey" resultMap="SettingResult">
 		SELECT
-		<include refid="meta_columns" />
-		<include refid="main_columns" />
+		<include refid="columns" />
 		<include refid="tables" />
 		WHERE 
 			setting.id = #{primaryKey}
@@ -188,16 +192,14 @@
 		
 	<select id="selectSingleRecord" resultMap="SettingResult">
 		SELECT
-		<include refid="meta_columns" />
-		<include refid="main_columns" />
+		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
 	</select>
 	
 	<select id="selectMultiRecords" resultMap="SettingResult">
 		SELECT
-		<include refid="meta_columns" />
-		<include refid="main_columns" />
+		<include refid="columns" />
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
@@ -207,7 +209,7 @@
 		</if>
 	</select>
 
-	<select id="selectCounts" resultType="int">
+	<select id="selectCounts" resultType="long">
 		SELECT count(DISTINCT setting.id)
 		<include refid="tables" />
 		<include refid="criterias" />

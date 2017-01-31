@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.mycom.products.mywebsite.core.bean.BaseBean.TransactionType;
 import com.mycom.products.mywebsite.core.bean.master.StaticContentBean;
 import com.mycom.products.mywebsite.core.dao.base.CommonGenericDao;
+import com.mycom.products.mywebsite.core.dao.base.StandAloneSelectableDao;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
@@ -25,7 +26,8 @@ import com.mycom.products.mywebsite.core.exception.SaveHistoryFailedException;
 import com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper;
 
 @Repository
-public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
+public class StaticContentDao
+		implements CommonGenericDao<StaticContentBean>, StandAloneSelectableDao<StaticContentBean> {
 
 	@Autowired
 	private StaticContentMapper staticContentMapper;
@@ -33,7 +35,8 @@ public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
 	private Logger daoLogger = Logger.getLogger(this.getClass());
 
 	@Override
-	public int insert(StaticContentBean staticContent, int recordRegId) throws DAOException, DuplicatedEntryException {
+	public long insert(StaticContentBean staticContent,
+			long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'StaticContent' informations ---");
 			Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -65,7 +68,7 @@ public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
 
 	@Override
 	public void insert(List<StaticContentBean> staticContents,
-			int recordRegId) throws DAOException, DuplicatedEntryException {
+			long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'StaticContent' informations ---");
 		for (StaticContentBean staticContent : staticContents) {
 			try {
@@ -97,13 +100,14 @@ public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
 	}
 
 	@Override
-	public int update(StaticContentBean staticContent, int recordUpdId) throws DAOException, DuplicatedEntryException {
-		int totalEffectedRows = 0;
+	public long update(StaticContentBean staticContent,
+			long recordUpdId) throws DAOException, DuplicatedEntryException {
+		long totalEffectedRows = 0;
 		daoLogger.debug("[START] : >>> --- Updating single 'StaticContent' informations ---");
 		try {
 			staticContent.setRecordUpdId(recordUpdId);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'StaticContent' informations in history before update on major table ---");
-			StaticContentBean oldData = staticContentMapper.selectByPrimaryKey(staticContent.getId(), FetchMode.LAZY);
+			StaticContentBean oldData = staticContentMapper.selectByPrimaryKey(staticContent.getId());
 			if (oldData == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -131,13 +135,13 @@ public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
 
 	@Override
 	public void update(List<StaticContentBean> staticContents,
-			int recordUpdId) throws DAOException, DuplicatedEntryException {
+			long recordUpdId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Updating multi 'StaticContent' informations ---");
 		for (StaticContentBean staticContent : staticContents) {
 			try {
 				staticContent.setRecordUpdId(recordUpdId);
 				daoLogger.debug("[HISTORY][START] : $1 --- Save 'StaticContent' informations in history before update on major table ---");
-				StaticContentBean oldData = staticContentMapper.selectByPrimaryKey(staticContent.getId(), FetchMode.LAZY);
+				StaticContentBean oldData = staticContentMapper.selectByPrimaryKey(staticContent.getId());
 				if (oldData == null) {
 					throw new SaveHistoryFailedException();
 				}
@@ -164,13 +168,13 @@ public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
 	}
 
 	@Override
-	public int delete(int primaryKey,
-			int recordUpdId) throws DAOException, ConsistencyViolationException {
+	public long delete(long primaryKey,
+			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'StaticContent' informations with primaryKey # " + primaryKey + " ---");
-		int totalEffectedRows = 0;
+		long totalEffectedRows = 0;
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'StaticContent' informations in history before update on major table ---");
-			StaticContentBean oldData = staticContentMapper.selectByPrimaryKey(primaryKey, FetchMode.LAZY);
+			StaticContentBean oldData = staticContentMapper.selectByPrimaryKey(primaryKey);
 			if (oldData == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -197,13 +201,13 @@ public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
 	}
 
 	@Override
-	public int delete(Map<String, Object> criteria,
-			int recordUpdId) throws DAOException, ConsistencyViolationException {
-		int totalEffectedRows = 0;
+	public long delete(Map<String, Object> criteria,
+			long recordUpdId) throws DAOException, ConsistencyViolationException {
+		long totalEffectedRows = 0;
 		daoLogger.debug("[START] : >>> --- Deleting 'StaticContent' informations with criteria  ---");
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'StaticContent' informations in history before delete on major table ---");
-			List<StaticContentBean> staticContents = staticContentMapper.selectMultiRecords(criteria, FetchMode.LAZY);
+			List<StaticContentBean> staticContents = staticContentMapper.selectMultiRecords(criteria);
 			if (staticContents == null) {
 				throw new SaveHistoryFailedException();
 			}
@@ -234,11 +238,11 @@ public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
 	}
 
 	@Override
-	public StaticContentBean select(int primaryKey, FetchMode fetchMode) throws DAOException {
+	public StaticContentBean select(long primaryKey) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'StaticContent' informations with primaryKey # " + primaryKey + " ---");
 		StaticContentBean staticContent = new StaticContentBean();
 		try {
-			staticContent = staticContentMapper.selectByPrimaryKey(primaryKey, fetchMode);
+			staticContent = staticContentMapper.selectByPrimaryKey(primaryKey);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'StaticContent' informations with primaryKey ==> " + primaryKey + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -249,11 +253,11 @@ public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
 	}
 
 	@Override
-	public StaticContentBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
+	public StaticContentBean select(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'StaticContent' informations with criteria ---");
 		StaticContentBean staticContent = new StaticContentBean();
 		try {
-			staticContent = staticContentMapper.selectSingleRecord(criteria, fetchMode);
+			staticContent = staticContentMapper.selectSingleRecord(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'StaticContent' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -264,11 +268,11 @@ public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
 	}
 
 	@Override
-	public List<StaticContentBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
+	public List<StaticContentBean> selectList(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'StaticContent' informations with criteria ---");
 		List<StaticContentBean> staticContents = null;
 		try {
-			staticContents = staticContentMapper.selectMultiRecords(criteria, fetchMode);
+			staticContents = staticContentMapper.selectMultiRecords(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'StaticContent' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -279,11 +283,11 @@ public class StaticContentDao implements CommonGenericDao<StaticContentBean> {
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
+	public long selectCounts(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'StaticContent' counts with criteria ---");
-		int count = 0;
+		long count = 0;
 		try {
-			count = staticContentMapper.selectCounts(criteria, fetchMode);
+			count = staticContentMapper.selectCounts(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'StaticContent' records with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);

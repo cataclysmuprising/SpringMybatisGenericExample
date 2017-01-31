@@ -23,6 +23,7 @@ import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.mapper.config.UserRoleMapper;
+import com.mycom.products.mywebsite.core.util.FetchMode;
 
 @Repository
 public class UserRoleDao implements XGenericDao<UserRoleBean> {
@@ -32,7 +33,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	private Logger daoLogger = Logger.getLogger(this.getClass());
 
 	@Override
-	public int insert(UserRoleBean userRole, int recordRegId) throws DAOException, DuplicatedEntryException {
+	public void insert(UserRoleBean userRole, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'UserRole' informations ---");
 			Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -51,12 +52,11 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting single 'UserRole' informations with new Id # " + userRole.getId() + " ---");
-		return userRole.getId();
 	}
 
 	@Override
 	public void insert(List<UserRoleBean> userRoles,
-			int recordRegId) throws DAOException, DuplicatedEntryException {
+			long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'UserRole' informations ---");
 		for (UserRoleBean userRole : userRoles) {
 			try {
@@ -80,7 +80,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public void insert(int userId, int roleId, int recordRegId) throws DuplicatedEntryException, DAOException {
+	public void insert(long userId, long roleId, long recordRegId) throws DuplicatedEntryException, DAOException {
 		daoLogger.debug("[START] : >>> --- Inserting single 'UserRole' informations ---");
 		try {
 			userRoleMapper.insert(userId, roleId, recordRegId);
@@ -97,10 +97,10 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public int delete(int userId, int roleId,
-			int recordUpdId) throws ConsistencyViolationException, DAOException {
+	public long delete(long userId, long roleId,
+			long recordUpdId) throws ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'UserRole' informations with ==> userId " + userId + " , roleId = " + roleId + " ---");
-		int effectedRows = 0;
+		long effectedRows = 0;
 		try {
 			effectedRows = userRoleMapper.deleteByKeys(userId, roleId);
 		} catch (DataIntegrityViolationException e) {
@@ -117,10 +117,10 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public int delete(Map<String, Object> criteria,
-			int recordUpdId) throws ConsistencyViolationException, DAOException {
+	public long delete(Map<String, Object> criteria,
+			long recordUpdId) throws ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Deleting 'UserRole' informations with criteria  ---");
-		int effectedRows = 0;
+		long effectedRows = 0;
 		try {
 			effectedRows = userRoleMapper.deleteByCriteria(criteria);
 		} catch (DataIntegrityViolationException e) {
@@ -137,8 +137,8 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public void merge(int userId, List<Integer> roleIds,
-			int recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, DAOException {
+	public void merge(long userId, List<Integer> roleIds,
+			long recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Merging  'UserRole' informations for userId # =" + userId + " with related roleIds =" + roleIds + " ---");
 		List<Integer> insertIds = new ArrayList<>();
 		List<Integer> removeIds = new ArrayList<>();
@@ -179,7 +179,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public List<Integer> selectByKey1(int key1) throws DAOException {
+	public List<Integer> selectByKey1(long key1) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching related roleIds with userId # " + key1 + " ---");
 		List<Integer> roleIds = null;
 		try {
@@ -196,7 +196,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public List<Integer> selectByKey2(int key2) throws DAOException {
+	public List<Integer> selectByKey2(long key2) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching related userIds with roleId # " + key2 + " ---");
 		List<Integer> userIds = null;
 		try {
@@ -213,11 +213,11 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public UserRoleBean select(int userId, int roleId) throws DAOException {
+	public UserRoleBean select(long userId, long roleId, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " ---");
 		UserRoleBean userRole = null;
 		try {
-			userRole = userRoleMapper.selectByKeys(userId, roleId);
+			userRole = userRoleMapper.selectByKeys(userId, roleId, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -228,11 +228,11 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public List<UserRoleBean> selectList(Map<String, Object> criteria) throws DAOException {
+	public List<UserRoleBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'UserRole' informations with criteria ---");
 		List<UserRoleBean> results = null;
 		try {
-			results = userRoleMapper.selectList(criteria);
+			results = userRoleMapper.selectList(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'UserRole' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -243,9 +243,9 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria) throws DAOException {
+	public long selectCounts(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'UserRole' counts with criteria ---");
-		int count = 0;
+		long count = 0;
 		try {
 			count = userRoleMapper.selectCounts(criteria);
 		} catch (Exception e) {

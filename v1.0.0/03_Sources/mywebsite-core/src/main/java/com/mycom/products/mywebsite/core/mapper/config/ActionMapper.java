@@ -8,8 +8,8 @@ package com.mycom.products.mywebsite.core.mapper.config;
 import java.util.List;
 
 import com.mycom.products.mywebsite.core.bean.config.ActionBean;
-import com.mycom.products.mywebsite.core.mapper.base.SelectableMapper;
+import com.mycom.products.mywebsite.core.mapper.base.JoinedSelectableMapper;
 
-public interface ActionMapper extends SelectableMapper<ActionBean> {
+public interface ActionMapper extends JoinedSelectableMapper<ActionBean> {
 	public List<String> selectAllPageNames();
 }

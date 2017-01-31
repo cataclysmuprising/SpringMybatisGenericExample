@@ -17,20 +17,21 @@ import org.springframework.stereotype.Repository;
 import com.mycom.products.mywebsite.core.bean.BaseBean.TransactionType;
 import com.mycom.products.mywebsite.core.bean.config.LoginHistoryBean;
 import com.mycom.products.mywebsite.core.dao.base.InsertableDao;
-import com.mycom.products.mywebsite.core.dao.base.SelectableDao;
+import com.mycom.products.mywebsite.core.dao.base.JoinedSelectableDao;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.mapper.config.LoginHistoryMapper;
+import com.mycom.products.mywebsite.core.util.FetchMode;
 
 @Repository
-public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, SelectableDao<LoginHistoryBean> {
+public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedSelectableDao<LoginHistoryBean> {
 
 	@Autowired
 	private LoginHistoryMapper loginHistoryMapper;
 	private Logger daoLogger = Logger.getLogger(this.getClass());
 
 	@Override
-	public int insert(LoginHistoryBean loginHistory, int recordRegId) throws DAOException, DuplicatedEntryException {
+	public long insert(LoginHistoryBean loginHistory, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'LoginHistory' informations ---");
 			Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -55,7 +56,7 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, Selecta
 
 	@Override
 	public void insert(List<LoginHistoryBean> loginHistorys,
-			int recordRegId) throws DAOException, DuplicatedEntryException {
+			long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'LoginHistory' informations ---");
 		for (LoginHistoryBean loginHistory : loginHistorys) {
 			try {
@@ -80,7 +81,7 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, Selecta
 	}
 
 	@Override
-	public LoginHistoryBean select(int primaryKey, FetchMode fetchMode) throws DAOException {
+	public LoginHistoryBean select(long primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'LoginHistory' informations with primaryKey # " + primaryKey + " ---");
 		LoginHistoryBean loginHistory = new LoginHistoryBean();
 		try {
@@ -125,9 +126,9 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, Selecta
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
+	public long selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'LoginHistory' counts with criteria ---");
-		int count = 0;
+		long count = 0;
 		try {
 			count = loginHistoryMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {

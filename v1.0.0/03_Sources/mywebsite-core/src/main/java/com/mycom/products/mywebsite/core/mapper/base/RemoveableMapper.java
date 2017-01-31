@@ -13,7 +13,7 @@ import com.mycom.products.mywebsite.core.bean.BaseBean;
 
 public interface RemoveableMapper<T extends BaseBean> {
 
-	public int deleteByPrimaryKey(@Param("primaryKey") int primaryKey);
+	public long deleteByPrimaryKey(@Param("primaryKey") long primaryKey);
 
-	public int deleteByCriteria(@Param("criteria") Map<String, Object> criteria);
+	public long deleteByCriteria(@Param("criteria") Map<String, Object> criteria);
 }

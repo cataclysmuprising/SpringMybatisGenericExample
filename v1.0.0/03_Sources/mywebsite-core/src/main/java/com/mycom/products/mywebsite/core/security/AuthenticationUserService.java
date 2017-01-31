@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.security;
 
 import java.sql.Timestamp;
@@ -47,16 +52,16 @@ public class AuthenticationUserService implements UserDetailsService {
 				throw new UsernameNotFoundException("User doesn`t exist");
 			}
 			LoginHistoryBean loginHistory = new LoginHistoryBean();
-			loginHistory.setClientIp(getClientIp(request));
+			loginHistory.setIpAddress(getClientIp(request));
 			loginHistory.setOs(getOperatingSystem(request));
-			loginHistory.setBrowser(getBrowser(request));
+			loginHistory.setUserAgent(getUserAgent(request));
 			loginHistory.setLoginDate(new Timestamp(System.currentTimeMillis()));
 			loginHistory.setUserId(user.getId());
 			loginHistoryService.add(loginHistory, user.getId());
 			Map<String, Object> criterias = new HashMap<>();
 			criterias.put("userId", user.getId());
 			List<UserRoleBean> userRoles = userRoleService.getByCriteria(criterias);
-			List<String> dbRoles = new ArrayList<String>();
+			List<String> dbRoles = new ArrayList<>();
 			for (UserRoleBean userRole : userRoles) {
 				dbRoles.add(userRole.getRole().getName());
 			}
@@ -96,7 +101,7 @@ public class AuthenticationUserService implements UserDetailsService {
 		return os;
 	}
 
-	private String getBrowser(HttpServletRequest request) {
+	private String getUserAgent(HttpServletRequest request) {
 		String userAgent = request.getHeader("User-Agent");
 		String user = userAgent.toLowerCase();
 

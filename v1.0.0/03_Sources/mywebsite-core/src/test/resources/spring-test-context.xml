@@ -15,8 +15,6 @@
 	    <context:exclude-filter type="regex" expression="com.mycom.products.mywebsite.core.service.config.GeneralService" />
 	 </context:component-scan>	
 	 
-	 <!-- <aop:aspectj-autoproxy/> -->
-	 
 	<import resource="classpath:spring-core/spring-datasource.xml"/>
   	<cache:annotation-driven />
   		 

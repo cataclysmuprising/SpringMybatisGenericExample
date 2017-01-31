@@ -7,11 +7,10 @@ package com.mycom.products.mywebsite.core.daoTest.base;
 
 import java.util.Map;
 
-import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 
-public interface RemoveableDaoTest<T extends BaseBean> {
+public interface RemoveableDaoTest {
 	public int delete(int primaryKey, int recordUpdId) throws ConsistencyViolationException, DAOException;
 
 	public int delete(Map<String, Object> criteria,

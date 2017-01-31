@@ -3,27 +3,27 @@
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.LoginHistoryMapper">
 
-	<resultMap type="LoginHistoryBean" id="Parent_LoginHistoryResult">
-		<id property="id" column="loginHistoryId" />
-		<result property="clientIp" column="client_ip" />
-		<result property="os" column="os" />
-		<result property="browser" column="browser" />
-		<result property="userId" column="user_id" />
-		<result property="loginDate" column="login_date" />
+	<resultMap  type="LoginHistoryBean" id="Parent_LoginHistoryResult">
+		<id 	property="id" 			column="loginHistoryId" />
+		<result property="ipAddress" 	column="ip_address" />
+		<result property="os" 			column="os" />
+		<result property="userAgent" 	column="user_agent" />
+		<result property="userId" 		column="user_id" />
+		<result property="loginDate" 	column="login_date" />
 	</resultMap>
 	
-	<resultMap type="LoginHistoryBean" id="LoginHistoryResult" extends="Parent_LoginHistoryResult">
-		<result property="recordRegId" column="record_reg_id"/>
-		<result property="recordUpdId" column="record_upd_id"/>
-		<result property="recordRegDate" column="record_reg_date"/>
-		<result property="recordUpdDate" column="record_upd_date"/>			
-		<association property="user" javaType="UserBean" resultMap="com.mycom.products.mywebsite.core.mapper.config.UserMapper.Parent_UserResult" />	
+	<resultMap  	 type="LoginHistoryBean" 	id="LoginHistoryResult" extends="Parent_LoginHistoryResult">
+		<result 	 property="recordRegId" 	column="record_reg_id"/>
+		<result 	 property="recordUpdId" 	column="record_upd_id"/>
+		<result 	 property="recordRegDate" 	column="record_reg_date"/>
+		<result 	 property="recordUpdDate" 	column="record_upd_date"/>			
+		<association property="user" 			javaType="UserBean" 	resultMap="com.mycom.products.mywebsite.core.mapper.config.UserMapper.Parent_UserResult" />	
 	</resultMap>
 
 	<sql id="tables">
-		FROM tbl_login_history loginHistory
+		FROM mjr_login_history loginHistory
 		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
-			LEFT JOIN tbl_user usr ON loginHistory.user_id=usr.id
+			LEFT JOIN mjr_user usr ON loginHistory.user_id=usr.id
 		</if>		
 	</sql>
 	
@@ -38,9 +38,9 @@
 		loginHistory.id as loginHistoryId,
 		loginHistory.user_id,
 		loginHistory.login_date,
-		loginHistory.client_ip,
+		loginHistory.ip_address,
 		loginHistory.os,
-		loginHistory.browser
+		loginHistory.user_agent
 	</sql>
 	
 	<sql id="columns">
@@ -80,15 +80,15 @@
 	</sql>
 		
 	<insert id="insert" parameterType="LoginHistoryBean" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO tbl_login_history(
+		INSERT INTO mjr_login_history(
 		user_id,
 		login_date,
-		client_ip,
+		ip_address,
 		<if test="os != null">
 			os,
 		</if>
-		<if test="browser != null">
-			browser,
+		<if test="userAgent != null">
+			user_agent,
 		</if>
 		record_reg_id,
 		record_upd_id,
@@ -97,12 +97,12 @@
 		) values (
 		#{userId},
 		#{loginDate},
-		#{clientIp},
+		#{ipAddress},
 		<if test="os != null">
 			#{os},
 		</if>
-		<if test="browser != null">
-			#{browser},
+		<if test="userAgent != null">
+			#{userAgent},
 		</if>
 		#{recordRegId},
 		#{recordUpdId},
@@ -138,7 +138,7 @@
 		</if>
 	</select>
 
-	<select id="selectCounts" resultType="int">
+	<select id="selectCounts" resultType="long">
 		SELECT count(DISTINCT loginHistory.id)
 		<include refid="tables" />
 		<include refid="criterias" />

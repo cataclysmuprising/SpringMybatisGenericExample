@@ -13,7 +13,7 @@
 	</resultMap>
 
 	<sql id="self_table">
-		from tbl_user_role ur
+		from mjr_user_role ur
 	</sql>
 	
 	<sql id="columns">
@@ -53,7 +53,7 @@
 	</sql>
 	
 	<insert id="insert" parameterType="UserRoleBean">
-		insert into tbl_user_role(
+		insert into mjr_user_role(
 		user_id,
 		role_id,
 		record_reg_id,
@@ -71,7 +71,7 @@
 	</insert>
 	
 	<insert id="insertHistory" parameterType="UserRoleBean">
-		insert into tbl_user_role_history(
+		insert into mjr_user_role_history(
 		record_reg_id,
 		record_upd_id,
 		record_reg_date,
@@ -93,7 +93,7 @@
 	</insert>
 	
 	<update id="update" parameterType="UserRoleBean">
-		update tbl_user_role
+		update mjr_user_role
 		<set>
 			record_upd_id = #{recordUpdId},
 			record_upd_date = getDate(),		
@@ -111,7 +111,7 @@
 	</update>
 
 	<delete id="delete" parameterType="map">
-		delete from  tbl_user_role 
+		delete from  mjr_user_role 
 		<where>
 			<if test="id != null">
 				 id = ${id}

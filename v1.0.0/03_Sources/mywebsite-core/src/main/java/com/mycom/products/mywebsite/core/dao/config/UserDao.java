@@ -18,14 +18,16 @@ import org.springframework.stereotype.Repository;
 import com.mycom.products.mywebsite.core.bean.BaseBean.TransactionType;
 import com.mycom.products.mywebsite.core.bean.config.UserBean;
 import com.mycom.products.mywebsite.core.dao.base.CommonGenericDao;
+import com.mycom.products.mywebsite.core.dao.base.JoinedSelectableDao;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.exception.SaveHistoryFailedException;
 import com.mycom.products.mywebsite.core.mapper.config.UserMapper;
+import com.mycom.products.mywebsite.core.util.FetchMode;
 
 @Repository
-public class UserDao implements CommonGenericDao<UserBean> {
+public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<UserBean> {
 
 	@Autowired
 	private UserMapper userMapper;
@@ -33,7 +35,7 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	private Logger daoLogger = Logger.getLogger(this.getClass());
 
 	@Override
-	public int insert(UserBean user, int recordRegId) throws DAOException, DuplicatedEntryException {
+	public long insert(UserBean user, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'User' informations ---");
 			Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -64,7 +66,7 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public void insert(List<UserBean> users, int recordRegId) throws DAOException, DuplicatedEntryException {
+	public void insert(List<UserBean> users, long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'User' informations ---");
 		for (UserBean user : users) {
 			try {
@@ -96,8 +98,8 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public int update(UserBean user, int recordUpdId) throws DAOException, DuplicatedEntryException {
-		int totalEffectedRows = 0;
+	public long update(UserBean user, long recordUpdId) throws DAOException, DuplicatedEntryException {
+		long totalEffectedRows = 0;
 		daoLogger.debug("[START] : >>> --- Updating single 'User' informations ---");
 		try {
 			user.setRecordUpdId(recordUpdId);
@@ -129,7 +131,7 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public void update(List<UserBean> users, int recordUpdId) throws DAOException, DuplicatedEntryException {
+	public void update(List<UserBean> users, long recordUpdId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Updating multi 'User' informations ---");
 		for (UserBean user : users) {
 			try {
@@ -162,10 +164,10 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public int delete(int primaryKey,
-			int recordUpdId) throws DAOException, ConsistencyViolationException {
+	public long delete(long primaryKey,
+			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'User' informations with primaryKey # " + primaryKey + " ---");
-		int totalEffectedRows = 0;
+		long totalEffectedRows = 0;
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history before update on major table ---");
 			UserBean oldData = userMapper.selectByPrimaryKey(primaryKey, FetchMode.LAZY);
@@ -195,9 +197,9 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public int delete(Map<String, Object> criteria,
-			int recordUpdId) throws DAOException, ConsistencyViolationException {
-		int totalEffectedRows = 0;
+	public long delete(Map<String, Object> criteria,
+			long recordUpdId) throws DAOException, ConsistencyViolationException {
+		long totalEffectedRows = 0;
 		daoLogger.debug("[START] : >>> --- Deleting 'User' informations with criteria  ---");
 		try {
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history before delete on major table ---");
@@ -232,7 +234,7 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public UserBean select(int primaryKey, FetchMode fetchMode) throws DAOException {
+	public UserBean select(long primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'User' informations with primaryKey # " + primaryKey + " ---");
 		UserBean user = new UserBean();
 		try {
@@ -277,9 +279,9 @@ public class UserDao implements CommonGenericDao<UserBean> {
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
+	public long selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'User' counts with criteria ---");
-		int count = 0;
+		long count = 0;
 		try {
 			count = userMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {

@@ -13,19 +13,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.mycom.products.mywebsite.core.bean.config.ActionBean;
-import com.mycom.products.mywebsite.core.dao.base.SelectableDao;
+import com.mycom.products.mywebsite.core.dao.base.JoinedSelectableDao;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.mapper.config.ActionMapper;
+import com.mycom.products.mywebsite.core.util.FetchMode;
 
 @Repository
-public class ActionDao implements SelectableDao<ActionBean> {
+public class ActionDao implements JoinedSelectableDao<ActionBean> {
 
 	@Autowired
 	private ActionMapper actionMapper;
 	private Logger daoLogger = Logger.getLogger(this.getClass());
 
 	@Override
-	public ActionBean select(int primaryKey, FetchMode fetchMode) throws DAOException {
+	public ActionBean select(long primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Action' informations with primaryKey # " + primaryKey + " ---");
 		ActionBean action = new ActionBean();
 		try {
@@ -70,9 +71,9 @@ public class ActionDao implements SelectableDao<ActionBean> {
 	}
 
 	@Override
-	public int selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
+	public long selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Action' counts with criteria ---");
-		int count = 0;
+		long count = 0;
 		try {
 			count = actionMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {

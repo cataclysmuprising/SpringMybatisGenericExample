@@ -15,12 +15,8 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
-import com.mycom.products.mywebsite.core.MockDataGenerator;
-import com.mycom.products.mywebsite.core.MockDataGenerator.GenerateMode;
 import com.mycom.products.mywebsite.core.bean.BaseBean;
-import com.mycom.products.mywebsite.core.bean.config.UserBean;
 
 @Transactional
 @ContextConfiguration(locations = { "classpath:spring-test-context.xml" })
@@ -31,12 +27,12 @@ public class BaseServiceTest extends AbstractTransactionalTestNGSpringContextTes
 
 	@BeforeMethod
 	public void beforeMethod(Method method) {
-		logger.info("***** Testing method '" + method.getName() + "' has started. *****");
+		logger.info("***** SERVICE-TEST : Testing method '" + method.getName() + "' has started. *****");
 	}
 
 	@AfterMethod
 	public void afterMethod(Method method) {
-		logger.info("----- Testing method '" + method.getName() + "' has finished. -----");
+		logger.info("----- SERVICE-TEST : Testing method '" + method.getName() + "' has finished. -----");
 	}
 
 	protected <T extends BaseBean> void showEntriesOfCollection(Collection<T> collection) {
@@ -48,16 +44,4 @@ public class BaseServiceTest extends AbstractTransactionalTestNGSpringContextTes
 			}
 		}
 	}
-
-	@Test
-	private void testMockObject() {
-		try {
-			UserBean action = new UserBean();
-			MockDataGenerator.mock(action, GenerateMode.SINGLE);
-			logger.info("After making mock object >>> " + action);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 }

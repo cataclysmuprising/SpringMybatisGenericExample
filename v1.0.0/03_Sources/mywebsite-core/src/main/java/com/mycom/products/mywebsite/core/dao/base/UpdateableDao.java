@@ -12,7 +12,7 @@ import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 
 public interface UpdateableDao<T extends BaseBean> {
-	public int update(T record, int recordUpdId) throws DuplicatedEntryException, DAOException;
+	public long update(T record, long recordUpdId) throws DuplicatedEntryException, DAOException;
 
-	public void update(List<T> records, int recordUpdId) throws DuplicatedEntryException, DAOException;
+	public void update(List<T> records, long recordUpdId) throws DuplicatedEntryException, DAOException;
 }

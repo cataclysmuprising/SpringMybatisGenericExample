@@ -32,7 +32,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	@Autowired
 	private UserMapper userMapper;
 
-	private Logger daoLogger = Logger.getLogger(this.getClass());
+	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
 	public long insert(UserBean user, long recordRegId) throws DAOException, DuplicatedEntryException {

@@ -32,7 +32,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	@Autowired
 	private RoleMapper roleMapper;
 
-	private Logger daoLogger = Logger.getLogger(this.getClass());
+	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
 	public long insert(RoleBean role, long recordRegId) throws DAOException, DuplicatedEntryException {

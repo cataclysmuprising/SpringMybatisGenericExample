@@ -17,18 +17,18 @@ import org.testng.annotations.BeforeMethod;
 
 @ContextConfiguration(locations = { "classpath:spring-test-context.xml" })
 public class BaseDaoTest extends AbstractTransactionalTestNGSpringContextTests {
-	protected Logger logger = Logger.getLogger("stdout");
+	protected Logger daoLogger = Logger.getLogger("daoLogger");
 	protected static final int TEST_CREATE_USER_ID = 10009;
 	protected static final int TEST_UPDATE_USER_ID = 90001;
 
 	@BeforeMethod
 	public void beforeMethod(Method method) {
-		logger.info("***** DAO-TEST : Testing method '" + method.getName() + "' has started. *****");
+		daoLogger.info("***** DAO-TEST : Testing method '" + method.getName() + "' has started. *****");
 	}
 
 	@AfterMethod
 	public void afterMethod(Method method) {
-		logger.info("----- DAO-TEST : Testing method '" + method.getName() + "' has finished. -----");
+		daoLogger.info("----- DAO-TEST : Testing method '" + method.getName() + "' has finished. -----");
 	}
 
 	protected <T> void showEntriesOfCollection(Collection<T> collection) {
@@ -36,7 +36,7 @@ public class BaseDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 			Iterator<?> iterator = collection.iterator();
 			while (iterator.hasNext()) {
 				Object obj = iterator.next();
-				logger.info(" >>> " + obj.toString());
+				daoLogger.info(" >>> " + obj.toString());
 			}
 		}
 	}
@@ -46,7 +46,7 @@ public class BaseDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 	// try {
 	// UserBean action = new UserBean();
 	// MockDataGenerator.mock(action, GenerateMode.SINGLE);
-	// logger.info("After making mock object >>> " + action);
+	// daoLogger.info("After making mock object >>> " + action);
 	// } catch (Exception e) {
 	// e.printStackTrace();
 	// }

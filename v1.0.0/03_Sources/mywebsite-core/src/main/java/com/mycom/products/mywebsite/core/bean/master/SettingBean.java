@@ -59,7 +59,7 @@ public class SettingBean extends BaseBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("SettingBean [name=%s, value=%s, type=%s, group=%s, subGroup=%s, MetaDatas=%s]", name, value, type, group, subGroup, super.toString());
+		return String.format("SettingBean {name=%s, value=%s, type=%s, group=%s, subGroup=%s, ID=%s}", name, value, type, group, subGroup, getId());
 	}
 
 }

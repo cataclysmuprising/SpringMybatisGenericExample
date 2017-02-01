@@ -32,7 +32,7 @@ public class StaticContentDao
 	@Autowired
 	private StaticContentMapper staticContentMapper;
 
-	private Logger daoLogger = Logger.getLogger(this.getClass());
+	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
 	public long insert(StaticContentBean staticContent,

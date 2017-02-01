@@ -52,7 +52,7 @@ public class StaticContentBean extends BaseBean {
 
 	@Override
 	public String toString() {
-		return String.format("StaticContentBean [fileName=%s, filePath=%s, fileSize=%s, fileType=%s, MetaDatas=%s]", fileName, filePath, fileSize, fileType, super.toString());
+		return String.format("StaticContentBean {fileName=%s, filePath=%s, fileSize=%s, fileType=%s, ID=%s}", fileName, filePath, fileSize, fileType, getId());
 	}
 
 }

@@ -3,7 +3,8 @@
 <configuration>
 	<settings>
 		<setting name="cacheEnabled" value="true"/>
-		<setting name="lazyLoadingEnabled" value="false"/>
+		<setting name="lazyLoadingEnabled" value="true"/>
+		<setting name="aggressiveLazyLoading" value="false"/>
 		<setting name="multipleResultSetsEnabled" value="true"/>
 		<setting name="useColumnLabel" value="true"/>
 		<setting name="useGeneratedKeys" value="true"/>
@@ -12,9 +13,13 @@
 		<setting name="defaultStatementTimeout" value="25"/>
 		<setting name="safeRowBoundsEnabled" value="false"/>
 		<setting name="mapUnderscoreToCamelCase" value="false"/>
+		<setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
 		<setting name="localCacheScope" value="SESSION"/>
 		<setting name="jdbcTypeForNull" value="OTHER"/>
 		<setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+		<setting name="proxyFactory" value="JAVASSIST"/>
+		<setting name="defaultFetchSize" value="100"/>
+		<setting name="useActualParamName" value="true"/>
 		<setting name="logImpl" value="LOG4J"/>
 	</settings>  
   	

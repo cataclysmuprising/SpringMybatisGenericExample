@@ -56,7 +56,7 @@ public class UserRoleBean extends BaseBean implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("UserRoleBean [userId=%s, roleId=%s, user=%s, role=%s, MetaDatas=%s]", userId, roleId, user, role, super.toString());
+		return String.format("UserRoleBean {userId=%s, roleId=%s, user=%s, role=%s}", userId, roleId, user, role);
 	}
 
 }

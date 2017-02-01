@@ -31,7 +31,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	@Autowired
 	private SettingMapper settingMapper;
 
-	private Logger daoLogger = Logger.getLogger(this.getClass());
+	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
 	public long insert(SettingBean setting, long recordRegId) throws DAOException, DuplicatedEntryException {

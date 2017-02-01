@@ -58,7 +58,7 @@ public class RoleActionBean extends BaseBean implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("RoleActionBean [roleId=%s, actionId=%s, role=%s, action=%s, MetaDatas=%s]", roleId, actionId, role, action, super.toString());
+		return String.format("RoleActionBean {roleId=%s, actionId=%s, role=%s, action=%s}", roleId, actionId, role, action);
 	}
 
 }

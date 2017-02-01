@@ -28,7 +28,7 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 
 	@Autowired
 	private LoginHistoryMapper loginHistoryMapper;
-	private Logger daoLogger = Logger.getLogger(this.getClass());
+	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
 	public long insert(LoginHistoryBean loginHistory, long recordRegId) throws DAOException, DuplicatedEntryException {

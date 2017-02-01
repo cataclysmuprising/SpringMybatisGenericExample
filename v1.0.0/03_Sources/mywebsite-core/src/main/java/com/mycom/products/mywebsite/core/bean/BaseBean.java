@@ -105,7 +105,7 @@ public class BaseBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("<<< id=%s, recordRegId=%s, recordUpdId=%s, recordRegDate=%s, recordUpdDate=%s >>>", id, recordRegId, recordUpdId, recordRegDate, recordUpdDate);
+		return String.format("*** id=%s, recordRegId=%s, recordUpdId=%s, recordRegDate=%s, recordUpdDate=%s ***", id, recordRegId, recordUpdId, recordRegDate, recordUpdDate);
 	}
 
 }

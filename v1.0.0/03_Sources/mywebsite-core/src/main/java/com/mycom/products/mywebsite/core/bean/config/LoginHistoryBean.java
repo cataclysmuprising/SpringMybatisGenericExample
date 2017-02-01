@@ -69,7 +69,7 @@ public class LoginHistoryBean extends BaseBean implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("LoginHistoryBean [ipAddress=%s, os=%s, userAgent=%s, loginDate=%s, userId=%s, user=%s, toString()=%s]", ipAddress, os, userAgent, loginDate, userId, user, super.toString());
+		return String.format("LoginHistoryBean {ipAddress=%s, os=%s, userAgent=%s, loginDate=%s, userId=%s, user=%s, ID=%s}", ipAddress, os, userAgent, loginDate, userId, user, getId());
 	}
 
 }

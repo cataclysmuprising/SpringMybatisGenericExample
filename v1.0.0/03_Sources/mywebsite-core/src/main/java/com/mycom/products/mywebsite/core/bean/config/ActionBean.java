@@ -90,7 +90,7 @@ public class ActionBean extends BaseBean implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("ActionBean [page=%s, actionName=%s, displayName=%s, url=%s, roleIds=%s, roles=%s, actionType=%s, description=%s, MetaDatas=%s]", page, actionName, displayName, url, roleIds, roles, actionType, description, super.toString());
+		return String.format("ActionBean {page=%s, actionName=%s, displayName=%s, url=%s, roleIds=%s, roles=%s, actionType=%s, description=%s, ID=%s}", page, actionName, displayName, url, roleIds, roles, actionType, description, getId());
 	}
 
 }

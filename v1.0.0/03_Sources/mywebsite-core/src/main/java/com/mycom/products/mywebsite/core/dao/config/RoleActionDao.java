@@ -30,7 +30,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 
 	@Autowired
 	private RoleActionMapper roleActionMapper;
-	private Logger daoLogger = Logger.getLogger(this.getClass());
+	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
 	public void insert(RoleActionBean roleAction, long recordRegId) throws DAOException, DuplicatedEntryException {
@@ -217,6 +217,8 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		daoLogger.debug("[START] : >>> --- Fetching single 'RoleAction' informations with ==> roleId = " + roleId + " , actionId = " + actionId + " ---");
 		RoleActionBean roleAction = null;
 		try {
+			// Noticed : we don't allow for filtering from joined
+			// tables.FetchMode is just only for eager or lazy loading
 			roleAction = roleActionMapper.selectByKeys(roleId, actionId, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'RoleAction' informations with ==> roleId = " + roleId + " , actionId = " + actionId + " xxx";
@@ -232,7 +234,9 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'RoleAction' informations with criteria ---");
 		List<RoleActionBean> results = null;
 		try {
-			results = roleActionMapper.selectList(criteria, fetchMode);
+			// Noticed : we don't allow for filtering from joined
+			// tables.FetchMode is just only for eager or lazy loading
+			results = roleActionMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'RoleAction' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -247,7 +251,8 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		daoLogger.debug("[START] : >>> --- Fetching 'RoleAction' counts with criteria ---");
 		long count = 0;
 		try {
-			count = roleActionMapper.selectCounts(criteria);
+			// we don't allow for filtering from joined tables
+			count = roleActionMapper.selectCounts(criteria, null);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'RoleAction' records with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);

@@ -3,18 +3,18 @@
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.RoleActionMapper">
 
-	<resultMap 	type="RoleActionBean" 		id="Parent_RoleRoleActionResult">
+	<resultMap 	type="RoleActionBean" 		id="Parent_RoleActionResult">
 		<result property="roleId" 			column="role_id" />
 		<result property="actionId" 		column="action_id" />
 	</resultMap>
 	
-	<resultMap 	 	 type="RoleActionBean" 		id="RoleActionResult" extends="Parent_RoleRoleActionResult">
+	<resultMap 	 	 type="RoleActionBean" 		id="RoleActionResult" extends="Parent_RoleActionResult">
 		<result 	 property="recordRegId" 	column="record_reg_id"/>
 		<result 	 property="recordUpdId" 	column="record_upd_id"/>
 		<result 	 property="recordRegDate" 	column="record_reg_date"/>
 		<result 	 property="recordUpdDate" 	column="record_upd_date"/>	
-		<association property="role" 			resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
-		<association property="action" 			resultMap="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.Parent_RoleActionResult" />
+		<association property="role" 			fetchType="lazy"  	resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
+		<association property="action" 			fetchType="lazy"	resultMap="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.Parent_ActionResult" />
 	</resultMap>
 
 	<sql id="tables">
@@ -25,101 +25,55 @@
 		</if>		
 	</sql>
 	
-	<sql id="meta_columns">
-		roleAction.record_reg_id,
-		roleAction.record_upd_id,
-		roleAction.record_reg_date,
-		roleAction.record_upd_date,	
-	</sql>
-			
 	<sql id="main_columns">
 		roleAction.role_id,
 		roleAction.action_id
 	</sql>
 	
+	<sql id="meta_columns">
+		,roleAction.record_reg_id
+		,roleAction.record_upd_id
+		,roleAction.record_reg_date
+		,roleAction.record_upd_date
+	</sql>	
+	
 	<sql id="columns">
-		<include refid="meta_columns" />
 		<include refid="main_columns" />
 		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
 			,<include refid="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.main_columns" />
 			,<include refid="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.main_columns" />
-		</if>		
+		</if>
+		<include refid="meta_columns" />		
 	</sql>
 
 	<sql id="criterias">
-		<where>
-			<if test="roleId != null">
-				and role_id = #{roleId}
-			</if>
-			<if test="actionId != null">
-				and action_id = #{actionId}
-			</if>
-		</where>
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.roleId != null">
+					AND roleAction.role_id = #{criteria.roleId}
+				</if>
+				<if test="criteria.actionId != null">
+					AND roleAction.action_id = #{criteria.actionId}
+				</if>
+			</where>
+		</if>
 	</sql>
 		
 	<sql id="orders">
 		order by
 		<choose>
-			<when test="orderBy == 'roleId'">
-				role_id ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'roleId'">
+				roleAction.role_id ${criteria.orderAs}
 			</when>
-			<when test="orderBy == 'actionId'">
-				action_id ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'actionId'">
+				roleAction.action_id ${criteria.orderAs}
 			</when>
 			<otherwise>
-				role_id DESC
+				roleAction.role_id DESC
 			</otherwise>
 		</choose>
 	</sql>
 	
-	<insert id="insert" parameterType="RoleActionBean">
-		insert into mjr_role_action(
-		role_id,
-		action_id,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date		
-		) values (
-		#{role.id},
-		#{action.id},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate}		
-		)
-	</insert>
-	
-	<update id="update" parameterType="RoleActionBean">
-		update mjr_role_action
-		<set>
-			record_upd_id = #{recordUpdId},
-			record_upd_date = getDate(),		
-			<if test="role.id !=null"> role_id= #{role.id},</if>
-			<if test="action.id !=null">action_id= #{action.id},</if>
-		</set>
-		<where>
-			<if test="role.id != null">
-				 role_id = #{role.id}
-			</if>
-			<if test="action.id != null">
-				 and action_id = #{action.id}
-			</if>			
-		</where>
-	</update>
-
-	<delete id="delete" parameterType="map">
-		delete from mjr_role_action
-		<where>
-			<if test="roleId != null">
-				and role_id = ${roleId}
-			</if>
-			<if test="actionId != null">
-				and action_id = ${actionId}
-			</if>			
-		</where>
-	</delete>
-
 	<select id="selectMultiRecords"  resultMap="RoleActionResult">
 		SELECT
 		<include refid="columns"  />
@@ -131,9 +85,37 @@
 			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>
 	</select>
+	
+	<select id="selectRelatedKeys" resultType="long">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			SELECT
+			<choose>
+				<when test="criteria.roleId != null">
+					roleAction.action_id
+				</when>
+				<otherwise>
+					roleAction.role_id
+				</otherwise>
+			</choose>
+			FROM mjr_role_action roleAction
+			<include refid="criterias" />	
+			<include refid="orders" />		
+		</if>
+	</select>	
+	
+	<select id="selectByKeys" resultMap="RoleActionResult">
+		<if test="key1 != null and key2 !=null">
+			SELECT
+			<include refid="columns"  />
+			<include refid="tables" />
+			WHERE 
+				roleAction.role_id = #{key1}
+				AND roleAction.action_id = #{key2}
+		</if>
+	</select>	
 
 	<select id="selectCounts" resultType="long">
-		SELECT count(DISTINCT action.id)
+		SELECT count(*)
 		<include refid="tables" />
 		<include refid="criterias" />
 	</select>

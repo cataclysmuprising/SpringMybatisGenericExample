@@ -3,143 +3,120 @@
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.UserRoleMapper">
 
-	<resultMap type="UserRoleBean" id="UserRoleResult">
-		<result property="recordRegId" column="record_reg_id"/>
-		<result property="recordUpdId" column="record_upd_id"/>
-		<result property="recordRegDate" column="record_reg_date"/>
-		<result property="recordUpdDate" column="record_upd_date"/>	
-		<association property="user" column="user_id" select="com.mycom.products.mywebsite.core.mapper.config.UserMapper.selectById" />
-		<association property="role" column="role_id" select="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.selectById" />
+	<resultMap 	type="UserRoleBean" 		id="Parent_UserRoleResult">
+		<result property="userId" 		column="user_id" />
+		<result property="roleId" 			column="role_id" />
+	</resultMap>
+	
+	<resultMap 	 	 type="UserRoleBean" 		id="UserRoleResult" extends="Parent_UserRoleResult">
+		<result 	 property="recordRegId" 	column="record_reg_id"/>
+		<result 	 property="recordUpdId" 	column="record_upd_id"/>
+		<result 	 property="recordRegDate" 	column="record_reg_date"/>
+		<result 	 property="recordUpdDate" 	column="record_upd_date"/>	
+		<association property="user" 			fetchType="lazy"	resultMap="com.mycom.products.mywebsite.core.mapper.config.UserMapper.Parent_UserResult" />
+		<association property="role" 			fetchType="lazy"  	resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
 	</resultMap>
 
-	<sql id="self_table">
-		from mjr_user_role ur
+	<sql id="tables">
+		FROM mjr_user_role userRole
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			INNER JOIN mjr_user usr ON userRole.user_id = usr.id
+			INNER JOIN mjr_role role ON userRole.role_id = role.id
+		</if>		
 	</sql>
 	
+	<sql id="main_columns">
+		userRole.user_id,
+		userRole.role_id
+	</sql>
+	
+	<sql id="meta_columns">
+		,userRole.record_reg_id
+		,userRole.record_upd_id
+		,userRole.record_reg_date
+		,userRole.record_upd_date
+	</sql>	
+	
 	<sql id="columns">
-		select
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date,		
-		user_id,
-		role_id
+		<include refid="main_columns" />
+		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.UserMapper.main_columns" />
+			,<include refid="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.main_columns" />
+		</if>
+		<include refid="meta_columns" />		
 	</sql>
 
 	<sql id="criterias">
-		<where>
-			<if test="userId != null">
-				and user_id = #{userId}
-			</if>	
-			<if test="roleId != null">
-				and role_id = #{roleId}
-			</if>
-		</where>
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.userId != null">
+					AND userRole.user_id = #{criteria.userId}
+				</if>			
+				<if test="criteria.roleId != null">
+					AND userRole.role_id = #{criteria.roleId}
+				</if>
+			</where>
+		</if>
 	</sql>
 		
 	<sql id="orders">
 		order by
 		<choose>
-			<when test="orderBy == 'userId'">
-				user_id ${orderAs}
+			<when test="criteria !=null and criteria.orderBy == 'userId'">
+				userRole.user_id ${criteria.orderAs}
 			</when>
-			<when test="orderBy == 'roleId'">
-				role_id ${orderAs}
-			</when>
+			<when test="criteria !=null and criteria.orderBy == 'roleId'">
+				userRole.role_id ${criteria.orderAs}
+			</when>			
 			<otherwise>
-				user_id DESC
+				userRole.role_id DESC
 			</otherwise>
 		</choose>
 	</sql>
 	
-	<insert id="insert" parameterType="UserRoleBean">
-		insert into mjr_user_role(
-		user_id,
-		role_id,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date		
-		) values (
-		#{user.id},
-		#{role.id},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate}		
-		)
-	</insert>
-	
-	<insert id="insertHistory" parameterType="UserRoleBean">
-		insert into mjr_user_role_history(
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date,		
-		transaction_date,
-		transaction_type,	
-		user_id,
-		role_id
-		) values (
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate},
-		getDate(),
-		#{transactionType},	
-		#{user.id},
-		#{role.id}
-		)
-	</insert>
-	
-	<update id="update" parameterType="UserRoleBean">
-		update mjr_user_role
-		<set>
-			record_upd_id = #{recordUpdId},
-			record_upd_date = getDate(),		
-			<if test="user.id != 0">user_id= #{user.id},</if>
-			<if test="role.id != 0">role_id= #{role.id},</if>
-		</set>
-		<where>
-			<if test="user.id != null">
-				 user_id = #{user.id}
-			</if>
-			<if test="role.id != null">
-				 and role_id = #{role.id}
-			</if>			
-		</where>
-	</update>
-
-	<delete id="delete" parameterType="map">
-		delete from  mjr_user_role 
-		<where>
-			<if test="id != null">
-				 id = ${id}
-			</if>
-			<if test="userId != null">
-				and user_id = ${userId}
-			</if>
-			<if test="roleId != null">
-				and role_id = ${roleId}
-			</if>
-			
-		</where>
-	</delete>
-		
-	<select id="selectByCriteria" parameterType="map" resultMap="UserRoleResult">
-		<include refid="columns" />
-		<include refid="self_table" />
+	<select id="selectMultiRecords"  resultMap="UserRoleResult">
+		SELECT
+		<include refid="columns"  />
+		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="offset != null and limit !=null and offset &gt; -1 and limit &gt; 0">
-			offset #{offset} rows
-			fetch next #{limit} rows only;
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+			OFFSET #{criteria.offset} ROWS
+			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>
-	</select> 
+	</select>
 	
-	<select id="selectCountByCriteria" resultType="int" parameterType="map">
-		select count(*)
-		<include refid="self_table" />
-		<include refid="criterias"/>
+	<select id="selectRelatedKeys" resultType="long">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			SELECT
+			<choose>
+				<when test="criteria.userId != null">
+					userRole.role_id
+				</when>
+				<otherwise>
+					userRole.user_id
+				</otherwise>
+			</choose>
+			FROM mjr_user_role userRole
+			<include refid="criterias" />	
+			<include refid="orders" />		
+		</if>
 	</select>	
+	
+	<select id="selectByKeys" resultMap="UserRoleResult">
+		<if test="key1 != null and key2 !=null">
+			SELECT
+			<include refid="columns"  />
+			<include refid="tables" />
+			WHERE
+			 	userRole.user_id = #{key1}
+				AND userRole.role_id = #{key2}
+		</if>
+	</select>	
+
+	<select id="selectCounts" resultType="long">
+		SELECT count(*)
+		<include refid="tables" />
+		<include refid="criterias" />
+	</select>
 </mapper>

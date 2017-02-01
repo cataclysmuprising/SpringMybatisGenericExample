@@ -23,7 +23,7 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 
 	@Autowired
 	private ActionMapper actionMapper;
-	private Logger daoLogger = Logger.getLogger(this.getClass());
+	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
 	public ActionBean select(long primaryKey, FetchMode fetchMode) throws DAOException {

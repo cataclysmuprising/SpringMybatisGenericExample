@@ -22,10 +22,11 @@ public interface XGenericMapper<T extends BaseBean> extends InsertableMapper<T> 
 
 	public List<Integer> selectRelatedKeys(@Param("criteria") Map<String, Object> criteria);
 
-	public T selectByKeys(@Param("key1") long key1, @Param("key2") long key2, FetchMode fetchMode);
+	public T selectByKeys(@Param("key1") long key1, @Param("key2") long key2, @Param("fetchMode") FetchMode fetchMode);
 
-	public List<T> selectList(@Param("criteria") Map<String, Object> criteria, FetchMode fetchMode);
+	public List<T> selectMultiRecords(@Param("criteria") Map<String, Object> criteria,
+			@Param("fetchMode") FetchMode fetchMode);
 
-	public long selectCounts(@Param("criteria") Map<String, Object> criteria);
+	public long selectCounts(@Param("criteria") Map<String, Object> criteria, @Param("fetchMode") FetchMode fetchMode);
 
 }

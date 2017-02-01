@@ -30,7 +30,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 
 	@Autowired
 	private UserRoleMapper userRoleMapper;
-	private Logger daoLogger = Logger.getLogger(this.getClass());
+	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
 	public void insert(UserRoleBean userRole, long recordRegId) throws DAOException, DuplicatedEntryException {
@@ -217,6 +217,8 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 		daoLogger.debug("[START] : >>> --- Fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " ---");
 		UserRoleBean userRole = null;
 		try {
+			// Noticed : we don't allow for filtering from joined
+			// tables.FetchMode is just only for eager or lazy loading
 			userRole = userRoleMapper.selectByKeys(userId, roleId, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " xxx";
@@ -232,7 +234,9 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'UserRole' informations with criteria ---");
 		List<UserRoleBean> results = null;
 		try {
-			results = userRoleMapper.selectList(criteria, fetchMode);
+			// Noticed : we don't allow for filtering from joined
+			// tables.FetchMode is just only for eager or lazy loading
+			results = userRoleMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'UserRole' informations with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);
@@ -247,7 +251,8 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 		daoLogger.debug("[START] : >>> --- Fetching 'UserRole' counts with criteria ---");
 		long count = 0;
 		try {
-			count = userRoleMapper.selectCounts(criteria);
+			// we don't allow for filtering from joined tables
+			count = userRoleMapper.selectCounts(criteria, null);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'UserRole' records with criteria ==> " + criteria + " xxx";
 			daoLogger.error(errorMsg, e);

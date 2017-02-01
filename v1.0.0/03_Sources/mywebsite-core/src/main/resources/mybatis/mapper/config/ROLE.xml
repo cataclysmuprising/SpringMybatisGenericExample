@@ -28,30 +28,30 @@
 		</if>		
 	</sql>
 
-	<sql id="meta_columns">
-		role.record_reg_id,
-		role.record_upd_id,
-		role.record_reg_date,
-		role.record_upd_date,	
-	</sql>
-			
 	<sql id="main_columns">
 		role.id AS roleId,
 		role.name AS roleName,
 		role.description AS roleDescription
 	</sql>
 	
+	<sql id="meta_columns">
+		,role.record_reg_id
+		,role.record_upd_id
+		,role.record_reg_date
+		,role.record_upd_date	
+	</sql>	
+	
 	<sql id="columns">
-		<include refid="meta_columns" />
 		<include refid="main_columns" />	
 		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
 			,<include refid="com.mycom.products.mywebsite.core.mapper.config.UserMapper.main_columns" />
 			,<include refid="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.main_columns" />
-		</if>		
+		</if>	
+		<include refid="meta_columns" />	
 	</sql>	
 
 	<sql id="criterias">
-		<if test="criteria != null">
+		<if test="criteria != null and criteria.keySet().size() > 0">
 			<where>
 				<if test="criteria.id != null">
 					role.id = #{criteria.id}

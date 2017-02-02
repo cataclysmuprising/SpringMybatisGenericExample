@@ -3,28 +3,34 @@
  * @Since 1.0
  * 
  */
-package com.mycom.products.mywebsite.core.daoTest.config;
+package com.mycom.products.mywebsite.core.unitTest.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.mycom.products.mywebsite.core.TestBase;
 import com.mycom.products.mywebsite.core.bean.config.RoleBean;
 import com.mycom.products.mywebsite.core.dao.config.RoleDao;
-import com.mycom.products.mywebsite.core.daoTest.BaseDaoTest;
-import com.mycom.products.mywebsite.core.daoTest.base.JoinedSelectableDaoTest;
 import com.mycom.products.mywebsite.core.exception.DAOException;
+import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
+import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
+import com.mycom.products.mywebsite.core.unitTest.base.JoinedSelectableUnitTest;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class RoleDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest {
+public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, InsertableUnitTest {
 	@Autowired
 	private RoleDao roleDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
 
+	// --------------------------------- for fetching
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectAllWithLazyMode() throws DAOException {
@@ -151,5 +157,37 @@ public class RoleDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest 
 		RoleBean role = roleDao.select(criteria, FetchMode.EAGER);
 		Assert.assertNotNull(role);
 		testLogger.info("Role ==> " + role);
+	}
+
+	// --------------------------------- for insertion
+	@Override
+	@Test(groups = { "insert" })
+	@Transactional
+	@Rollback(true)
+	public void testInsert() throws DAOException, DuplicatedEntryException {
+		RoleBean role = new RoleBean();
+		role.setName("FINANCE");
+		role.setDescription("This role can manage the finicial processes.");
+		long lastInsertedId = roleDao.insert(role, TEST_CREATE_USER_ID);
+		Assert.assertEquals(true, lastInsertedId > 0);
+		testLogger.info("Last inserted ID = " + lastInsertedId);
+	}
+
+	@Override
+	@Test(groups = { "insert" })
+	@Transactional
+	@Rollback(true)
+	public void testInsertList() throws DAOException, DuplicatedEntryException {
+		List<RoleBean> records = new ArrayList<>();
+		RoleBean record1 = new RoleBean();
+		record1.setName("STAFF");
+		record1.setDescription("This role aim to own for all staffs.");
+		records.add(record1);
+
+		RoleBean record2 = new RoleBean();
+		record2.setName("FINANCE");
+		record2.setDescription("This role can manage the finicial processes.");
+		records.add(record2);
+		roleDao.insert(records, TEST_CREATE_USER_ID);
 	}
 }

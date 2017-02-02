@@ -78,7 +78,7 @@ CREATE TABLE [hst_user]
 	[password] nvarchar(500),
 	[nrc] nvarchar(50),
 	[phone] nvarchar(50),
-	[dob] nvarchar(50),
+	[dob] date,
 	[address] nvarchar(max),
 	[transaction_date] datetime DEFAULT getDate() NOT NULL,
 	[transaction_type] tinyint DEFAULT 0,
@@ -92,6 +92,7 @@ CREATE TABLE [hst_user]
 CREATE TABLE [mjr_action]
 (
 	[id] bigint NOT NULL UNIQUE IDENTITY ,
+	[module] nvarchar(20) NOT NULL,
 	[page] nvarchar(20) NOT NULL,
 	[action_name] nvarchar(50) NOT NULL UNIQUE,
 	[display_name] nvarchar(50) NOT NULL UNIQUE,
@@ -195,7 +196,7 @@ CREATE TABLE [mjr_user]
 	[password] nvarchar(500) NOT NULL,
 	[nrc] nvarchar(50) NOT NULL,
 	[phone] nvarchar(50) NOT NULL,
-	[dob] nvarchar(50),
+	[dob] date,
 	[address] nvarchar(max),
 	[record_reg_id] bigint NOT NULL,
 	[record_upd_id] bigint NOT NULL,

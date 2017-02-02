@@ -78,38 +78,53 @@
 			</otherwise>
 		</choose>
 	</sql>
-		
-	<insert id="insert" parameterType="LoginHistoryBean" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO mjr_login_history(
-		user_id,
-		login_date,
-		ip_address,
-		<if test="os != null">
-			os,
-		</if>
-		<if test="userAgent != null">
-			user_agent,
-		</if>
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date		
-		) values (
-		#{userId},
-		#{loginDate},
-		#{ipAddress},
-		<if test="os != null">
-			#{os},
-		</if>
-		<if test="userAgent != null">
-			#{userAgent},
-		</if>
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate}		
+	
+	<sql id="major_table_columns">
+		user_id,	
+		login_date,		
+		ip_address,		
+		os,		
+		user_agent
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{userId},	
+		#{loginDate},	
+		#{ipAddress},	
+		#{os},	
+		#{userAgent}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.userId},	
+		#{record.loginDate},	
+		#{record.ipAddress},	
+		#{record.os},	
+		#{record.userAgent}
+	</sql>
+			
+	<insert id="insert" parameterType="UserBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO mjr_login_history (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
 		)
 	</insert>
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_login_history (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>	
 	
 	<select id="selectByPrimaryKey" resultMap="LoginHistoryResult">
 		SELECT
@@ -132,7 +147,7 @@
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
 			OFFSET #{criteria.offset} ROWS
 			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>

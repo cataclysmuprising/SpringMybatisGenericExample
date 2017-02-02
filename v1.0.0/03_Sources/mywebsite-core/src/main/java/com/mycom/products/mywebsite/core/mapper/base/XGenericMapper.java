@@ -14,7 +14,8 @@ import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
 public interface XGenericMapper<T extends BaseBean> extends InsertableMapper<T> {
-	public void insert(long key1, long key2, long recordRegId);
+	public void insertWithRelatedKeys(@Param("key1") long key1, @Param("key2") long key2,
+			@Param("recordRegId") long recordRegId);
 
 	public long deleteByKeys(@Param("key1") long key1, @Param("key2") long key2);
 

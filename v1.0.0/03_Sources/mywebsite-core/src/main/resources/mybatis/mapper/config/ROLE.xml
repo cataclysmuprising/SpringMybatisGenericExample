@@ -97,6 +97,71 @@
 		</choose>
 	</sql>
 	
+	<sql id="major_table_columns">
+		name,
+		description
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{name},
+		#{description}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.name},
+		#{record.description}
+	</sql>	
+	
+	<insert id="insert" parameterType="RoleBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO mjr_role (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
+		)
+	</insert>
+	
+	<insert id="saveHistory" parameterType="RoleBean">
+		INSERT INTO hst_role (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_fields" />		
+		)
+	</insert>	
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_role (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>
+		
+	<insert id="saveHistoryList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO hst_role (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_iterate_fields" />	        
+	       </foreach>	
+       </if>			
+	</insert>
+	
 	<select id="selectByPrimaryKey" resultMap="RoleResult">
 		SELECT
 		<include refid="columns" />
@@ -118,7 +183,7 @@
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
 			OFFSET #{criteria.offset} ROWS
 			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>

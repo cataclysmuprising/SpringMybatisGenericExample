@@ -11,6 +11,7 @@ import com.mycom.products.mywebsite.core.bean.BaseBean;
 
 public class ActionBean extends BaseBean implements java.io.Serializable {
 	private static final long serialVersionUID = -7891646684080105708L;
+	private String module;
 	private String page;
 	private String actionName;
 	private String displayName;
@@ -88,9 +89,17 @@ public class ActionBean extends BaseBean implements java.io.Serializable {
 		this.description = description;
 	}
 
+	public String getModule() {
+		return module;
+	}
+
+	public void setModule(String module) {
+		this.module = module;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("ActionBean {page=%s, actionName=%s, displayName=%s, url=%s, roleIds=%s, roles=%s, actionType=%s, description=%s, ID=%s}", page, actionName, displayName, url, roleIds, roles, actionType, description, getId());
+		return String.format("ActionBean {module=%s, page=%s, actionName=%s, displayName=%s, url=%s, roleIds=%s, roles=%s, actionType=%s, description=%s, ID=%s}", module, page, actionName, displayName, url, roleIds, roles, actionType, description, getId());
 	}
 
 }

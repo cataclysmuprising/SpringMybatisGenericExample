@@ -16,7 +16,7 @@
 		<result property="dob" 				column="dob" jdbcType="DATE"/>
 		<result property="address" 			column="address" />
 		<result property="contentId" 		column="content_id" />
-		<result property="lastLoginDate" 	column="lastLoginDate" jdbcType="TIMESTAMP"/>
+		<result property="lastLoginDate" 	column="lastLoginDate" />
 	</resultMap>
 	
 	<resultMap  	 type="UserBean" 			id="UserResult" extends="Parent_UserResult">
@@ -25,7 +25,7 @@
 		<result 	 property="recordRegDate" 	column="record_reg_date"/>
 		<result 	 property="recordUpdDate" 	column="record_upd_date"/>			
 		<association property="content" 		javaType="StaticContentBean"  resultMap="com.mycom.products.mywebsite.core.mapper.master.StaticContentMapper.Parent_StaticContentResult" />
-		<collection  property="roles" 			ofType="RoleBean" 		  resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
+		<collection  property="roles" 			ofType="RoleBean" 		  	  resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
 	</resultMap>
 	
 	<sql id="tables">
@@ -151,60 +151,9 @@
 		</choose>
 	</sql>
 	
-	<insert id="insert" parameterType="UserBean" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO mjr_user (
+	<sql id="major_table_columns">
 		login_id,
-		age,
-		name,
-		gender,
-		email,
-		password,
-		nrc,
-		phone,
-		<if test="dob != null">
-			dob,
-		</if>		
-		<if test="address != null">
-			address,
-		</if>			
 		content_id,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date		
-		) values (
-		#{loginId},
-		#{age},
-		#{name},
-		#{gender},
-		#{email},
-		#{password},
-		#{nrc},
-		#{phone},
-		<if test="dob != null">
-			#{dob},
-		</if>		
-		<if test="address != null">
-			#{address},
-		</if>			
-		#{contentId},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate}		
-		)
-	</insert>
-	
-	<insert id="insertHistory" parameterType="UserBean">
-		INSERT INTO mjr_user_history (
-		id,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date,		
-		transaction_date,
-		transaction_type,	
-		login_id,
 		age,
 		name,
 		gender,
@@ -213,17 +162,12 @@
 		nrc,
 		phone,
 		dob,
-		address,
-		content_id
-		) values (
-		#{id},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate},
-		getDate(),
-		#{transactionType},	
+		address
+	</sql>
+	
+	<sql id="major_table_fields">
 		#{loginId},
+		#{contentId},
 		#{age},
 		#{name},
 		#{gender},
@@ -232,37 +176,72 @@
 		#{nrc},
 		#{phone},
 		#{dob},
-		#{address},
-		#{contentId})
-	</insert>	
-
-	<update id="update" parameterType="UserBean">
-		UPDATE mjr_user
-		<set>
-			usr.record_upd_id = #{recordUpdId},
-			usr.record_upd_date = getDate(),		
-			<if test="age != null">age= #{age},</if>
-			<if test="name != null">name= #{name},</if>
-			<if test="gender != null">gender= #{gender},</if>
-			<if test="email != null">email= #{email},</if>
-			<if test="password != null">password= #{password},</if>
-			<if test="nrc != null">nrc= #{nrc},</if>
-			<if test="phone != null">phone= #{phone},</if>
-			<if test="dob != null">dob= #{dob},</if>
-			<if test="address != null">address = #{address},</if>
-			<if test="contentId != null">content_id = #{contentId},</if>
-		</set>
-		WHERE usr.id = #{id} 
-	</update>
+		#{address}
+	</sql>
 	
-	<delete id="delete" parameterType="map">
-		DELETE FROM mjr_user
-		<where>
-			<if test="id != null">
-				 usr.id = #{id}
-			</if>
-		</where>
-	</delete>
+	<sql id="major_table_iterate_fields">
+		#{record.loginId},
+		#{record.contentId},
+		#{record.age},
+		#{record.name},
+		#{record.gender},
+		#{record.email},
+		#{record.password},
+		#{record.nrc},
+		#{record.phone},
+		#{record.dob},
+		#{record.address}
+	</sql>		
+	
+	<insert id="insert" parameterType="UserBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO mjr_user (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
+		)
+	</insert>
+	
+	<insert id="saveHistory" parameterType="UserBean">
+		INSERT INTO hst_user (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_fields" />		
+		)
+	</insert>	
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_user (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>
+		
+	<insert id="saveHistoryList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO hst_user (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_iterate_fields" />	        
+	       </foreach>	
+       </if>			
+	</insert>
 	
 	<select id="selectByPrimaryKey" resultMap="UserResult">
 		SELECT
@@ -285,7 +264,7 @@
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
 			OFFSET #{criteria.offset} ROWS
 			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>
@@ -295,6 +274,16 @@
 		SELECT count(DISTINCT usr.id)
 		<include refid="tables" />
 		<include refid="criterias" />
-	</select>	
+	</select>
+	
+	<select id="selectAuthenticatedUser" resultMap="UserResult">
+		SELECT
+		<include refid="columns" />
+		,usr.password
+		<include refid="tables" />
+		WHERE 
+			usr.login_id = #{loginId}
+			AND usr.password = #{password}
+	</select>		
 		
 </mapper>

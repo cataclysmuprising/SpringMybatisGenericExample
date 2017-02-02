@@ -105,82 +105,79 @@
 		</choose>
 	</sql>
 	
-	<insert id="insert" parameterType="SettingBean" useGeneratedKeys="true" keyProperty="id">
-		insert into mjr_setting(
-		setting_name,
-		setting_value,
-		setting_type,
-		setting_group,
-		setting_sub_group,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date
-		) values (
-		#{name},
-		#{value},
-		#{type},
-		#{group},
-		#{subGroup},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate}
-		)
-	</insert>
-	
-	<insert id="insertHistory" parameterType="SettingBean">
-		insert into mjr_setting_history(
-		id,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date,		
-		transaction_date,
-		transaction_type,		
+	<sql id="major_table_columns">
 		setting_name,
 		setting_value,
 		setting_type,
 		setting_group,
 		setting_sub_group
-		) values (
-		#{id},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate},
-		getDate(),
-		#{transactionType},	
+	</sql>
+	
+	<sql id="major_table_fields">
 		#{name},
 		#{value},
 		#{type},
 		#{group},
 		#{subGroup}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.name},
+		#{record.value},
+		#{record.type},
+		#{record.group},
+		#{record.subGroup}
+	</sql>		
+	
+	<insert id="insert" parameterType="RoleBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO mjr_setting (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
+		)
+	</insert>
+	
+	<insert id="saveHistory" parameterType="RoleBean">
+		INSERT INTO hst_setting (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_fields" />		
 		)
 	</insert>	
 	
-	<update id="update" parameterType="SettingBean">
-		update mjr_setting
-		<set>
-			record_upd_id = #{recordUpdId},
-			record_upd_date = getDate(),
-			<if test="name !=null">setting_name=#{name},</if>
-			<if test="value !=null">setting_value=#{value},</if>
-			<if test="type !=null">setting_type=#{type},</if>
-			<if test="group !=null">setting_group=#{group},</if> 
-			<if test="subGroup !=null">setting_sub_group=#{subGroup}</if>
-		</set>
-		where id = #{id}
-	</update>
-
-	<delete id="delete" parameterType="map">
-		delete from mjr_setting
-		<where>
-			<if test="id != null">
-				 id = #{id}
-			</if>
-		</where>
-	</delete>
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_setting (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>
+		
+	<insert id="saveHistoryList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO hst_setting (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_iterate_fields" />	        
+	       </foreach>	
+       </if>			
+	</insert>	
 	
 	<select id="selectByPrimaryKey" resultMap="SettingResult">
 		SELECT
@@ -203,7 +200,7 @@
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
 			OFFSET #{criteria.offset} ROWS
 			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>

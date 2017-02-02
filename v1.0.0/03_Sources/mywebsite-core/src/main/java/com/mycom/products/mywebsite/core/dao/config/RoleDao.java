@@ -5,7 +5,7 @@
  */
 package com.mycom.products.mywebsite.core.dao.config;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +38,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	public long insert(RoleBean role, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'Role' informations ---");
-			Timestamp now = new Timestamp(System.currentTimeMillis());
+			LocalDateTime now = LocalDateTime.now();
 			role.setRecordRegDate(now);
 			role.setRecordUpdDate(now);
 			role.setRecordRegId(recordRegId);
@@ -68,31 +68,31 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	@Override
 	public void insert(List<RoleBean> roles, long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'Role' informations ---");
+		LocalDateTime now = LocalDateTime.now();
 		for (RoleBean role : roles) {
-			try {
-				Timestamp now = new Timestamp(System.currentTimeMillis());
-				role.setRecordRegDate(now);
-				role.setRecordUpdDate(now);
-				role.setRecordRegId(recordRegId);
-				role.setRecordUpdId(recordRegId);
-				role.setTransactionType(TransactionType.INSERT);
-				roleMapper.insert(role);
-				daoLogger.debug("[HISTORY][START] : $1 --- Save 'Role' informations in history after successfully inserted in major table ---");
-				roleMapper.saveHistory(role);
-				daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
-			} catch (DuplicateKeyException e) {
-				String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DuplicatedEntryException(errorMsg, e);
-			} catch (SaveHistoryFailedException e) {
-				String errorMsg = "xxx Error occured while saving 'Role' informations in history for later tracking xxx";
-				daoLogger.error(errorMsg, e);
-				throw new SaveHistoryFailedException(errorMsg, e.getCause());
-			} catch (Exception e) {
-				String errorMsg = "xxx Error occured while inserting 'Role' data ==> " + role + " xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DAOException(errorMsg, e);
-			}
+			role.setRecordRegDate(now);
+			role.setRecordUpdDate(now);
+			role.setRecordRegId(recordRegId);
+			role.setRecordUpdId(recordRegId);
+			role.setTransactionType(TransactionType.INSERT);
+		}
+		try {
+			roleMapper.insertList(roles);
+			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Role' informations in history after successfully inserted in major table ---");
+			roleMapper.saveHistoryList(roles);
+			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (SaveHistoryFailedException e) {
+			String errorMsg = "xxx Error occured while saving 'Role' informations in history for later tracking xxx";
+			daoLogger.error(errorMsg, e);
+			throw new SaveHistoryFailedException(errorMsg, e.getCause());
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while inserting multi 'Role' datas ==> " + roles + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'Role' informations ---");
 	}

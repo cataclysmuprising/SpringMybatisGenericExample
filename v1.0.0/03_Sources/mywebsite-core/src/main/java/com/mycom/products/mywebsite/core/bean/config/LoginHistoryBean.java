@@ -6,7 +6,7 @@
 package com.mycom.products.mywebsite.core.bean.config;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean;
 
@@ -15,7 +15,7 @@ public class LoginHistoryBean extends BaseBean implements Serializable {
 	private String ipAddress;
 	private String os;
 	private String userAgent;
-	private Timestamp loginDate;
+	private LocalDateTime loginDate;
 	private long userId;
 	private UserBean user;
 
@@ -27,11 +27,11 @@ public class LoginHistoryBean extends BaseBean implements Serializable {
 		this.userId = userId;
 	}
 
-	public Timestamp getLoginDate() {
+	public LocalDateTime getLoginDate() {
 		return loginDate;
 	}
 
-	public void setLoginDate(Timestamp loginDate) {
+	public void setLoginDate(LocalDateTime loginDate) {
 		this.loginDate = loginDate;
 	}
 

@@ -3,7 +3,7 @@
  * @Since 1.0
  * 
  */
-package com.mycom.products.mywebsite.core.daoTest.config;
+package com.mycom.products.mywebsite.core.unitTest.config;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,22 +13,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.mycom.products.mywebsite.core.bean.config.UserBean;
-import com.mycom.products.mywebsite.core.dao.config.UserDao;
-import com.mycom.products.mywebsite.core.daoTest.BaseDaoTest;
-import com.mycom.products.mywebsite.core.daoTest.base.JoinedSelectableDaoTest;
+import com.mycom.products.mywebsite.core.TestBase;
+import com.mycom.products.mywebsite.core.bean.config.ActionBean;
+import com.mycom.products.mywebsite.core.dao.config.ActionDao;
 import com.mycom.products.mywebsite.core.exception.DAOException;
+import com.mycom.products.mywebsite.core.unitTest.base.JoinedSelectableUnitTest;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class UserDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest {
+public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest {
 	@Autowired
-	private UserDao userDao;
+	private ActionDao actionDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
 
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectAllWithLazyMode() throws DAOException {
-		List<UserBean> results = userDao.selectList(null, FetchMode.LAZY);
+		List<ActionBean> results = actionDao.selectList(null, FetchMode.LAZY);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
@@ -37,7 +37,7 @@ public class UserDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest 
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectAllWithEagerMode() throws DAOException {
-		List<UserBean> results = userDao.selectList(null, FetchMode.EAGER);
+		List<ActionBean> results = actionDao.selectList(null, FetchMode.EAGER);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
@@ -46,7 +46,7 @@ public class UserDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest 
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectAllCount() throws DAOException {
-		long count = userDao.selectCounts(null, null);
+		long count = actionDao.selectCounts(null, null);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
 	}
@@ -57,14 +57,11 @@ public class UserDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest 
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
-		// criteria.put("loginId", "super-user");
-		// criteria.put("name", "Super User");
-		// criteria.put("email", "superuser@gmail.com");
-		// criteria.put("nrc", "12/KMY(N)123455");
-		// criteria.put("phone", "09779988530");
-		// criteria.put("gender", Gender.MALE);
+		// criteria.put("page", "User");
+		// criteria.put("actionName", "userAdd");
+		// criteria.put("actionType", ActionType.SUB);
 		// criteria.put("word", "user");
-		long count = userDao.selectCounts(criteria, FetchMode.LAZY);
+		long count = actionDao.selectCounts(criteria, FetchMode.LAZY);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
 	}
@@ -74,18 +71,13 @@ public class UserDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest 
 	public void testSelectCountWithEagerCriteria() throws DAOException {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("roleId", 1);
-		// criteria.put("roleName", "SUPER_USER");
-		// criteria.put("contentId", 1);
 		// criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
-		// criteria.put("loginId", "super-user");
-		// criteria.put("name", "Super User");
-		// criteria.put("email", "superuser@gmail.com");
-		// criteria.put("nrc", "12/KMY(N)123455");
-		// criteria.put("phone", "09779988530");
-		// criteria.put("gender", Gender.MALE);
+		// criteria.put("page", "User");
+		// criteria.put("actionName", "userAdd");
+		// criteria.put("actionType", ActionType.SUB);
 		// criteria.put("word", "user");
-		long count = userDao.selectCounts(criteria, FetchMode.EAGER);
+		long count = actionDao.selectCounts(criteria, FetchMode.EAGER);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
 	}
@@ -96,18 +88,15 @@ public class UserDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest 
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
-		// criteria.put("loginId", "super-user");
-		// criteria.put("name", "Super User");
-		// criteria.put("email", "superuser@gmail.com");
-		// criteria.put("nrc", "12/KMY(N)123455");
-		// criteria.put("phone", "09-000000001");
-		// criteria.put("gender", Gender.MALE);
+		// criteria.put("page", "User");
+		// criteria.put("actionName", "userAdd");
+		// criteria.put("actionType", ActionType.SUB);
 		// criteria.put("word", "user");
 		criteria.put("offset", 0);
 		criteria.put("limit", 5);
-		criteria.put("orderBy", "loginDate");
+		criteria.put("orderBy", "page");
 		criteria.put("orderAs", "desc");
-		List<UserBean> results = userDao.selectList(criteria, FetchMode.LAZY);
+		List<ActionBean> results = actionDao.selectList(criteria, FetchMode.LAZY);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
 		showEntriesOfCollection(results);
@@ -118,22 +107,17 @@ public class UserDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest 
 	public void testSelectMultiRecordByCriteriaWithEagerMode() throws DAOException {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("roleId", 1);
-		// criteria.put("roleName", "SUPER_USER");
-		// criteria.put("contentId", 1);
 		// criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
-		// criteria.put("loginId", "super-user");
-		// criteria.put("name", "Super User");
-		// criteria.put("email", "superuser@gmail.com");
-		// criteria.put("nrc", "12/KMY(N)123455");
-		// criteria.put("phone", "09-000000001");
-		// criteria.put("gender", Gender.MALE);
+		// criteria.put("page", "User");
+		// criteria.put("actionName", "userAdd");
+		// criteria.put("actionType", ActionType.SUB);
 		// criteria.put("word", "user");
 		criteria.put("offset", 0);
 		criteria.put("limit", 5);
-		criteria.put("orderBy", "loginDate");
+		criteria.put("orderBy", "page");
 		criteria.put("orderAs", "desc");
-		List<UserBean> results = userDao.selectList(criteria, FetchMode.EAGER);
+		List<ActionBean> results = actionDao.selectList(criteria, FetchMode.EAGER);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
 		showEntriesOfCollection(results);
@@ -142,17 +126,17 @@ public class UserDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest 
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectByPrimaryKeyWithLazyMode() throws DAOException {
-		UserBean user = userDao.select(1, FetchMode.LAZY);
-		Assert.assertNotNull(user);
-		testLogger.info("User ==> " + user);
+		ActionBean action = actionDao.select(1, FetchMode.LAZY);
+		Assert.assertNotNull(action);
+		testLogger.info("Action ==> " + action);
 	}
 
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectByPrimaryKeyWithEagerMode() throws DAOException {
-		UserBean user = userDao.select(1, FetchMode.EAGER);
-		Assert.assertNotNull(user);
-		testLogger.info("User ==> " + user);
+		ActionBean action = actionDao.select(1, FetchMode.EAGER);
+		Assert.assertNotNull(action);
+		testLogger.info("Action ==> " + action);
 	}
 
 	@Override
@@ -160,9 +144,9 @@ public class UserDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest 
 	public void testSelectSingleRecordByCriteriaWithLazyMode() throws DAOException {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
-		UserBean user = userDao.select(criteria, FetchMode.LAZY);
-		Assert.assertNotNull(user);
-		testLogger.info("User ==> " + user);
+		ActionBean action = actionDao.select(criteria, FetchMode.LAZY);
+		Assert.assertNotNull(action);
+		testLogger.info("Action ==> " + action);
 	}
 
 	@Override
@@ -170,9 +154,17 @@ public class UserDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest 
 	public void testSelectSingleRecordByCriteriaWithEagerMode() throws DAOException {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
-		UserBean user = userDao.select(criteria, FetchMode.EAGER);
-		Assert.assertNotNull(user);
-		testLogger.info("User ==> " + user);
+		ActionBean action = actionDao.select(criteria, FetchMode.EAGER);
+		Assert.assertNotNull(action);
+		testLogger.info("Action ==> " + action);
+	}
+
+	@Test(groups = { "fetch" })
+	public void testSelectAllPageNamesByModule() throws Exception {
+		List<String> pageNames = actionDao.selectPageNamesByModule("back-end");
+		Assert.assertNotNull(pageNames);
+		Assert.assertEquals(true, pageNames.size() > 0);
+		showEntriesOfCollection(pageNames);
 	}
 
 }

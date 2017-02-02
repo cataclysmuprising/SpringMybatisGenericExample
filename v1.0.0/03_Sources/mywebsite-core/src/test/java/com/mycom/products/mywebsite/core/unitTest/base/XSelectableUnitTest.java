@@ -3,11 +3,11 @@
  * @Since 1.0
  * 
  */
-package com.mycom.products.mywebsite.core.daoTest.base;
+package com.mycom.products.mywebsite.core.unitTest.base;
 
 import com.mycom.products.mywebsite.core.exception.DAOException;
 
-public interface XSelectableDaoTest {
+public interface XSelectableUnitTest {
 
 	public void testSelectAllWithLazyMode() throws DAOException;
 

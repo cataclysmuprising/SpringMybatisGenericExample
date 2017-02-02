@@ -3,28 +3,36 @@
  * @Since 1.0
  * 
  */
-package com.mycom.products.mywebsite.core.daoTest.config;
+package com.mycom.products.mywebsite.core.unitTest.config;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.mycom.products.mywebsite.core.TestBase;
 import com.mycom.products.mywebsite.core.bean.config.LoginHistoryBean;
 import com.mycom.products.mywebsite.core.dao.config.LoginHistoryDao;
-import com.mycom.products.mywebsite.core.daoTest.BaseDaoTest;
-import com.mycom.products.mywebsite.core.daoTest.base.JoinedSelectableDaoTest;
 import com.mycom.products.mywebsite.core.exception.DAOException;
+import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
+import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
+import com.mycom.products.mywebsite.core.unitTest.base.JoinedSelectableUnitTest;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class LoginHistoryDaoTest extends BaseDaoTest implements JoinedSelectableDaoTest {
+public class LoginHistoryUnitTest extends TestBase
+		implements JoinedSelectableUnitTest, InsertableUnitTest {
 	@Autowired
 	private LoginHistoryDao loginHistoryDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
 
+	// --------------------------------- for fetching
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectAllWithLazyMode() throws DAOException {
@@ -135,6 +143,47 @@ public class LoginHistoryDaoTest extends BaseDaoTest implements JoinedSelectable
 		LoginHistoryBean loginHistory = loginHistoryDao.select(criteria, FetchMode.EAGER);
 		Assert.assertNotNull(loginHistory);
 		testLogger.info("LoginHistory ==> " + loginHistory);
+	}
+
+	// --------------------------------- for insertion
+	@Override
+	@Test(groups = { "insert" })
+	@Transactional
+	@Rollback(true)
+	public void testInsert() throws DAOException, DuplicatedEntryException {
+		LoginHistoryBean loginHistory = new LoginHistoryBean();
+		loginHistory.setIpAddress("192.168.0.1");
+		loginHistory.setLoginDate(LocalDateTime.now());
+		loginHistory.setOs("Window-8");
+		loginHistory.setUserAgent("Firefox 50");
+		loginHistory.setUserId(1);
+		long lastInsertedId = loginHistoryDao.insert(loginHistory, TEST_CREATE_USER_ID);
+		Assert.assertEquals(true, lastInsertedId > 0);
+		testLogger.info("Last inserted ID = " + lastInsertedId);
+	}
+
+	@Override
+	@Test(groups = { "insert" })
+	@Transactional
+	@Rollback(true)
+	public void testInsertList() throws DAOException, DuplicatedEntryException {
+		List<LoginHistoryBean> records = new ArrayList<>();
+		LoginHistoryBean record1 = new LoginHistoryBean();
+		record1.setIpAddress("192.168.0.2");
+		record1.setLoginDate(LocalDateTime.now());
+		record1.setOs("Window-7");
+		record1.setUserAgent("Chrome 32");
+		record1.setUserId(1);
+		records.add(record1);
+
+		LoginHistoryBean record2 = new LoginHistoryBean();
+		record2.setIpAddress("192.168.0.1");
+		record2.setLoginDate(LocalDateTime.now());
+		record2.setOs("Window-8");
+		record2.setUserAgent("Firefox 50");
+		record2.setUserId(1);
+		records.add(record2);
+		loginHistoryDao.insert(records, TEST_CREATE_USER_ID);
 	}
 
 }

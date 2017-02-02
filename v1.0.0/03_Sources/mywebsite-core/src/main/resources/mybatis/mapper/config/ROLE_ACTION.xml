@@ -74,13 +74,65 @@
 		</choose>
 	</sql>
 	
+	<sql id="major_table_columns">
+		role_id,	
+		action_id		
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{roleId},	
+		#{actionId}	
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.roleId},	
+		#{record.actionId}
+	</sql>
+	
+	<insert id="insert" parameterType="RoleActionBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO mjr_role_action (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
+		)
+	</insert>
+	
+	<insert id="insertWithRelatedKeys">
+		INSERT INTO mjr_role_action (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			#{key1},	
+			#{key2},
+			#{recordRegId},
+			#{recordRegId},<!-- both are same -->
+			,getDate()
+			,getDate()				
+		)
+	</insert>	
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO RoleActionBean (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>		
+	
 	<select id="selectMultiRecords"  resultMap="RoleActionResult">
 		SELECT
 		<include refid="columns"  />
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
 			OFFSET #{criteria.offset} ROWS
 			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>

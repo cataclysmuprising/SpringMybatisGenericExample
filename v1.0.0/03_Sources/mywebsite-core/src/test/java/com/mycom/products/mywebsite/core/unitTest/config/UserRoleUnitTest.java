@@ -3,7 +3,7 @@
  * @Since 1.0
  * 
  */
-package com.mycom.products.mywebsite.core.daoTest.config;
+package com.mycom.products.mywebsite.core.unitTest.config;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,14 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.mycom.products.mywebsite.core.TestBase;
 import com.mycom.products.mywebsite.core.bean.config.UserRoleBean;
 import com.mycom.products.mywebsite.core.dao.config.UserRoleDao;
-import com.mycom.products.mywebsite.core.daoTest.BaseDaoTest;
-import com.mycom.products.mywebsite.core.daoTest.base.XSelectableDaoTest;
 import com.mycom.products.mywebsite.core.exception.DAOException;
+import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
+import com.mycom.products.mywebsite.core.unitTest.base.XGenericUnitTest;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class UserRoleDaoTest extends BaseDaoTest implements XSelectableDaoTest {
+public class UserRoleUnitTest extends TestBase implements XGenericUnitTest {
+	// --------------------------------- for fetching
 	@Autowired
 	private UserRoleDao userRoleDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -115,5 +117,24 @@ public class UserRoleDaoTest extends BaseDaoTest implements XSelectableDaoTest {
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
+	}
+
+	// --------------------------------- for insertion
+	@Override
+	public void testInsert() throws DAOException, DuplicatedEntryException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testInsertList() throws DAOException, DuplicatedEntryException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testInsertWithRelatedKeys() throws DAOException, DuplicatedEntryException {
+		// TODO Auto-generated method stub
+
 	}
 }

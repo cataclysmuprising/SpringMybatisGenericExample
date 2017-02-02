@@ -92,84 +92,77 @@
 			</otherwise>
 		</choose>
 	</sql>
-
-	<insert id="insert" parameterType="StaticContentBean" useGeneratedKeys="true" keyProperty="id">
-		insert into mjr_static_content (
-		file_type,
-		file_name,
-		file_path,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date		
-		<if test="fileSize != null">,file_size</if>
-		) values(
-		#{fileType},
-		#{fileName},
-		#{filePath},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate}			
-		<if test="fileSize != null">,#{fileSize}</if>
-		)
-	</insert>
-
-	<insert id="insertHistory" parameterType="StaticContentBean">
-		insert into mjr_static_content_history (
-		id,
-		record_reg_id,
-		record_upd_id,
-		record_reg_date,
-		record_upd_date,		
-		transaction_date,
-		transaction_type,		
+	
+	<sql id="major_table_columns">
 		file_type,
 		file_name,
 		file_path,
 		file_size
-		) values (
-		#{id},
-		#{recordRegId},
-		#{recordUpdId},
-		#{recordRegDate},
-		#{recordUpdDate},
-		getDate(),
-		#{transactionType},		
+	</sql>
+	
+	<sql id="major_table_fields">
 		#{fileType},
 		#{fileName},
 		#{filePath},
 		#{fileSize}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.fileType},
+		#{record.fileName},
+		#{record.filePath},
+		#{record.fileSize}
+	</sql>	
+
+	<insert id="insert" parameterType="RoleBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO mjr_static_content (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
 		)
 	</insert>
-
-	<update id="update" parameterType="StaticContentBean">
-		update mjr_static_content
-		<set>
-			record_upd_id = #{recordUpdId},
-			record_upd_date = getDate(),		
-			<if test="fileType != null">file_type= #{fileType},</if>
-			<if test="fileName != null">file_name=#{fileName},</if>
-			<if test="filePath != null">file_path= #{filePath},</if>
-			<if test="fileSize != null">file_size= #{fileSize}</if>
-		</set>
-		where id = #{id} 
-	</update>
-
-	<delete id="delete" parameterType="map">
-		delete from mjr_static_content
-		<where>
-			<if test="id != null">
-				 id = #{id}
-			</if>
-			<if test="fileType != null">
-				 and file_type = #{fileType}
-			</if>			
-			<if test="fileName != null">
-				 and file_name = #{fileName}
-			</if>			
-		</where>
-	</delete>
+	
+	<insert id="saveHistory" parameterType="RoleBean">
+		INSERT INTO hst_static_content (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_fields" />		
+		)
+	</insert>	
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_static_content (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>
+		
+	<insert id="saveHistoryList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO hst_static_content (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_iterate_fields" />	        
+	       </foreach>	
+       </if>			
+	</insert>
 
 	<select id="selectByPrimaryKey" resultMap="StaticContentResult">
 		SELECT
@@ -192,7 +185,7 @@
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
 			OFFSET #{criteria.offset} ROWS
 			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>

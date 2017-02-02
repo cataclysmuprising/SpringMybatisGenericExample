@@ -5,7 +5,7 @@
  */
 package com.mycom.products.mywebsite.core.dao.master;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	public long insert(SettingBean setting, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'Setting' informations ---");
-			Timestamp now = new Timestamp(System.currentTimeMillis());
+			LocalDateTime now = LocalDateTime.now();
 			setting.setRecordRegDate(now);
 			setting.setRecordUpdDate(now);
 			setting.setRecordRegId(recordRegId);
@@ -67,31 +67,31 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	@Override
 	public void insert(List<SettingBean> settings, long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'Setting' informations ---");
+		LocalDateTime now = LocalDateTime.now();
 		for (SettingBean setting : settings) {
-			try {
-				Timestamp now = new Timestamp(System.currentTimeMillis());
-				setting.setRecordRegDate(now);
-				setting.setRecordUpdDate(now);
-				setting.setRecordRegId(recordRegId);
-				setting.setRecordUpdId(recordRegId);
-				setting.setTransactionType(TransactionType.INSERT);
-				settingMapper.insert(setting);
-				daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history after successfully inserted in major table ---");
-				settingMapper.saveHistory(setting);
-				daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
-			} catch (DuplicateKeyException e) {
-				String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DuplicatedEntryException(errorMsg, e);
-			} catch (SaveHistoryFailedException e) {
-				String errorMsg = "xxx Error occured while saving 'Setting' informations in history for later tracking xxx";
-				daoLogger.error(errorMsg, e);
-				throw new SaveHistoryFailedException(errorMsg, e.getCause());
-			} catch (Exception e) {
-				String errorMsg = "xxx Error occured while inserting 'Setting' data ==> " + setting + " xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DAOException(errorMsg, e);
-			}
+			setting.setRecordRegDate(now);
+			setting.setRecordUpdDate(now);
+			setting.setRecordRegId(recordRegId);
+			setting.setRecordUpdId(recordRegId);
+			setting.setTransactionType(TransactionType.INSERT);
+		}
+		try {
+			settingMapper.insertList(settings);
+			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history after successfully inserted in major table ---");
+			settingMapper.saveHistoryList(settings);
+			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (SaveHistoryFailedException e) {
+			String errorMsg = "xxx Error occured while saving 'Setting' informations in history for later tracking xxx";
+			daoLogger.error(errorMsg, e);
+			throw new SaveHistoryFailedException(errorMsg, e.getCause());
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while inserting multi 'Setting' datas ==> " + settings + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'Setting' informations ---");
 	}

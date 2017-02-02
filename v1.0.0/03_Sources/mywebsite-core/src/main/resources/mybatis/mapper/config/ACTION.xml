@@ -4,6 +4,7 @@
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.ActionMapper">
 	<resultMap  type="ActionBean" 			id="Parent_ActionResult">
 		<id 	property="id" 				column="actionId" />
+		<result property="module" 			column="module" />
 		<result property="page" 			column="page" />
 		<result property="actionName" 		column="actionName" />
 		<result property="displayName"  	column="display_name" />
@@ -30,6 +31,7 @@
 
 	<sql id="main_columns">
 		action.id AS actionId,
+		action.module,
 		action.page,
 		action.action_name AS actionName,
 		action.display_name,
@@ -80,6 +82,7 @@
 				<if test="criteria.word != null">
 				    AND
 				    (action.page 		   LIKE '%${criteria.word}%'
+				    OR action.module  	   LIKE '%${criteria.word}%'
 					OR action.action_name  LIKE '%${criteria.word}%'
 					OR action.display_name LIKE '%${criteria.word}%'
 					OR action.url 		   LIKE '%${criteria.word}%'
@@ -95,6 +98,9 @@
 			<when test="criteria !=null and criteria.orderBy == 'id'">
 				action.id ${criteria.orderAs}
 			</when>
+			<when test="criteria !=null and criteria.orderBy == 'module'">
+				action.module ${criteria.orderAs}
+			</when>			
 			<when test="criteria !=null and criteria.orderBy == 'page'">
 				action.page ${criteria.orderAs}
 			</when>
@@ -134,7 +140,7 @@
 		<include refid="tables" />
 		<include refid="criterias" />
 		<include refid="orders" />
-		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset &gt; -1 and criteria.limit &gt; 0">
+		<if test="criteria !=null and criteria.offset != null and criteria.limit !=null and criteria.offset > -1 and criteria.limit > 0">
 			OFFSET #{criteria.offset} ROWS
 			FETCH NEXT #{criteria.limit} ROWS ONLY;
 		</if>
@@ -146,9 +152,11 @@
 		<include refid="criterias" />
 	</select>
 	
-	<select id="selectAllPageNames" resultType="String">
+	<select id="selectPageNamesByModule" resultType="String" parameterType="String">
 		SELECT action.page
 		FROM mjr_action action
+		WHERE 
+			action.module = #{module}
 		GROUP BY action.page
 		ORDER BY action.page DESC
 	</select>

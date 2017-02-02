@@ -5,7 +5,7 @@
  */
 package com.mycom.products.mywebsite.core.dao.config;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +36,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	public void insert(RoleActionBean roleAction, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'RoleAction' informations ---");
-			Timestamp now = new Timestamp(System.currentTimeMillis());
+			LocalDateTime now = LocalDateTime.now();
 			roleAction.setRecordRegDate(now);
 			roleAction.setRecordUpdDate(now);
 			roleAction.setRecordRegId(recordRegId);
@@ -60,7 +60,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'RoleAction' informations ---");
 		for (RoleActionBean roleAction : roleActions) {
 			try {
-				Timestamp now = new Timestamp(System.currentTimeMillis());
+				LocalDateTime now = LocalDateTime.now();
 				roleAction.setRecordRegDate(now);
 				roleAction.setRecordUpdDate(now);
 				roleAction.setRecordRegId(recordRegId);
@@ -83,7 +83,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	public void insert(long roleId, long actionId, long recordRegId) throws DuplicatedEntryException, DAOException {
 		daoLogger.debug("[START] : >>> --- Inserting single 'RoleAction' informations ---");
 		try {
-			roleActionMapper.insert(roleId, actionId, recordRegId);
+			roleActionMapper.insertWithRelatedKeys(roleId, actionId, recordRegId);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
 			daoLogger.error(errorMsg, e);
@@ -169,7 +169,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 		daoLogger.debug("[START] : $3 --- Inserting newly selected actionIds[ " + insertIds + " ] for roleId # " + roleId + " ---");
 		if (insertIds.size() > 0) {
 			for (Integer actionId : insertIds) {
-				roleActionMapper.insert(roleId, actionId, recordUpdId);
+				roleActionMapper.insertWithRelatedKeys(roleId, actionId, recordUpdId);
 			}
 		}
 		daoLogger.debug("[FINISH] : $3 --- Inserting newly selected actionIds[ " + insertIds + " ] for roleId # " + roleId + " ---");

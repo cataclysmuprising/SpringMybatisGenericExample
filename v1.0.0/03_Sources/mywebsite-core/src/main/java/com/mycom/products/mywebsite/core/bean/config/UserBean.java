@@ -6,8 +6,8 @@
 package com.mycom.products.mywebsite.core.bean.config;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,11 +34,11 @@ public class UserBean extends BaseBean implements Serializable {
 	private String nrc;
 	private List<Integer> roleIds;
 	private Gender gender;
-	private Date dob;
+	private LocalDate dob;
 	private String address;
 	private List<RoleBean> roles;
 	private String dobAsString;
-	private Timestamp lastLoginDate;
+	private LocalDateTime lastLoginDate;
 	private int contentId;
 	private StaticContentBean content;
 
@@ -95,11 +95,11 @@ public class UserBean extends BaseBean implements Serializable {
 		this.phone = phone;
 	}
 
-	public Date getDob() {
+	public LocalDate getDob() {
 		return dob;
 	}
 
-	public void setDob(Date dob) {
+	public void setDob(LocalDate dob) {
 		this.dob = dob;
 		this.dobAsString = convertDateAsString(dob);
 	}
@@ -153,11 +153,11 @@ public class UserBean extends BaseBean implements Serializable {
 		this.roleIds = roleIds;
 	}
 
-	public Timestamp getLastLoginDate() {
+	public LocalDateTime getLastLoginDate() {
 		return lastLoginDate;
 	}
 
-	public void setLastLoginDate(Timestamp lastLoginDate) {
+	public void setLastLoginDate(LocalDateTime lastLoginDate) {
 		this.lastLoginDate = lastLoginDate;
 	}
 

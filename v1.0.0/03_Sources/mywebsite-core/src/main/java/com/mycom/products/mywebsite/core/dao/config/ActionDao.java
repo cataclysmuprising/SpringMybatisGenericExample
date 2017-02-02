@@ -85,17 +85,17 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 		return count;
 	}
 
-	public List<String> selectAllPageNames() throws DAOException {
-		daoLogger.debug("[START] : >>> --- Fetching all 'PageNames' ---");
+	public List<String> selectPageNamesByModule(String module) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching all 'PageNames' by module = '" + module + "' ---");
 		List<String> pageNames = null;
 		try {
-			pageNames = actionMapper.selectAllPageNames();
+			pageNames = actionMapper.selectPageNamesByModule(module);
 		} catch (Exception e) {
-			String errorMsg = "xxx Error occured while fetching 'PageNames' xxx";
+			String errorMsg = "xxx Error occured while fetching all 'PageNames' by module = '" + module + "' xxx";
 			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
-		daoLogger.debug("[FINISH] : <<< --- Fetching all 'PageNames' ---");
+		daoLogger.debug("[FINISH] : <<< --- Fetching all 'PageNames' by module = '" + module + "' ---");
 		return pageNames;
 	}
 }

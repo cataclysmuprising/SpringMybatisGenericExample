@@ -5,7 +5,7 @@
  */
 package com.mycom.products.mywebsite.core.dao.master;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public class StaticContentDao
 			long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'StaticContent' informations ---");
-			Timestamp now = new Timestamp(System.currentTimeMillis());
+			LocalDateTime now = LocalDateTime.now();
 			staticContent.setRecordRegDate(now);
 			staticContent.setRecordUpdDate(now);
 			staticContent.setRecordRegId(recordRegId);
@@ -70,31 +70,31 @@ public class StaticContentDao
 	public void insert(List<StaticContentBean> staticContents,
 			long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'StaticContent' informations ---");
+		LocalDateTime now = LocalDateTime.now();
 		for (StaticContentBean staticContent : staticContents) {
-			try {
-				Timestamp now = new Timestamp(System.currentTimeMillis());
-				staticContent.setRecordRegDate(now);
-				staticContent.setRecordUpdDate(now);
-				staticContent.setRecordRegId(recordRegId);
-				staticContent.setRecordUpdId(recordRegId);
-				staticContent.setTransactionType(TransactionType.INSERT);
-				staticContentMapper.insert(staticContent);
-				daoLogger.debug("[HISTORY][START] : $1 --- Save 'StaticContent' informations in history after successfully inserted in major table ---");
-				staticContentMapper.saveHistory(staticContent);
-				daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
-			} catch (DuplicateKeyException e) {
-				String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DuplicatedEntryException(errorMsg, e);
-			} catch (SaveHistoryFailedException e) {
-				String errorMsg = "xxx Error occured while saving 'StaticContent' informations in history for later tracking xxx";
-				daoLogger.error(errorMsg, e);
-				throw new SaveHistoryFailedException(errorMsg, e.getCause());
-			} catch (Exception e) {
-				String errorMsg = "xxx Error occured while inserting 'StaticContent' data ==> " + staticContent + " xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DAOException(errorMsg, e);
-			}
+			staticContent.setRecordRegDate(now);
+			staticContent.setRecordUpdDate(now);
+			staticContent.setRecordRegId(recordRegId);
+			staticContent.setRecordUpdId(recordRegId);
+			staticContent.setTransactionType(TransactionType.INSERT);
+		}
+		try {
+			staticContentMapper.insertList(staticContents);
+			daoLogger.debug("[HISTORY][START] : $1 --- Save 'StaticContent' informations in history after successfully inserted in major table ---");
+			staticContentMapper.saveHistoryList(staticContents);
+			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (SaveHistoryFailedException e) {
+			String errorMsg = "xxx Error occured while saving 'StaticContent' informations in history for later tracking xxx";
+			daoLogger.error(errorMsg, e);
+			throw new SaveHistoryFailedException(errorMsg, e.getCause());
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while inserting multi 'StaticContent' datas ==> " + staticContents + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'StaticContent' informations ---");
 	}

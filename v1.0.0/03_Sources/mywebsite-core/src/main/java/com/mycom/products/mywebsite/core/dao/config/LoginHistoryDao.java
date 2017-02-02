@@ -5,7 +5,7 @@
  */
 package com.mycom.products.mywebsite.core.dao.config;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +34,7 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 	public long insert(LoginHistoryBean loginHistory, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'LoginHistory' informations ---");
-			Timestamp now = new Timestamp(System.currentTimeMillis());
+			LocalDateTime now = LocalDateTime.now();
 			loginHistory.setRecordRegDate(now);
 			loginHistory.setRecordUpdDate(now);
 			loginHistory.setRecordRegId(recordRegId);
@@ -55,27 +55,27 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 	}
 
 	@Override
-	public void insert(List<LoginHistoryBean> loginHistorys,
+	public void insert(List<LoginHistoryBean> loginHistories,
 			long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'LoginHistory' informations ---");
-		for (LoginHistoryBean loginHistory : loginHistorys) {
-			try {
-				Timestamp now = new Timestamp(System.currentTimeMillis());
-				loginHistory.setRecordRegDate(now);
-				loginHistory.setRecordUpdDate(now);
-				loginHistory.setRecordRegId(recordRegId);
-				loginHistory.setRecordUpdId(recordRegId);
-				loginHistory.setTransactionType(TransactionType.INSERT);
-				loginHistoryMapper.insert(loginHistory);
-			} catch (DuplicateKeyException e) {
-				String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DuplicatedEntryException(errorMsg, e);
-			} catch (Exception e) {
-				String errorMsg = "xxx Error occured while inserting 'LoginHistory' data ==> " + loginHistory + " xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DAOException(errorMsg, e);
-			}
+		LocalDateTime now = LocalDateTime.now();
+		for (LoginHistoryBean loginHistory : loginHistories) {
+			loginHistory.setRecordRegDate(now);
+			loginHistory.setRecordUpdDate(now);
+			loginHistory.setRecordRegId(recordRegId);
+			loginHistory.setRecordUpdId(recordRegId);
+			loginHistory.setTransactionType(TransactionType.INSERT);
+		}
+		try {
+			loginHistoryMapper.insertList(loginHistories);
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while inserting multi 'LoginHistory' datas ==> " + loginHistories + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'LoginHistory' informations ---");
 	}

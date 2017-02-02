@@ -6,17 +6,16 @@
 package com.mycom.products.mywebsite.core.bean;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class BaseBean implements Serializable {
 	private static final long serialVersionUID = 5987804145999725843L;
 	public static final String LOGBREAKER = "---------------------------------------";
-	private SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	public enum TransactionType {
 		INSERT, UPDATE, DELETE;
@@ -29,9 +28,9 @@ public class BaseBean implements Serializable {
 	@JsonIgnore
 	private long recordUpdId;
 	@JsonIgnore
-	private Timestamp recordRegDate;
+	private LocalDateTime recordRegDate;
 	@JsonIgnore
-	private Timestamp recordUpdDate;
+	private LocalDateTime recordUpdDate;
 	@JsonIgnore
 	private TransactionType transactionType;
 
@@ -51,11 +50,11 @@ public class BaseBean implements Serializable {
 		this.recordRegId = recordRegId;
 	}
 
-	public Timestamp getRecordRegDate() {
+	public LocalDateTime getRecordRegDate() {
 		return recordRegDate;
 	}
 
-	public void setRecordRegDate(Timestamp recordRegDate) {
+	public void setRecordRegDate(LocalDateTime recordRegDate) {
 		this.recordRegDate = recordRegDate;
 	}
 
@@ -75,15 +74,15 @@ public class BaseBean implements Serializable {
 		this.recordUpdId = recordUpdId;
 	}
 
-	public Timestamp getRecordUpdDate() {
+	public LocalDateTime getRecordUpdDate() {
 		return recordUpdDate;
 	}
 
-	public void setRecordUpdDate(Timestamp recordUpdDate) {
+	public void setRecordUpdDate(LocalDateTime recordUpdDate) {
 		this.recordUpdDate = recordUpdDate;
 	}
 
-	protected String convertDateAsString(Date date) {
+	protected String convertDateAsString(LocalDate date) {
 		String dateString = "";
 		if (date != null) {
 			dateString = dateFormatter.format(date);
@@ -91,14 +90,10 @@ public class BaseBean implements Serializable {
 		return dateString;
 	}
 
-	protected Date convertStringAsDate(String dateString) {
-		Date date = null;
+	protected LocalDate convertStringAsDate(String dateString) {
+		LocalDate date = null;
 		if (dateString != null && dateString.length() > 0) {
-			try {
-				date = dateFormatter.parse(dateString);
-			} catch (ParseException e) {
-				// Nothing todo
-			}
+			date = LocalDate.parse(dateString, dateFormatter);
 		}
 		return date;
 	}

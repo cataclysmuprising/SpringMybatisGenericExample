@@ -3,27 +3,33 @@
  * @Since 1.0
  * 
  */
-package com.mycom.products.mywebsite.core.daoTest.master;
+package com.mycom.products.mywebsite.core.unitTest.master;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import com.mycom.products.mywebsite.core.TestBase;
 import com.mycom.products.mywebsite.core.bean.master.SettingBean;
 import com.mycom.products.mywebsite.core.dao.master.SettingDao;
-import com.mycom.products.mywebsite.core.daoTest.BaseDaoTest;
-import com.mycom.products.mywebsite.core.daoTest.base.StandAloneSelectableDaoTest;
 import com.mycom.products.mywebsite.core.exception.DAOException;
+import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
+import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
+import com.mycom.products.mywebsite.core.unitTest.base.StandAloneSelectableUnitTest;
 
-public class SettingDaoTest extends BaseDaoTest implements StandAloneSelectableDaoTest {
+public class SettingUnitTest extends TestBase implements StandAloneSelectableUnitTest, InsertableUnitTest {
 	@Autowired
 	private SettingDao settingDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
 
+	// --------------------------------- for fetching
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectAll() throws DAOException {
@@ -96,5 +102,46 @@ public class SettingDaoTest extends BaseDaoTest implements StandAloneSelectableD
 		SettingBean setting = settingDao.select(criteria);
 		Assert.assertNotNull(setting);
 		testLogger.info("Setting ==> " + setting);
+	}
+
+	// --------------------------------- for insertion
+	@Override
+	@Test(groups = { "insert" })
+	@Transactional
+	@Rollback(true)
+	public void testInsert() throws DAOException, DuplicatedEntryException {
+		SettingBean setting = new SettingBean();
+		setting.setName("test_name");
+		setting.setValue("test_value");
+		setting.setType("test_type");
+		setting.setGroup("test_group");
+		setting.setSubGroup("test_subgroup");
+		long lastInsertedId = settingDao.insert(setting, TEST_CREATE_USER_ID);
+		Assert.assertEquals(true, lastInsertedId > 0);
+		testLogger.info("Last inserted ID = " + lastInsertedId);
+	}
+
+	@Override
+	@Test(groups = { "insert" })
+	@Transactional
+	@Rollback(true)
+	public void testInsertList() throws DAOException, DuplicatedEntryException {
+		List<SettingBean> records = new ArrayList<>();
+		SettingBean record1 = new SettingBean();
+		record1.setName("test_name");
+		record1.setValue("test_value");
+		record1.setType("test_type");
+		record1.setGroup("test_group");
+		record1.setSubGroup("test_subgroup");
+		records.add(record1);
+
+		SettingBean record2 = new SettingBean();
+		record2.setName("test_name2");
+		record2.setValue("test_value2");
+		record2.setType("test_type2");
+		record2.setGroup("test_group2");
+		record2.setSubGroup("test_subgroup2");
+		records.add(record2);
+		settingDao.insert(records, TEST_CREATE_USER_ID);
 	}
 }

@@ -5,7 +5,7 @@
  */
 package com.mycom.products.mywebsite.core.dao.config;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +38,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	public long insert(UserBean user, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'User' informations ---");
-			Timestamp now = new Timestamp(System.currentTimeMillis());
+			LocalDateTime now = LocalDateTime.now();
 			user.setRecordRegDate(now);
 			user.setRecordUpdDate(now);
 			user.setRecordRegId(recordRegId);
@@ -68,31 +68,31 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	@Override
 	public void insert(List<UserBean> users, long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'User' informations ---");
+		LocalDateTime now = LocalDateTime.now();
 		for (UserBean user : users) {
-			try {
-				Timestamp now = new Timestamp(System.currentTimeMillis());
-				user.setRecordRegDate(now);
-				user.setRecordUpdDate(now);
-				user.setRecordRegId(recordRegId);
-				user.setRecordUpdId(recordRegId);
-				user.setTransactionType(TransactionType.INSERT);
-				userMapper.insert(user);
-				daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history after successfully inserted in major table ---");
-				userMapper.saveHistory(user);
-				daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
-			} catch (DuplicateKeyException e) {
-				String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DuplicatedEntryException(errorMsg, e);
-			} catch (SaveHistoryFailedException e) {
-				String errorMsg = "xxx Error occured while saving 'User' informations in history for later tracking xxx";
-				daoLogger.error(errorMsg, e);
-				throw new SaveHistoryFailedException(errorMsg, e.getCause());
-			} catch (Exception e) {
-				String errorMsg = "xxx Error occured while inserting 'User' data ==> " + user + " xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DAOException(errorMsg, e);
-			}
+			user.setRecordRegDate(now);
+			user.setRecordUpdDate(now);
+			user.setRecordRegId(recordRegId);
+			user.setRecordUpdId(recordRegId);
+			user.setTransactionType(TransactionType.INSERT);
+		}
+		try {
+			userMapper.insertList(users);
+			daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history after successfully inserted in major table ---");
+			userMapper.saveHistoryList(users);
+			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (SaveHistoryFailedException e) {
+			String errorMsg = "xxx Error occured while saving 'User' informations in history for later tracking xxx";
+			daoLogger.error(errorMsg, e);
+			throw new SaveHistoryFailedException(errorMsg, e.getCause());
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while inserting multi 'User' datas ==> " + users + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'User' informations ---");
 	}
@@ -291,5 +291,19 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'User' counts with criteria ---");
 		return count;
+	}
+
+	public UserBean selectAuthenticatedUser(String loginId, String password) throws DAOException {
+		daoLogger.debug("[START] : >>> --- Fetching Authenticated 'User' informations ---");
+		UserBean user = new UserBean();
+		try {
+			user = userMapper.selectAuthenticatedUser(loginId, password, FetchMode.EAGER);
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while fetching Authenticated 'User' informations xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
+		}
+		daoLogger.debug("[FINISH] : <<< ---  Fetching Authenticated 'User' informations ---");
+		return user;
 	}
 }

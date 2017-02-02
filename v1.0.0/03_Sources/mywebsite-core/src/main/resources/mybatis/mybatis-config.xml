@@ -3,7 +3,7 @@
 <configuration>
 	<settings>
 		<setting name="cacheEnabled" value="true"/>
-		<setting name="lazyLoadingEnabled" value="true"/>
+		<setting name="lazyLoadingEnabled" value="false"/>
 		<setting name="aggressiveLazyLoading" value="false"/>
 		<setting name="multipleResultSetsEnabled" value="true"/>
 		<setting name="useColumnLabel" value="true"/>
@@ -32,6 +32,8 @@
 		<typeHandler handler="org.apache.ibatis.type.EnumOrdinalTypeHandler" javaType="com.mycom.products.mywebsite.core.bean.master.StaticContentBean$FileType"/>
 	</typeHandlers>
 	<mappers>
+		<mapper resource="mybatis/mapper/BASE.xml" />
+		
 		<!-- configuration mappers for application needed -->
 		<mapper resource="mybatis/mapper/config/USER.xml" />
 		<mapper resource="mybatis/mapper/config/ACTION.xml" />
@@ -40,7 +42,7 @@
 		<mapper resource="mybatis/mapper/config/USER_ROLE.xml" />
 		<mapper resource="mybatis/mapper/config/LOGIN_HISTORY.xml" />
 		
-		<!-- master data setting mappers for application needed -->
+		<!-- master data mappers for application needed -->
 		<mapper resource="mybatis/mapper/master/SETTING.xml"/>
 		<mapper resource="mybatis/mapper/master/STATIC_CONTENT.xml"/>
 		

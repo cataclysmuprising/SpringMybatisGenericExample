@@ -19,14 +19,14 @@ import org.testng.annotations.Test;
 import com.mycom.products.mywebsite.core.TestBase;
 import com.mycom.products.mywebsite.core.bean.master.SettingBean;
 import com.mycom.products.mywebsite.core.dao.master.SettingDao;
+import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
+import com.mycom.products.mywebsite.core.unitTest.base.CommonGenericUnitTest;
 import com.mycom.products.mywebsite.core.unitTest.base.StandAloneSelectableUnitTest;
-import com.mycom.products.mywebsite.core.unitTest.base.UpdateableUnitTest;
 
 public class SettingUnitTest extends TestBase
-		implements StandAloneSelectableUnitTest, InsertableUnitTest, UpdateableUnitTest {
+		implements StandAloneSelectableUnitTest, CommonGenericUnitTest {
 	@Autowired
 	private SettingDao settingDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -212,5 +212,34 @@ public class SettingUnitTest extends TestBase
 		updateItems.put("subGroup", "test_subgroup");
 
 		settingDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
+	}
+
+	@Override
+	@Test(groups = { "delete" })
+	@Transactional
+	@Rollback(true)
+	public void testDeleteByPrimaryKey() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		long totalEffectedRows = settingDao.delete(1, TEST_UPDATE_USER_ID);
+		Assert.assertEquals(true, totalEffectedRows > 0);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
+	}
+
+	@Override
+	@Test(groups = { "delete" })
+	@Transactional
+	@Rollback(true)
+	public void testDeleteByCriteria() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		HashMap<String, Object> criteria = new HashMap<>();
+		criteria.put("id", 280);
+		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
+		// criteria.put("name", "UploadPath");
+		// criteria.put("type", "String");
+		// criteria.put("group", "Application");
+		// criteria.put("subGroup", "File Directory");
+		// criteria.put("value", "MMK");
+
+		long totalEffectedRows = settingDao.delete(criteria, TEST_UPDATE_USER_ID);
+		Assert.assertEquals(true, totalEffectedRows > 0);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
 	}
 }

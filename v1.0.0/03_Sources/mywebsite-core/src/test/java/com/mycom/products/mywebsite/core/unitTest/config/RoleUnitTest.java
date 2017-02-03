@@ -19,14 +19,14 @@ import org.testng.annotations.Test;
 import com.mycom.products.mywebsite.core.TestBase;
 import com.mycom.products.mywebsite.core.bean.config.RoleBean;
 import com.mycom.products.mywebsite.core.dao.config.RoleDao;
+import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
+import com.mycom.products.mywebsite.core.unitTest.base.CommonGenericUnitTest;
 import com.mycom.products.mywebsite.core.unitTest.base.JoinedSelectableUnitTest;
-import com.mycom.products.mywebsite.core.unitTest.base.UpdateableUnitTest;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, InsertableUnitTest, UpdateableUnitTest {
+public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, CommonGenericUnitTest {
 	@Autowired
 	private RoleDao roleDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -241,5 +241,30 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 		updateItems.put("description", "Basic role for every users.");
 
 		roleDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
+	}
+
+	@Override
+	@Test(groups = { "delete" })
+	@Transactional
+	@Rollback(true)
+	public void testDeleteByPrimaryKey() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		long totalEffectedRows = roleDao.delete(1, TEST_UPDATE_USER_ID);
+		Assert.assertEquals(true, totalEffectedRows > 0);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
+	}
+
+	@Override
+	@Test(groups = { "delete" })
+	@Transactional
+	@Rollback(true)
+	public void testDeleteByCriteria() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		HashMap<String, Object> criteria = new HashMap<>();
+		criteria.put("id", 1);
+		criteria.put("ids", new Integer[] { 1, 2, 3 });
+		criteria.put("name", "SUPER_USER");
+
+		long totalEffectedRows = roleDao.delete(criteria, TEST_UPDATE_USER_ID);
+		Assert.assertEquals(true, totalEffectedRows > 0);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
 	}
 }

@@ -20,14 +20,14 @@ import com.mycom.products.mywebsite.core.TestBase;
 import com.mycom.products.mywebsite.core.bean.master.StaticContentBean;
 import com.mycom.products.mywebsite.core.bean.master.StaticContentBean.FileType;
 import com.mycom.products.mywebsite.core.dao.master.StaticContentDao;
+import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
+import com.mycom.products.mywebsite.core.unitTest.base.CommonGenericUnitTest;
 import com.mycom.products.mywebsite.core.unitTest.base.StandAloneSelectableUnitTest;
-import com.mycom.products.mywebsite.core.unitTest.base.UpdateableUnitTest;
 
 public class StaticContentUnitTest extends TestBase
-		implements StandAloneSelectableUnitTest, InsertableUnitTest, UpdateableUnitTest {
+		implements StandAloneSelectableUnitTest, CommonGenericUnitTest {
 	@Autowired
 	private StaticContentDao staticContentDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -199,6 +199,33 @@ public class StaticContentUnitTest extends TestBase
 		updateItems.put("fileSize", "50KB");
 
 		staticContentDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
+	}
+
+	@Override
+	@Test(groups = { "delete" })
+	@Transactional
+	@Rollback(true)
+	public void testDeleteByPrimaryKey() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		long totalEffectedRows = staticContentDao.delete(1, TEST_UPDATE_USER_ID);
+		Assert.assertEquals(true, totalEffectedRows > 0);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
+	}
+
+	@Override
+	@Test(groups = { "delete" })
+	@Transactional
+	@Rollback(true)
+	public void testDeleteByCriteria() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		HashMap<String, Object> criteria = new HashMap<>();
+		criteria.put("id", 1);
+		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
+		// criteria.put("fileType", FileType.IMAGE);
+		// criteria.put("fileName", "super_user.jpg");
+		// criteria.put("fileSize", "10KB");
+
+		long totalEffectedRows = staticContentDao.delete(criteria, TEST_UPDATE_USER_ID);
+		Assert.assertEquals(true, totalEffectedRows > 0);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
 	}
 
 }

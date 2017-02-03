@@ -21,15 +21,15 @@ import com.mycom.products.mywebsite.core.TestBase;
 import com.mycom.products.mywebsite.core.bean.config.UserBean;
 import com.mycom.products.mywebsite.core.bean.config.UserBean.Gender;
 import com.mycom.products.mywebsite.core.dao.config.UserDao;
+import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
+import com.mycom.products.mywebsite.core.unitTest.base.CommonGenericUnitTest;
 import com.mycom.products.mywebsite.core.unitTest.base.JoinedSelectableUnitTest;
-import com.mycom.products.mywebsite.core.unitTest.base.UpdateableUnitTest;
 import com.mycom.products.mywebsite.core.util.Cryptographic;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, InsertableUnitTest, UpdateableUnitTest {
+public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, CommonGenericUnitTest {
 	@Autowired
 	private UserDao userDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -328,6 +328,37 @@ public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 		updateItems.put("password", Cryptographic.getSha256CheckSum("user-pwd"));
 
 		userDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
+	}
+
+	@Override
+	@Test(groups = { "delete" })
+	@Transactional
+	@Rollback(true)
+	public void testDeleteByPrimaryKey() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		long totalEffectedRows = userDao.delete(1, TEST_UPDATE_USER_ID);
+		Assert.assertEquals(true, totalEffectedRows > 0);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
+	}
+
+	@Override
+	@Test(groups = { "delete" })
+	@Transactional
+	@Rollback(true)
+	public void testDeleteByCriteria() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		HashMap<String, Object> criteria = new HashMap<>();
+		criteria.put("id", 1);
+		criteria.put("ids", new Integer[] { 1, 2, 3 });
+		criteria.put("age", 27);
+		criteria.put("loginId", "super-user");
+		criteria.put("name", "Super User");
+		criteria.put("email", "superuser@gmail.com");
+		criteria.put("nrc", "12/KMY(N)123455");
+		criteria.put("phone", "09-000000001");
+		criteria.put("gender", Gender.MALE);
+
+		long totalEffectedRows = userDao.delete(criteria, TEST_UPDATE_USER_ID);
+		Assert.assertEquals(true, totalEffectedRows > 0);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
 	}
 
 }

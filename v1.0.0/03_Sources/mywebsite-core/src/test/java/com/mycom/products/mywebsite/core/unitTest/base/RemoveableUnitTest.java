@@ -5,14 +5,12 @@
  */
 package com.mycom.products.mywebsite.core.unitTest.base;
 
-import java.util.Map;
-
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
+import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 
 public interface RemoveableUnitTest {
-	public int delete(int primaryKey, int recordUpdId) throws ConsistencyViolationException, DAOException;
+	public void testDeleteByPrimaryKey() throws DAOException, DuplicatedEntryException, ConsistencyViolationException;
 
-	public int delete(Map<String, Object> criteria,
-			int recordUpdId) throws ConsistencyViolationException, DAOException;
+	public void testDeleteByCriteria() throws DAOException, DuplicatedEntryException, ConsistencyViolationException;
 }

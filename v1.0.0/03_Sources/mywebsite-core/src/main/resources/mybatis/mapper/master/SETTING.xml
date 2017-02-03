@@ -243,13 +243,13 @@
 	</update>
 	
 	<delete id="deleteByPrimaryKey">
-		DELETE FROM mjr_role
+		DELETE FROM mjr_setting
 		WHERE id = #{primaryKey}
 	</delete>
 	
 	<delete id="deleteByCriteria">
 		<if test="criteria != null and criteria.keySet().size() > 0">
-			DELETE FROM mjr_role
+			DELETE FROM mjr_setting
 			<include refid="table_value_change_criteria" />
 		</if>
 	</delete>			

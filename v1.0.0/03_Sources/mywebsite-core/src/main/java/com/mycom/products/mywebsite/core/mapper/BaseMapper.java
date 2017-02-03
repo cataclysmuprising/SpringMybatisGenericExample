@@ -6,4 +6,7 @@
 package com.mycom.products.mywebsite.core.mapper;
 
 public interface BaseMapper {
+	public void disableAllConstraints();
+
+	public void enableAllConstraints();
 }

@@ -51,30 +51,29 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
-		daoLogger.debug("[FINISH] : <<< --- Inserting single 'UserRole' informations with new Id # " + userRole.getId() + " ---");
+		daoLogger.debug("[FINISH] : <<< --- Inserting single 'UserRole' informations ---");
 	}
 
 	@Override
-	public void insert(List<UserRoleBean> userRoles,
-			long recordRegId) throws DAOException, DuplicatedEntryException {
+	public void insert(List<UserRoleBean> userRoles, long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'UserRole' informations ---");
+		LocalDateTime now = LocalDateTime.now();
 		for (UserRoleBean userRole : userRoles) {
-			try {
-				LocalDateTime now = LocalDateTime.now();
-				userRole.setRecordRegDate(now);
-				userRole.setRecordUpdDate(now);
-				userRole.setRecordRegId(recordRegId);
-				userRole.setRecordUpdId(recordRegId);
-				userRoleMapper.insert(userRole);
-			} catch (DuplicateKeyException e) {
-				String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DuplicatedEntryException(errorMsg, e);
-			} catch (Exception e) {
-				String errorMsg = "xxx Error occured while inserting 'UserRole' data ==> " + userRole + " xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DAOException(errorMsg, e);
-			}
+			userRole.setRecordRegDate(now);
+			userRole.setRecordUpdDate(now);
+			userRole.setRecordRegId(recordRegId);
+			userRole.setRecordUpdId(recordRegId);
+		}
+		try {
+			userRoleMapper.insertList(userRoles);
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while inserting 'UserRole' datas ==> " + userRoles + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'UserRole' informations ---");
 	}
@@ -168,9 +167,12 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 
 		daoLogger.debug("[START] : $3 --- Inserting newly selected roleIds[ " + insertIds + " ] for userId # " + userId + " ---");
 		if (insertIds.size() > 0) {
+			List<UserRoleBean> userRoles = new ArrayList<>();
 			for (Integer roleId : insertIds) {
-				userRoleMapper.insertWithRelatedKeys(userId, roleId, recordUpdId);
+				UserRoleBean userRole = new UserRoleBean(userId, roleId);
+				userRoles.add(userRole);
 			}
+			userRoleMapper.insertList(userRoles);
 		}
 		daoLogger.debug("[FINISH] : $3 --- Inserting newly selected roleIds[ " + insertIds + " ] for userId # " + userId + " ---");
 

@@ -5,11 +5,14 @@
  */
 package com.mycom.products.mywebsite.core.unitTest.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -121,20 +124,39 @@ public class RoleActionUnitTest extends TestBase implements XGenericUnitTest {
 
 	// --------------------------------- for insertion
 	@Override
+	@Test(groups = { "insert" })
+	@Transactional
+	@Rollback(true)
 	public void testInsert() throws DAOException, DuplicatedEntryException {
-		// TODO Auto-generated method stub
-
+		RoleActionBean roleAction = new RoleActionBean();
+		roleAction.setRoleId(1001);
+		roleAction.setActionId(2002);
+		roleActionDao.insert(roleAction, TEST_CREATE_USER_ID);
 	}
 
 	@Override
+	@Test(groups = { "insert" })
+	@Transactional
+	@Rollback(true)
 	public void testInsertList() throws DAOException, DuplicatedEntryException {
-		// TODO Auto-generated method stub
+		List<RoleActionBean> records = new ArrayList<>();
+		RoleActionBean record1 = new RoleActionBean();
+		record1.setRoleId(1001);
+		record1.setActionId(2002);
+		records.add(record1);
 
+		RoleActionBean record2 = new RoleActionBean();
+		record2.setRoleId(3003);
+		record2.setActionId(4004);
+		records.add(record2);
+		roleActionDao.insert(records, TEST_CREATE_USER_ID);
 	}
 
 	@Override
+	@Test(groups = { "insert" })
+	@Transactional
+	@Rollback(true)
 	public void testInsertWithRelatedKeys() throws DAOException, DuplicatedEntryException {
-		// TODO Auto-generated method stub
-
+		roleActionDao.insert(5005, 6006, TEST_CREATE_USER_ID);
 	}
 }

@@ -10,8 +10,8 @@ import com.mycom.products.mywebsite.core.bean.BaseBean;
 public class RoleActionBean extends BaseBean implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Integer roleId;
-	private Integer actionId;
+	private long roleId;
+	private long actionId;
 
 	private RoleBean role;
 	private ActionBean action;
@@ -22,6 +22,11 @@ public class RoleActionBean extends BaseBean implements java.io.Serializable {
 	public RoleActionBean(RoleBean role, ActionBean action) {
 		this.role = role;
 		this.action = action;
+	}
+
+	public RoleActionBean(long roleId, long actionId) {
+		this.roleId = roleId;
+		this.actionId = actionId;
 	}
 
 	public RoleBean getRole() {
@@ -40,15 +45,15 @@ public class RoleActionBean extends BaseBean implements java.io.Serializable {
 		this.action = action;
 	}
 
-	public Integer getRoleId() {
+	public long getRoleId() {
 		return roleId;
 	}
 
-	public void setRoleId(Integer roleId) {
+	public void setRoleId(long roleId) {
 		this.roleId = roleId;
 	}
 
-	public Integer getActionId() {
+	public long getActionId() {
 		return actionId;
 	}
 

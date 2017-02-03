@@ -3,9 +3,9 @@
 
 <mapper namespace="com.mycom.products.mywebsite.core.mapper.config.UserRoleMapper">
 
-	<resultMap 	type="UserRoleBean" 		id="Parent_UserRoleResult">
+	<resultMap 	type="UserRoleBean" 	id="Parent_UserRoleResult">
 		<result property="userId" 		column="user_id" />
-		<result property="roleId" 			column="role_id" />
+		<result property="roleId" 		column="role_id" />
 	</resultMap>
 	
 	<resultMap 	 	 type="UserRoleBean" 		id="UserRoleResult" extends="Parent_UserRoleResult">
@@ -13,8 +13,8 @@
 		<result 	 property="recordUpdId" 	column="record_upd_id"/>
 		<result 	 property="recordRegDate" 	column="record_reg_date"/>
 		<result 	 property="recordUpdDate" 	column="record_upd_date"/>	
-		<association property="user" 			fetchType="lazy"	resultMap="com.mycom.products.mywebsite.core.mapper.config.UserMapper.Parent_UserResult" />
-		<association property="role" 			fetchType="lazy"  	resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
+		<association property="user" 			resultMap="com.mycom.products.mywebsite.core.mapper.config.UserMapper.Parent_UserResult" />
+		<association property="role" 			resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
 	</resultMap>
 
 	<sql id="tables">
@@ -73,6 +73,58 @@
 			</otherwise>
 		</choose>
 	</sql>
+	
+	<sql id="major_table_columns">
+		user_id,
+		role_id	
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{userId},
+		#{roleId}	
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.userId},
+		#{record.roleId}	
+	</sql>
+	
+	<insert id="insert" parameterType="RoleActionBean">
+		INSERT INTO mjr_user_role (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			<include refid="major_table_fields" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_fields" />				
+		)
+	</insert>
+	
+	<insert id="insertWithRelatedKeys">
+		INSERT INTO mjr_user_role (
+			<include refid="major_table_columns" />
+			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
+		) VALUES (	
+			#{key1},	
+			#{key2},
+			#{recordRegId},
+			#{recordRegId},<!-- both are same -->
+			getDate(),
+			getDate()				
+		)
+	</insert>	
+	
+	<insert id="insertList" parameterType="java.util.List">
+		<if test="records != null and records.size() > 0">
+			INSERT INTO mjr_user_role (
+				<include refid="major_table_columns" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
+			) VALUES 	
+	        <foreach item="record" collection="records" open="(" separator="),("  close=")">
+				<include refid="major_table_iterate_fields" />
+				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
+	       </foreach>	
+       </if>			
+	</insert>		
 	
 	<select id="selectMultiRecords"  resultMap="UserRoleResult">
 		SELECT

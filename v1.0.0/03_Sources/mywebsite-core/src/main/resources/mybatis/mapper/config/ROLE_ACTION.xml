@@ -89,7 +89,7 @@
 		#{record.actionId}
 	</sql>
 	
-	<insert id="insert" parameterType="RoleActionBean" useGeneratedKeys="true" keyProperty="id">
+	<insert id="insert" parameterType="RoleActionBean">
 		INSERT INTO mjr_role_action (
 			<include refid="major_table_columns" />
 			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
@@ -108,14 +108,14 @@
 			#{key2},
 			#{recordRegId},
 			#{recordRegId},<!-- both are same -->
-			,getDate()
-			,getDate()				
+			getDate(),
+			getDate()				
 		)
 	</insert>	
 	
 	<insert id="insertList" parameterType="java.util.List">
 		<if test="records != null and records.size() > 0">
-			INSERT INTO RoleActionBean (
+			INSERT INTO mjr_role_action (
 				<include refid="major_table_columns" />
 				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
 			) VALUES 	

@@ -51,30 +51,30 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
-		daoLogger.debug("[FINISH] : <<< --- Inserting single 'RoleAction' informations with new Id # " + roleAction.getId() + " ---");
+		daoLogger.debug("[FINISH] : <<< --- Inserting single 'RoleAction' informations ---");
 	}
 
 	@Override
 	public void insert(List<RoleActionBean> roleActions,
 			long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'RoleAction' informations ---");
+		LocalDateTime now = LocalDateTime.now();
 		for (RoleActionBean roleAction : roleActions) {
-			try {
-				LocalDateTime now = LocalDateTime.now();
-				roleAction.setRecordRegDate(now);
-				roleAction.setRecordUpdDate(now);
-				roleAction.setRecordRegId(recordRegId);
-				roleAction.setRecordUpdId(recordRegId);
-				roleActionMapper.insert(roleAction);
-			} catch (DuplicateKeyException e) {
-				String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DuplicatedEntryException(errorMsg, e);
-			} catch (Exception e) {
-				String errorMsg = "xxx Error occured while inserting 'RoleAction' data ==> " + roleAction + " xxx";
-				daoLogger.error(errorMsg, e);
-				throw new DAOException(errorMsg, e);
-			}
+			roleAction.setRecordRegDate(now);
+			roleAction.setRecordUpdDate(now);
+			roleAction.setRecordRegId(recordRegId);
+			roleAction.setRecordUpdId(recordRegId);
+		}
+		try {
+			roleActionMapper.insertList(roleActions);
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while inserting 'RoleAction' datas ==> " + roleActions + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'RoleAction' informations ---");
 	}
@@ -168,9 +168,14 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 
 		daoLogger.debug("[START] : $3 --- Inserting newly selected actionIds[ " + insertIds + " ] for roleId # " + roleId + " ---");
 		if (insertIds.size() > 0) {
+			List<RoleActionBean> roleActions = new ArrayList<>();
 			for (Integer actionId : insertIds) {
-				roleActionMapper.insertWithRelatedKeys(roleId, actionId, recordUpdId);
+
+				RoleActionBean roleAction = new RoleActionBean(roleId, actionId);
+				roleActions.add(roleAction);
+
 			}
+			roleActionMapper.insertList(roleActions);
 		}
 		daoLogger.debug("[FINISH] : $3 --- Inserting newly selected actionIds[ " + insertIds + " ] for roleId # " + roleId + " ---");
 

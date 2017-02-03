@@ -40,5 +40,13 @@
 		,getDate()
 		,#{record.transactionType,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler}
 	</sql>
+	
+	<select id="disableAllConstraints">
+		EXEC sp_MSforeachtable "ALTER TABLE ? NOCHECK CONSTRAINT all"
+	</select>
+	
+	<select id="enableAllConstraints">
+		EXEC sp_MSforeachtable "ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all"
+	</select>	
 					
 </mapper>

@@ -9,8 +9,8 @@ import com.mycom.products.mywebsite.core.bean.BaseBean;
 
 public class UserRoleBean extends BaseBean implements java.io.Serializable {
 	private static final long serialVersionUID = 4461809498816982732L;
-	private int userId;
-	private int roleId;
+	private long userId;
+	private long roleId;
 	private UserBean user;
 	private RoleBean role;
 
@@ -20,6 +20,11 @@ public class UserRoleBean extends BaseBean implements java.io.Serializable {
 	public UserRoleBean(UserBean user, RoleBean role) {
 		this.user = user;
 		this.role = role;
+	}
+
+	public UserRoleBean(long userId, long roleId) {
+		this.userId = userId;
+		this.roleId = roleId;
 	}
 
 	public UserBean getUser() {
@@ -38,15 +43,15 @@ public class UserRoleBean extends BaseBean implements java.io.Serializable {
 		this.role = role;
 	}
 
-	public int getUserId() {
+	public long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
-	public int getRoleId() {
+	public long getRoleId() {
 		return roleId;
 	}
 

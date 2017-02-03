@@ -59,6 +59,48 @@
 		,usr.record_upd_date
 	</sql>	
 	
+	<sql id="major_table_columns">
+		login_id,
+		content_id,
+		age,
+		name,
+		gender,
+		email,
+		password,
+		nrc,
+		phone,
+		dob,
+		address
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{loginId},
+		#{contentId},
+		#{age},
+		#{name},
+		#{gender},
+		#{email},
+		#{password},
+		#{nrc},
+		#{phone},
+		#{dob},
+		#{address}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.loginId},
+		#{record.contentId},
+		#{record.age},
+		#{record.name},
+		#{record.gender},
+		#{record.email},
+		#{record.password},
+		#{record.nrc},
+		#{record.phone},
+		#{record.dob},
+		#{record.address}
+	</sql>	
+	
 	<sql id="columns">
 		<include refid="main_columns" />
 		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
@@ -124,6 +166,43 @@
 		</if>
 	</sql>
 	
+	<sql id="table_value_change_criteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					AND id = #{criteria.id}
+				</if>	
+				<if test="criteria.ids != null">
+					AND id IN
+				    <foreach item="item" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${item}
+				    </foreach>
+				</if>	
+				<if test="criteria.age != null">
+					AND age = #{criteria.age}
+				</if>								
+				<if test="criteria.loginId != null">
+					AND login_id = #{criteria.loginId}
+				</if>
+				<if test="criteria.name != null">
+					AND name = #{criteria.name}
+				</if>
+				<if test="criteria.email != null">
+					AND email = #{criteria.email}
+				</if>
+				<if test="criteria.nrc != null">
+					AND nrc = #{criteria.nrc}
+				</if>		
+				<if test="criteria.phone != null">
+					AND phone = #{criteria.phone}
+				</if>
+				<if test="criteria.gender != null">
+					AND gender = #{criteria.gender}
+				</if>					
+			</where>
+		</if>	
+	</sql>	
+	
 	<sql id="orders">
 		ORDER BY
 		<choose>
@@ -156,48 +235,6 @@
 			</otherwise>
 		</choose>
 	</sql>
-	
-	<sql id="major_table_columns">
-		login_id,
-		content_id,
-		age,
-		name,
-		gender,
-		email,
-		password,
-		nrc,
-		phone,
-		dob,
-		address
-	</sql>
-	
-	<sql id="major_table_fields">
-		#{loginId},
-		#{contentId},
-		#{age},
-		#{name},
-		#{gender},
-		#{email},
-		#{password},
-		#{nrc},
-		#{phone},
-		#{dob},
-		#{address}
-	</sql>
-	
-	<sql id="major_table_iterate_fields">
-		#{record.loginId},
-		#{record.contentId},
-		#{record.age},
-		#{record.name},
-		#{record.gender},
-		#{record.email},
-		#{record.password},
-		#{record.nrc},
-		#{record.phone},
-		#{record.dob},
-		#{record.address}
-	</sql>		
 	
 	<insert id="insert" parameterType="UserBean" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO mjr_user (
@@ -287,41 +324,20 @@
 				<if test="updateItems.contentId != null">content_id = #{updateItems.contentId},</if>		
 			</if>					
 		</set>
+		<include refid="table_value_change_criteria" />
+	</update>
+	
+	<delete id="deleteByPrimaryKey">
+		DELETE FROM mjr_role
+		WHERE id = #{primaryKey}
+	</delete>
+	
+	<delete id="deleteByCriteria">
 		<if test="criteria != null and criteria.keySet().size() > 0">
-			<where>
-				<if test="criteria.id != null">
-					AND id = #{criteria.id}
-				</if>	
-				<if test="criteria.ids != null">
-					AND id IN
-				    <foreach item="item" index="index" collection="criteria.ids" open="(" separator="," close=")">
-				        ${item}
-				    </foreach>
-				</if>	
-				<if test="criteria.age != null">
-					AND age = #{criteria.age}
-				</if>								
-				<if test="criteria.loginId != null">
-					AND login_id = #{criteria.loginId}
-				</if>
-				<if test="criteria.name != null">
-					AND name = #{criteria.name}
-				</if>
-				<if test="criteria.email != null">
-					AND email = #{criteria.email}
-				</if>
-				<if test="criteria.nrc != null">
-					AND nrc = #{criteria.nrc}
-				</if>		
-				<if test="criteria.phone != null">
-					AND phone = #{criteria.phone}
-				</if>
-				<if test="criteria.gender != null">
-					AND gender = #{criteria.gender}
-				</if>					
-			</where>
+			DELETE FROM mjr_role
+			<include refid="table_value_change_criteria" />
 		</if>
-	</update>	
+	</delete>		
 	
 	<select id="selectByPrimaryKey" resultMap="UserResult">
 		SELECT

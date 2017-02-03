@@ -37,6 +37,21 @@
 		,userRole.record_upd_date
 	</sql>	
 	
+	<sql id="major_table_columns">
+		user_id,
+		role_id	
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{userId},
+		#{roleId}	
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.userId},
+		#{record.roleId}	
+	</sql>	
+	
 	<sql id="columns">
 		<include refid="main_columns" />
 		<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
@@ -72,21 +87,6 @@
 				userRole.role_id DESC
 			</otherwise>
 		</choose>
-	</sql>
-	
-	<sql id="major_table_columns">
-		user_id,
-		role_id	
-	</sql>
-	
-	<sql id="major_table_fields">
-		#{userId},
-		#{roleId}	
-	</sql>
-	
-	<sql id="major_table_iterate_fields">
-		#{record.userId},
-		#{record.roleId}	
 	</sql>
 	
 	<insert id="insert" parameterType="RoleActionBean">

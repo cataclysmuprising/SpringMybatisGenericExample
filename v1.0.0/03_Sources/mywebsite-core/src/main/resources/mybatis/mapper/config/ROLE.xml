@@ -39,7 +39,22 @@
 		,role.record_upd_id
 		,role.record_reg_date
 		,role.record_upd_date	
-	</sql>	
+	</sql>
+	
+	<sql id="major_table_columns">
+		name,
+		description
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{name},
+		#{description}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.name},
+		#{record.description}
+	</sql>		
 	
 	<sql id="columns">
 		<include refid="main_columns" />	
@@ -81,6 +96,25 @@
 			</where>
 		</if>
 	</sql>
+	
+	<sql id="table_value_change_criteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					id = #{criteria.id}
+				</if>
+				<if test="criteria.ids != null">
+					AND id IN
+				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>				
+				<if test="criteria.name != null">
+					AND name = #{criteria.name}
+				</if>
+			</where>
+		</if>		
+	</sql>	
 		
 	<sql id="orders">
 		ORDER BY
@@ -96,21 +130,6 @@
 			</otherwise>
 		</choose>
 	</sql>
-	
-	<sql id="major_table_columns">
-		name,
-		description
-	</sql>
-	
-	<sql id="major_table_fields">
-		#{name},
-		#{description}
-	</sql>
-	
-	<sql id="major_table_iterate_fields">
-		#{record.name},
-		#{record.description}
-	</sql>	
 	
 	<insert id="insert" parameterType="RoleBean" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO mjr_role (
@@ -185,23 +204,20 @@
 				<if test="updateItems.description != null">description= #{updateItems.description},</if>			
 			</if>					
 		</set>
+		<include refid="table_value_change_criteria" />
+	</update>
+	
+	<delete id="deleteByPrimaryKey">
+		DELETE FROM mjr_role
+		WHERE id = #{primaryKey}
+	</delete>
+	
+	<delete id="deleteByCriteria">
 		<if test="criteria != null and criteria.keySet().size() > 0">
-			<where>
-				<if test="criteria.id != null">
-					id = #{criteria.id}
-				</if>
-				<if test="criteria.ids != null">
-					AND id IN
-				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
-				        ${id}
-				    </foreach>
-				</if>				
-				<if test="criteria.name != null">
-					AND name = #{criteria.name}
-				</if>
-			</where>
+			DELETE FROM mjr_role
+			<include refid="table_value_change_criteria" />
 		</if>
-	</update>		
+	</delete>				
 	
 	<select id="selectByPrimaryKey" resultMap="RoleResult">
 		SELECT

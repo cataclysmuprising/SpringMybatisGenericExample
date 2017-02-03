@@ -35,7 +35,28 @@
 		,content.record_upd_id
 		,content.record_reg_date
 		,content.record_upd_date	
-	</sql>	
+	</sql>
+	
+	<sql id="major_table_columns">
+		file_type,
+		file_name,
+		file_path,
+		file_size
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{fileType},
+		#{fileName},
+		#{filePath},
+		#{fileSize}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.fileType},
+		#{record.fileName},
+		#{record.filePath},
+		#{record.fileSize}
+	</sql>		
 	
 	<sql id="columns">
 		<include refid="main_columns" />	
@@ -74,6 +95,31 @@
 			</where>
 		</if>
 	</sql>
+	
+	<sql id="table_value_change_criteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					id = #{criteria.id}
+				</if>
+				<if test="criteria.ids != null">
+					AND id IN
+				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>				
+				<if test="criteria.fileType != null">
+					AND file_type = #{criteria.fileType}
+				</if>			
+				<if test="criteria.fileName != null">
+					AND file_name = #{criteria.fileName}
+				</if>
+				<if test="criteria.fileSize != null">
+					AND file_size = #{criteria.fileSize}
+				</if>
+			</where>
+		</if>	
+	</sql>	
 
 	<sql id="orders">
 		ORDER BY
@@ -93,27 +139,6 @@
 		</choose>
 	</sql>
 	
-	<sql id="major_table_columns">
-		file_type,
-		file_name,
-		file_path,
-		file_size
-	</sql>
-	
-	<sql id="major_table_fields">
-		#{fileType},
-		#{fileName},
-		#{filePath},
-		#{fileSize}
-	</sql>
-	
-	<sql id="major_table_iterate_fields">
-		#{record.fileType},
-		#{record.fileName},
-		#{record.filePath},
-		#{record.fileSize}
-	</sql>	
-
 	<insert id="insert" parameterType="RoleBean" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO mjr_static_content (
 			<include refid="major_table_columns" />
@@ -191,29 +216,20 @@
 				<if test="updateItems.fileSize != null">file_size = #{updateItems.fileSize},</if>
 			</if>					
 		</set>
+		<include refid="table_value_change_criteria" />
+	</update>
+	
+	<delete id="deleteByPrimaryKey">
+		DELETE FROM mjr_role
+		WHERE id = #{primaryKey}
+	</delete>
+	
+	<delete id="deleteByCriteria">
 		<if test="criteria != null and criteria.keySet().size() > 0">
-			<where>
-				<if test="criteria.id != null">
-					id = #{criteria.id}
-				</if>
-				<if test="criteria.ids != null">
-					AND id IN
-				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
-				        ${id}
-				    </foreach>
-				</if>				
-				<if test="criteria.fileType != null">
-					AND file_type = #{criteria.fileType}
-				</if>			
-				<if test="criteria.fileName != null">
-					AND file_name = #{criteria.fileName}
-				</if>
-				<if test="criteria.fileSize != null">
-					AND file_size = #{criteria.fileSize}
-				</if>
-			</where>
+			DELETE FROM mjr_role
+			<include refid="table_value_change_criteria" />
 		</if>
-	</update>	
+	</delete>		
 
 	<select id="selectByPrimaryKey" resultMap="StaticContentResult">
 		SELECT

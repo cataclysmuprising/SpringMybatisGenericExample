@@ -35,7 +35,22 @@
 		,roleAction.record_upd_id
 		,roleAction.record_reg_date
 		,roleAction.record_upd_date
-	</sql>	
+	</sql>
+	
+	<sql id="major_table_columns">
+		role_id,	
+		action_id		
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{roleId},	
+		#{actionId}	
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.roleId},	
+		#{record.actionId}
+	</sql>		
 	
 	<sql id="columns">
 		<include refid="main_columns" />
@@ -72,21 +87,6 @@
 				roleAction.role_id DESC
 			</otherwise>
 		</choose>
-	</sql>
-	
-	<sql id="major_table_columns">
-		role_id,	
-		action_id		
-	</sql>
-	
-	<sql id="major_table_fields">
-		#{roleId},	
-		#{actionId}	
-	</sql>
-	
-	<sql id="major_table_iterate_fields">
-		#{record.roleId},	
-		#{record.actionId}
 	</sql>
 	
 	<insert id="insert" parameterType="RoleActionBean">

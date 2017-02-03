@@ -37,7 +37,31 @@
 		,setting.record_upd_id
 		,setting.record_reg_date
 		,setting.record_upd_date
-	</sql>	
+	</sql>
+	
+	<sql id="major_table_columns">
+		setting_name,
+		setting_value,
+		setting_type,
+		setting_group,
+		setting_sub_group
+	</sql>
+	
+	<sql id="major_table_fields">
+		#{name},
+		#{value},
+		#{type},
+		#{group},
+		#{subGroup}
+	</sql>
+	
+	<sql id="major_table_iterate_fields">
+		#{record.name},
+		#{record.value},
+		#{record.type},
+		#{record.group},
+		#{record.subGroup}
+	</sql>		
 	
 	<sql id="columns">
 		<include refid="main_columns" />	
@@ -83,6 +107,37 @@
 			</where>
 		</if>
 	</sql>
+	
+	<sql id="table_value_change_criteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					id = #{criteria.id}
+				</if>
+				<if test="criteria.ids != null">
+					AND id IN
+				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>				
+				<if test="criteria.name != null">
+					AND setting_name = #{criteria.name}
+				</if>
+				<if test="criteria.value != null">
+					AND setting_value = #{criteria.value}
+				</if>
+				<if test="criteria.type != null">
+					AND setting_type = #{criteria.type}
+				</if>
+				<if test="criteria.group != null">
+					AND setting_group = #{criteria.group}
+				</if>
+				<if test="criteria.subGroup != null">
+					AND setting_sub_group = #{criteria.subGroup}
+				</if>
+			</where>
+		</if>	
+	</sql>	
 		
 	<sql id="orders">
 		ORDER BY
@@ -104,30 +159,6 @@
 			</otherwise>
 		</choose>
 	</sql>
-	
-	<sql id="major_table_columns">
-		setting_name,
-		setting_value,
-		setting_type,
-		setting_group,
-		setting_sub_group
-	</sql>
-	
-	<sql id="major_table_fields">
-		#{name},
-		#{value},
-		#{type},
-		#{group},
-		#{subGroup}
-	</sql>
-	
-	<sql id="major_table_iterate_fields">
-		#{record.name},
-		#{record.value},
-		#{record.type},
-		#{record.group},
-		#{record.subGroup}
-	</sql>		
 	
 	<insert id="insert" parameterType="RoleBean" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO mjr_setting (
@@ -208,35 +239,20 @@
 				<if test="updateItems.subGroup != null">setting_sub_group = #{updateItems.subGroup},</if>
 			</if>					
 		</set>
+		<include refid="table_value_change_criteria" />
+	</update>
+	
+	<delete id="deleteByPrimaryKey">
+		DELETE FROM mjr_role
+		WHERE id = #{primaryKey}
+	</delete>
+	
+	<delete id="deleteByCriteria">
 		<if test="criteria != null and criteria.keySet().size() > 0">
-			<where>
-				<if test="criteria.id != null">
-					id = #{criteria.id}
-				</if>
-				<if test="criteria.ids != null">
-					AND id IN
-				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
-				        ${id}
-				    </foreach>
-				</if>				
-				<if test="criteria.name != null">
-					AND setting_name = #{criteria.name}
-				</if>
-				<if test="criteria.value != null">
-					AND setting_value = #{criteria.value}
-				</if>
-				<if test="criteria.type != null">
-					AND setting_type = #{criteria.type}
-				</if>
-				<if test="criteria.group != null">
-					AND setting_group = #{criteria.group}
-				</if>
-				<if test="criteria.subGroup != null">
-					AND setting_sub_group = #{criteria.subGroup}
-				</if>
-			</where>
+			DELETE FROM mjr_role
+			<include refid="table_value_change_criteria" />
 		</if>
-	</update>		
+	</delete>			
 	
 	<select id="selectByPrimaryKey" resultMap="SettingResult">
 		SELECT

@@ -150,7 +150,7 @@ public class LoginHistoryUnitTest extends TestBase
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsert() throws DAOException, DuplicatedEntryException {
+	public void testInsertSingleRecord() throws DAOException, DuplicatedEntryException {
 		LoginHistoryBean loginHistory = new LoginHistoryBean();
 		loginHistory.setIpAddress("192.168.0.1");
 		loginHistory.setLoginDate(LocalDateTime.now());
@@ -166,7 +166,7 @@ public class LoginHistoryUnitTest extends TestBase
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertList() throws DAOException, DuplicatedEntryException {
+	public void testInsertMultiRecords() throws DAOException, DuplicatedEntryException {
 		List<LoginHistoryBean> records = new ArrayList<>();
 		LoginHistoryBean record1 = new LoginHistoryBean();
 		record1.setIpAddress("192.168.0.2");

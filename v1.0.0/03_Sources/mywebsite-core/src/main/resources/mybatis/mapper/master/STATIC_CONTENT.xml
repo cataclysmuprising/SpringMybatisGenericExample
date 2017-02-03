@@ -124,7 +124,7 @@
 		)
 	</insert>
 	
-	<insert id="saveHistory" parameterType="RoleBean">
+	<insert id="insertSingleHistoryRecord" parameterType="RoleBean">
 		INSERT INTO hst_static_content (
 			<include refid="major_table_columns" />
 			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
@@ -149,7 +149,7 @@
        </if>			
 	</insert>
 		
-	<insert id="saveHistoryList" parameterType="java.util.List">
+	<insert id="insertMultiHistoryRecords" parameterType="java.util.List">
 		<if test="records != null and records.size() > 0">
 			INSERT INTO hst_static_content (
 				<include refid="major_table_columns" />
@@ -163,6 +163,57 @@
 	       </foreach>	
        </if>			
 	</insert>
+	
+	<update id="update" parameterType="RoleBean">
+		UPDATE mjr_static_content
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),		
+			file_type = #{fileType},
+			file_name = #{fileName},
+			file_path = #{filePath},
+			file_size = #{fileSize}
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateWithCriteria">
+		UPDATE mjr_static_content
+		<set>
+			<if test="criteria != null and criteria.keySet().size() > 0">
+				record_upd_id = #{criteria.recordUpdId},
+			</if>
+			record_upd_date = getDate(),
+			<if test="updateItems != null and updateItems.keySet().size() > 0">
+				<if test="updateItems.fileType != null">file_type = #{updateItems.fileType},</if>
+				<if test="updateItems.fileName != null">file_name = #{updateItems.fileName},</if>
+				<if test="updateItems.filePath != null">file_path = #{updateItems.filePath},</if>
+				<if test="updateItems.fileSize != null">file_size = #{updateItems.fileSize},</if>
+			</if>					
+		</set>
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					id = #{criteria.id}
+				</if>
+				<if test="criteria.ids != null">
+					AND id IN
+				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>				
+				<if test="criteria.fileType != null">
+					AND file_type = #{criteria.fileType}
+				</if>			
+				<if test="criteria.fileName != null">
+					AND file_name = #{criteria.fileName}
+				</if>
+				<if test="criteria.fileSize != null">
+					AND file_size = #{criteria.fileSize}
+				</if>
+			</where>
+		</if>
+	</update>	
 
 	<select id="selectByPrimaryKey" resultMap="StaticContentResult">
 		SELECT

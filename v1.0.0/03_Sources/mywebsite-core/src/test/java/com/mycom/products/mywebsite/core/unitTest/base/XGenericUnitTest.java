@@ -10,6 +10,6 @@ import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 
 public interface XGenericUnitTest extends InsertableUnitTest, XSelectableUnitTest {
 
-	public void testInsertWithRelatedKeys() throws DAOException, DuplicatedEntryException;
+	public void testInsertWithKeys() throws DAOException, DuplicatedEntryException;
 
 }

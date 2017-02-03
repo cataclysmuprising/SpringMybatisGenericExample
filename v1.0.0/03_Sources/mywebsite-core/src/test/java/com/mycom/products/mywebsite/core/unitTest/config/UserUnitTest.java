@@ -25,10 +25,11 @@ import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
 import com.mycom.products.mywebsite.core.unitTest.base.JoinedSelectableUnitTest;
+import com.mycom.products.mywebsite.core.unitTest.base.UpdateableUnitTest;
 import com.mycom.products.mywebsite.core.util.Cryptographic;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, InsertableUnitTest {
+public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, InsertableUnitTest, UpdateableUnitTest {
 	@Autowired
 	private UserDao userDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -105,6 +106,7 @@ public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
+		// criteria.put("age", 27);
 		// criteria.put("loginId", "super-user");
 		// criteria.put("name", "Super User");
 		// criteria.put("email", "superuser@gmail.com");
@@ -131,6 +133,7 @@ public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 		// criteria.put("contentId", 1);
 		// criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
+		// criteria.put("age", 27);
 		// criteria.put("loginId", "super-user");
 		// criteria.put("name", "Super User");
 		// criteria.put("email", "superuser@gmail.com");
@@ -198,7 +201,7 @@ public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsert() throws DAOException, DuplicatedEntryException {
+	public void testInsertSingleRecord() throws DAOException, DuplicatedEntryException {
 		UserBean user = new UserBean();
 		user.setLoginId("admin");
 		user.setContentId(2);
@@ -220,7 +223,7 @@ public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertList() throws DAOException, DuplicatedEntryException {
+	public void testInsertMultiRecords() throws DAOException, DuplicatedEntryException {
 		List<UserBean> records = new ArrayList<>();
 		UserBean record1 = new UserBean();
 		record1.setLoginId("admin");
@@ -250,6 +253,81 @@ public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 		record2.setAddress("Washington");
 		records.add(record2);
 		userDao.insert(records, TEST_CREATE_USER_ID);
+	}
+
+	// --------------------------------- for update
+	@Override
+	@Test(groups = { "update" })
+	@Transactional
+	@Rollback(true)
+	public void testSingleRecordUpdate() throws DAOException, DuplicatedEntryException {
+		UserBean user = new UserBean();
+		user.setId(1);
+		user.setContentId(2);
+		user.setAge(25);
+		user.setName("John");
+		user.setGender(Gender.MALE);
+		user.setNrc("12/YGN 123456");
+		user.setPhone("+95-9000000001");
+		user.setDob(LocalDate.now());
+		user.setAddress("California");
+		long totalEffectedRows = userDao.update(user, TEST_UPDATE_USER_ID);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
+	}
+
+	@Override
+	@Test(groups = { "update" })
+	@Transactional
+	@Rollback(true)
+	public void testMultiRecordsUpdate() throws DAOException, DuplicatedEntryException {
+		List<UserBean> records = new ArrayList<>();
+		UserBean record1 = new UserBean();
+		record1.setId(1);
+		record1.setContentId(2);
+		record1.setAge(25);
+		record1.setName("John");
+		record1.setGender(Gender.MALE);
+		record1.setNrc("12/YGN 123456");
+		record1.setPhone("+95-9000000001");
+		record1.setDob(LocalDate.now());
+		record1.setAddress("California");
+		records.add(record1);
+
+		UserBean record2 = new UserBean();
+		record2.setId(1);
+		record2.setContentId(3);
+		record2.setAge(24);
+		record2.setName("Sarah");
+		record2.setGender(Gender.MALE);
+		record2.setNrc("12/YGN 654321");
+		record2.setPhone("+95-9000000002");
+		record2.setDob(LocalDate.now());
+		record2.setAddress("Washington");
+		records.add(record2);
+		userDao.update(records, TEST_UPDATE_USER_ID);
+	}
+
+	@Override
+	@Test(groups = { "update" })
+	@Transactional
+	@Rollback(true)
+	public void testUpdateByCriteria() throws DAOException, DuplicatedEntryException {
+		HashMap<String, Object> criteria = new HashMap<>();
+		criteria.put("id", 1);
+		criteria.put("ids", new Integer[] { 1, 2, 3 });
+		criteria.put("age", 27);
+		criteria.put("loginId", "super-user");
+		criteria.put("name", "Super User");
+		criteria.put("email", "superuser@gmail.com");
+		criteria.put("nrc", "12/KMY(N)123455");
+		criteria.put("phone", "09-000000001");
+		criteria.put("gender", Gender.MALE);
+
+		HashMap<String, Object> updateItems = new HashMap<>();
+		updateItems.put("name", "USER");
+		updateItems.put("password", Cryptographic.getSha256CheckSum("user-pwd"));
+
+		userDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
 	}
 
 }

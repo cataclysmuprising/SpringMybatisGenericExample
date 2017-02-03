@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 public interface HistoryTrackableMapper<T> {
-	public void saveHistory(T record);
+	public void insertSingleHistoryRecord(T record);
 
-	public void saveHistoryList(@Param("records") List<T> records);
+	public void insertMultiHistoryRecords(@Param("records") List<T> records);
 }

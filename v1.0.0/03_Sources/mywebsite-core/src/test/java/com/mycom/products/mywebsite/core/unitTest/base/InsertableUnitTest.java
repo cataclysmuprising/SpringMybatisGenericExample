@@ -9,7 +9,7 @@ import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 
 public interface InsertableUnitTest {
-	public void testInsert() throws DAOException, DuplicatedEntryException;
+	public void testInsertSingleRecord() throws DAOException, DuplicatedEntryException;
 
-	public void testInsertList() throws DAOException, DuplicatedEntryException;
+	public void testInsertMultiRecords() throws DAOException, DuplicatedEntryException;
 }

@@ -6,6 +6,7 @@
 package com.mycom.products.mywebsite.core.dao.master;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			setting.setTransactionType(TransactionType.INSERT);
 			settingMapper.insert(setting);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history after successfully inserted in major table ---");
-			settingMapper.saveHistory(setting);
+			settingMapper.insertSingleHistoryRecord(setting);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
@@ -78,7 +79,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 		try {
 			settingMapper.insertList(settings);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history after successfully inserted in major table ---");
-			settingMapper.saveHistoryList(settings);
+			settingMapper.insertMultiHistoryRecords(settings);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
@@ -109,7 +110,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			}
 			oldData.setTransactionType(TransactionType.UPDATE);
 			oldData.setRecordUpdId(recordUpdId);
-			settingMapper.saveHistory(oldData);
+			settingMapper.insertSingleHistoryRecord(oldData);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
 			totalEffectedRows = settingMapper.update(setting);
 		} catch (DuplicateKeyException e) {
@@ -142,7 +143,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 				}
 				oldData.setTransactionType(TransactionType.UPDATE);
 				oldData.setRecordUpdId(recordUpdId);
-				settingMapper.saveHistory(oldData);
+				settingMapper.insertSingleHistoryRecord(oldData);
 				daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
 				settingMapper.update(setting);
 			} catch (DuplicateKeyException e) {
@@ -163,6 +164,43 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	public long update(HashMap<String, Object> criteria, HashMap<String, Object> updateItems,
+			long recordUpdId) throws DAOException, DuplicatedEntryException {
+		long totalEffectedRows = 0;
+		daoLogger.debug("[START] : >>> --- Updating multi 'Setting' informations with criteria ---");
+		try {
+			criteria.put("recordUpdId", recordUpdId);
+			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Setting' informations in history before update on major table ---");
+			List<SettingBean> settings = settingMapper.selectMultiRecords(criteria);
+			if (settings == null) {
+				throw new SaveHistoryFailedException();
+			} else if (settings != null && settings.size() > 0) {
+				for (SettingBean setting : settings) {
+					setting.setTransactionType(TransactionType.UPDATE);
+					setting.setRecordUpdId(recordUpdId);
+					settingMapper.insertSingleHistoryRecord(setting);
+				}
+			}
+			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
+			totalEffectedRows = settingMapper.updateWithCriteria(criteria, updateItems);
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (SaveHistoryFailedException e) {
+			String errorMsg = "xxx Error occured while saving 'Setting' informations in history for later tracking xxx";
+			daoLogger.error(errorMsg, e);
+			throw new SaveHistoryFailedException(errorMsg, e.getCause());
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while updating multiple 'Setting' informations [Values] ==> " + updateItems + " with [Criteria] ==> " + criteria + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
+		}
+		daoLogger.debug("[FINISH] : <<< --- Updating multi 'Setting' informations with criteria ---");
+		return totalEffectedRows;
+	}
+
+	@Override
 	public long delete(long primaryKey,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'Setting' informations with primaryKey # " + primaryKey + " ---");
@@ -175,7 +213,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			}
 			oldData.setTransactionType(TransactionType.UPDATE);
 			oldData.setRecordUpdId(recordUpdId);
-			settingMapper.saveHistory(oldData);
+			settingMapper.insertSingleHistoryRecord(oldData);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
 			totalEffectedRows = settingMapper.deleteByPrimaryKey(primaryKey);
 		} catch (DataIntegrityViolationException e) {
@@ -205,13 +243,12 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			List<SettingBean> settings = settingMapper.selectMultiRecords(criteria);
 			if (settings == null) {
 				throw new SaveHistoryFailedException();
-			}
-			if (settings != null && settings.size() > 0) {
+			} else if (settings != null && settings.size() > 0) {
 				for (SettingBean setting : settings) {
 					setting.setTransactionType(TransactionType.DELETE);
 					setting.setRecordUpdId(recordUpdId);
-					settingMapper.saveHistory(setting);
 				}
+				settingMapper.insertMultiHistoryRecords(settings);
 			}
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
 			totalEffectedRows = settingMapper.deleteByCriteria(criteria);

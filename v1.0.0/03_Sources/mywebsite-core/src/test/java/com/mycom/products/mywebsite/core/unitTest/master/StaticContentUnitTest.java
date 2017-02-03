@@ -24,8 +24,10 @@ import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
 import com.mycom.products.mywebsite.core.unitTest.base.StandAloneSelectableUnitTest;
+import com.mycom.products.mywebsite.core.unitTest.base.UpdateableUnitTest;
 
-public class StaticContentUnitTest extends TestBase implements StandAloneSelectableUnitTest, InsertableUnitTest {
+public class StaticContentUnitTest extends TestBase
+		implements StandAloneSelectableUnitTest, InsertableUnitTest, UpdateableUnitTest {
 	@Autowired
 	private StaticContentDao staticContentDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -106,7 +108,7 @@ public class StaticContentUnitTest extends TestBase implements StandAloneSelecta
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsert() throws DAOException, DuplicatedEntryException {
+	public void testInsertSingleRecord() throws DAOException, DuplicatedEntryException {
 		StaticContentBean content = new StaticContentBean();
 		content.setFileType(FileType.IMAGE);
 		content.setFileName("favicon.ico");
@@ -121,7 +123,7 @@ public class StaticContentUnitTest extends TestBase implements StandAloneSelecta
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertList() throws DAOException, DuplicatedEntryException {
+	public void testInsertMultiRecords() throws DAOException, DuplicatedEntryException {
 		List<StaticContentBean> records = new ArrayList<>();
 		StaticContentBean record1 = new StaticContentBean();
 		record1.setFileType(FileType.IMAGE);
@@ -137,6 +139,66 @@ public class StaticContentUnitTest extends TestBase implements StandAloneSelecta
 		record2.setFilePath("D:/web-resources/mywebsite/uploadFiles/guides/user_manual_321.pdf");
 		records.add(record2);
 		staticContentDao.insert(records, TEST_CREATE_USER_ID);
+	}
+
+	// --------------------------------- for update
+	@Override
+	@Test(groups = { "update" })
+	@Transactional
+	@Rollback(true)
+	public void testSingleRecordUpdate() throws DAOException, DuplicatedEntryException {
+		StaticContentBean content = new StaticContentBean();
+		content.setId(1);
+		content.setFileType(FileType.IMAGE);
+		content.setFileName("favicon.ico");
+		content.setFileSize("120KB");
+		content.setFilePath("D:/web-resources/mywebsite/uploadFiles/avatar/favicon_123.jpg");
+		long totalEffectedRows = staticContentDao.update(content, TEST_UPDATE_USER_ID);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
+	}
+
+	@Override
+	@Test(groups = { "update" })
+	@Transactional
+	@Rollback(true)
+	public void testMultiRecordsUpdate() throws DAOException, DuplicatedEntryException {
+		List<StaticContentBean> records = new ArrayList<>();
+		StaticContentBean record1 = new StaticContentBean();
+		record1.setId(1);
+		record1.setFileType(FileType.IMAGE);
+		record1.setFileName("favicon.ico");
+		record1.setFileSize("120KB");
+		record1.setFilePath("D:/web-resources/mywebsite/uploadFiles/avatar/favicon_123.jpg");
+		records.add(record1);
+
+		StaticContentBean record2 = new StaticContentBean();
+		record2.setId(1);
+		record2.setFileType(FileType.PDF);
+		record2.setFileName("user_manual.pdf");
+		record2.setFileSize("3MB");
+		record2.setFilePath("D:/web-resources/mywebsite/uploadFiles/guides/user_manual_321.pdf");
+		records.add(record2);
+		staticContentDao.update(records, TEST_UPDATE_USER_ID);
+	}
+
+	@Override
+	@Test(groups = { "update" })
+	@Transactional
+	@Rollback(true)
+	public void testUpdateByCriteria() throws DAOException, DuplicatedEntryException {
+		HashMap<String, Object> criteria = new HashMap<>();
+		criteria.put("id", 1);
+		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
+		// criteria.put("fileType", FileType.IMAGE);
+		// criteria.put("fileName", "super_user.jpg");
+		// criteria.put("fileSize", "10KB");
+
+		HashMap<String, Object> updateItems = new HashMap<>();
+		updateItems.put("fileType", FileType.IMAGE);
+		updateItems.put("fileName", "logo.png");
+		updateItems.put("fileSize", "50KB");
+
+		staticContentDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
 	}
 
 }

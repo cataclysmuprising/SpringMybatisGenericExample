@@ -6,6 +6,7 @@
 package com.mycom.products.mywebsite.core.dao.config;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 			role.setTransactionType(TransactionType.INSERT);
 			roleMapper.insert(role);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Role' informations in history after successfully inserted in major table ---");
-			roleMapper.saveHistory(role);
+			roleMapper.insertSingleHistoryRecord(role);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
@@ -79,7 +80,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 		try {
 			roleMapper.insertList(roles);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Role' informations in history after successfully inserted in major table ---");
-			roleMapper.saveHistoryList(roles);
+			roleMapper.insertMultiHistoryRecords(roles);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
@@ -110,7 +111,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 			}
 			oldData.setTransactionType(TransactionType.UPDATE);
 			oldData.setRecordUpdId(recordUpdId);
-			roleMapper.saveHistory(oldData);
+			roleMapper.insertSingleHistoryRecord(oldData);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
 			totalEffectedRows = roleMapper.update(role);
 		} catch (DuplicateKeyException e) {
@@ -143,7 +144,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 				}
 				oldData.setTransactionType(TransactionType.UPDATE);
 				oldData.setRecordUpdId(recordUpdId);
-				roleMapper.saveHistory(oldData);
+				roleMapper.insertSingleHistoryRecord(oldData);
 				daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
 				roleMapper.update(role);
 			} catch (DuplicateKeyException e) {
@@ -163,6 +164,42 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 		daoLogger.debug("[FINISH] : <<< --- Updating multi 'Role' informations ---");
 	}
 
+	public long update(HashMap<String, Object> criteria, HashMap<String, Object> updateItems,
+			long recordUpdId) throws DAOException, DuplicatedEntryException {
+		long totalEffectedRows = 0;
+		daoLogger.debug("[START] : >>> --- Updating multi 'Role' informations with criteria ---");
+		try {
+			criteria.put("recordUpdId", recordUpdId);
+			daoLogger.debug("[HISTORY][START] : $1 --- Save 'Role' informations in history before update on major table ---");
+			List<RoleBean> roles = roleMapper.selectMultiRecords(criteria, FetchMode.LAZY);
+			if (roles == null) {
+				throw new SaveHistoryFailedException();
+			} else if (roles != null && roles.size() > 0) {
+				for (RoleBean role : roles) {
+					role.setTransactionType(TransactionType.UPDATE);
+					role.setRecordUpdId(recordUpdId);
+					roleMapper.insertSingleHistoryRecord(role);
+				}
+			}
+			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
+			totalEffectedRows = roleMapper.updateWithCriteria(criteria, updateItems);
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (SaveHistoryFailedException e) {
+			String errorMsg = "xxx Error occured while saving 'Role' informations in history for later tracking xxx";
+			daoLogger.error(errorMsg, e);
+			throw new SaveHistoryFailedException(errorMsg, e.getCause());
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while updating multiple 'Role' informations [Values] ==> " + updateItems + " with [Criteria] ==> " + criteria + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
+		}
+		daoLogger.debug("[FINISH] : <<< --- Updating multi 'Role' informations with criteria ---");
+		return totalEffectedRows;
+	}
+
 	@Override
 	public long delete(long primaryKey,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
@@ -176,7 +213,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 			}
 			oldData.setTransactionType(TransactionType.UPDATE);
 			oldData.setRecordUpdId(recordUpdId);
-			roleMapper.saveHistory(oldData);
+			roleMapper.insertSingleHistoryRecord(oldData);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
 			totalEffectedRows = roleMapper.deleteByPrimaryKey(primaryKey);
 		} catch (DataIntegrityViolationException e) {
@@ -206,13 +243,12 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 			List<RoleBean> roles = roleMapper.selectMultiRecords(criteria, FetchMode.LAZY);
 			if (roles == null) {
 				throw new SaveHistoryFailedException();
-			}
-			if (roles != null && roles.size() > 0) {
+			} else if (roles != null && roles.size() > 0) {
 				for (RoleBean role : roles) {
 					role.setTransactionType(TransactionType.DELETE);
 					role.setRecordUpdId(recordUpdId);
-					roleMapper.saveHistory(role);
 				}
+				roleMapper.insertMultiHistoryRecords(roles);
 			}
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Role' informations in history ---");
 			totalEffectedRows = roleMapper.deleteByCriteria(criteria);

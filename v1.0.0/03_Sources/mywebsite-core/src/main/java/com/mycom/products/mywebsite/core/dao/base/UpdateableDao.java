@@ -5,6 +5,7 @@
  */
 package com.mycom.products.mywebsite.core.dao.base;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean;
@@ -15,4 +16,7 @@ public interface UpdateableDao<T extends BaseBean> {
 	public long update(T record, long recordUpdId) throws DuplicatedEntryException, DAOException;
 
 	public void update(List<T> records, long recordUpdId) throws DuplicatedEntryException, DAOException;
+
+	public long update(HashMap<String, Object> criteria, HashMap<String, Object> updateItems,
+			long recordUpdId) throws DAOException, DuplicatedEntryException;
 }

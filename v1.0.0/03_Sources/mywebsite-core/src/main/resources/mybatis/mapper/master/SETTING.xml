@@ -139,7 +139,7 @@
 		)
 	</insert>
 	
-	<insert id="saveHistory" parameterType="RoleBean">
+	<insert id="insertSingleHistoryRecord" parameterType="RoleBean">
 		INSERT INTO hst_setting (
 			<include refid="major_table_columns" />
 			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
@@ -164,7 +164,7 @@
        </if>			
 	</insert>
 		
-	<insert id="saveHistoryList" parameterType="java.util.List">
+	<insert id="insertMultiHistoryRecords" parameterType="java.util.List">
 		<if test="records != null and records.size() > 0">
 			INSERT INTO hst_setting (
 				<include refid="major_table_columns" />
@@ -177,7 +177,66 @@
 				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.history_table_iterate_fields" />	        
 	       </foreach>	
        </if>			
-	</insert>	
+	</insert>
+	
+	<update id="update" parameterType="RoleBean">
+		UPDATE mjr_setting
+		<set>
+			record_upd_id = #{recordUpdId},
+			record_upd_date = getDate(),		
+			setting_name = #{name},
+			setting_value = #{value},
+			setting_type = #{type},
+			setting_group = #{group},
+			setting_sub_group = #{subGroup}
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateWithCriteria">
+		UPDATE mjr_setting
+		<set>
+			<if test="criteria != null and criteria.keySet().size() > 0">
+				record_upd_id = #{criteria.recordUpdId},
+			</if>
+			record_upd_date = getDate(),
+			<if test="updateItems != null and updateItems.keySet().size() > 0">
+				<if test="updateItems.name != null">setting_name = #{updateItems.name},</if>
+				<if test="updateItems.value != null">setting_value = #{updateItems.value},</if>
+				<if test="updateItems.type != null">setting_type = #{updateItems.type},</if>
+				<if test="updateItems.group != null">setting_group = #{updateItems.group},</if>
+				<if test="updateItems.subGroup != null">setting_sub_group = #{updateItems.subGroup},</if>
+			</if>					
+		</set>
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			<where>
+				<if test="criteria.id != null">
+					id = #{criteria.id}
+				</if>
+				<if test="criteria.ids != null">
+					AND id IN
+				    <foreach item="id" index="index" collection="criteria.ids" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>
+				</if>				
+				<if test="criteria.name != null">
+					AND setting_name = #{criteria.name}
+				</if>
+				<if test="criteria.value != null">
+					AND setting_value = #{criteria.value}
+				</if>
+				<if test="criteria.type != null">
+					AND setting_type = #{criteria.type}
+				</if>
+				<if test="criteria.group != null">
+					AND setting_group = #{criteria.group}
+				</if>
+				<if test="criteria.subGroup != null">
+					AND setting_sub_group = #{criteria.subGroup}
+				</if>
+			</where>
+		</if>
+	</update>		
 	
 	<select id="selectByPrimaryKey" resultMap="SettingResult">
 		SELECT

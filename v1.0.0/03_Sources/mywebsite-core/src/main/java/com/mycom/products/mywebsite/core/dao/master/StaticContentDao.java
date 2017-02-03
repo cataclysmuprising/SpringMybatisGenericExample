@@ -6,6 +6,7 @@
 package com.mycom.products.mywebsite.core.dao.master;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ public class StaticContentDao
 			staticContent.setTransactionType(TransactionType.INSERT);
 			staticContentMapper.insert(staticContent);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'StaticContent' informations in history after successfully inserted in major table ---");
-			staticContentMapper.saveHistory(staticContent);
+			staticContentMapper.insertSingleHistoryRecord(staticContent);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
@@ -81,7 +82,7 @@ public class StaticContentDao
 		try {
 			staticContentMapper.insertList(staticContents);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'StaticContent' informations in history after successfully inserted in major table ---");
-			staticContentMapper.saveHistoryList(staticContents);
+			staticContentMapper.insertMultiHistoryRecords(staticContents);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
@@ -113,7 +114,7 @@ public class StaticContentDao
 			}
 			oldData.setTransactionType(TransactionType.UPDATE);
 			oldData.setRecordUpdId(recordUpdId);
-			staticContentMapper.saveHistory(oldData);
+			staticContentMapper.insertSingleHistoryRecord(oldData);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
 			totalEffectedRows = staticContentMapper.update(staticContent);
 		} catch (DuplicateKeyException e) {
@@ -147,7 +148,7 @@ public class StaticContentDao
 				}
 				oldData.setTransactionType(TransactionType.UPDATE);
 				oldData.setRecordUpdId(recordUpdId);
-				staticContentMapper.saveHistory(oldData);
+				staticContentMapper.insertSingleHistoryRecord(oldData);
 				daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
 				staticContentMapper.update(staticContent);
 			} catch (DuplicateKeyException e) {
@@ -168,6 +169,43 @@ public class StaticContentDao
 	}
 
 	@Override
+	public long update(HashMap<String, Object> criteria, HashMap<String, Object> updateItems,
+			long recordUpdId) throws DAOException, DuplicatedEntryException {
+		long totalEffectedRows = 0;
+		daoLogger.debug("[START] : >>> --- Updating multi 'StaticContent' informations with criteria ---");
+		try {
+			criteria.put("recordUpdId", recordUpdId);
+			daoLogger.debug("[HISTORY][START] : $1 --- Save 'StaticContent' informations in history before update on major table ---");
+			List<StaticContentBean> staticContents = staticContentMapper.selectMultiRecords(criteria);
+			if (staticContents == null) {
+				throw new SaveHistoryFailedException();
+			} else if (staticContents != null && staticContents.size() > 0) {
+				for (StaticContentBean staticContent : staticContents) {
+					staticContent.setTransactionType(TransactionType.UPDATE);
+					staticContent.setRecordUpdId(recordUpdId);
+					staticContentMapper.insertSingleHistoryRecord(staticContent);
+				}
+			}
+			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
+			totalEffectedRows = staticContentMapper.updateWithCriteria(criteria, updateItems);
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (SaveHistoryFailedException e) {
+			String errorMsg = "xxx Error occured while saving 'StaticContent' informations in history for later tracking xxx";
+			daoLogger.error(errorMsg, e);
+			throw new SaveHistoryFailedException(errorMsg, e.getCause());
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while updating multiple 'StaticContent' informations [Values] ==> " + updateItems + " with [Criteria] ==> " + criteria + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
+		}
+		daoLogger.debug("[FINISH] : <<< --- Updating multi 'StaticContent' informations with criteria ---");
+		return totalEffectedRows;
+	}
+
+	@Override
 	public long delete(long primaryKey,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'StaticContent' informations with primaryKey # " + primaryKey + " ---");
@@ -180,7 +218,7 @@ public class StaticContentDao
 			}
 			oldData.setTransactionType(TransactionType.UPDATE);
 			oldData.setRecordUpdId(recordUpdId);
-			staticContentMapper.saveHistory(oldData);
+			staticContentMapper.insertSingleHistoryRecord(oldData);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
 			totalEffectedRows = staticContentMapper.deleteByPrimaryKey(primaryKey);
 		} catch (DataIntegrityViolationException e) {
@@ -210,13 +248,12 @@ public class StaticContentDao
 			List<StaticContentBean> staticContents = staticContentMapper.selectMultiRecords(criteria);
 			if (staticContents == null) {
 				throw new SaveHistoryFailedException();
-			}
-			if (staticContents != null && staticContents.size() > 0) {
+			} else if (staticContents != null && staticContents.size() > 0) {
 				for (StaticContentBean staticContent : staticContents) {
 					staticContent.setTransactionType(TransactionType.DELETE);
 					staticContent.setRecordUpdId(recordUpdId);
-					staticContentMapper.saveHistory(staticContent);
 				}
+				staticContentMapper.insertMultiHistoryRecords(staticContents);
 			}
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
 			totalEffectedRows = staticContentMapper.deleteByCriteria(criteria);

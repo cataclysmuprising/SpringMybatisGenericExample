@@ -23,8 +23,10 @@ import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
 import com.mycom.products.mywebsite.core.unitTest.base.StandAloneSelectableUnitTest;
+import com.mycom.products.mywebsite.core.unitTest.base.UpdateableUnitTest;
 
-public class SettingUnitTest extends TestBase implements StandAloneSelectableUnitTest, InsertableUnitTest {
+public class SettingUnitTest extends TestBase
+		implements StandAloneSelectableUnitTest, InsertableUnitTest, UpdateableUnitTest {
 	@Autowired
 	private SettingDao settingDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -109,7 +111,7 @@ public class SettingUnitTest extends TestBase implements StandAloneSelectableUni
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsert() throws DAOException, DuplicatedEntryException {
+	public void testInsertSingleRecord() throws DAOException, DuplicatedEntryException {
 		SettingBean setting = new SettingBean();
 		setting.setName("test_name");
 		setting.setValue("test_value");
@@ -125,7 +127,7 @@ public class SettingUnitTest extends TestBase implements StandAloneSelectableUni
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertList() throws DAOException, DuplicatedEntryException {
+	public void testInsertMultiRecords() throws DAOException, DuplicatedEntryException {
 		List<SettingBean> records = new ArrayList<>();
 		SettingBean record1 = new SettingBean();
 		record1.setName("test_name");
@@ -143,5 +145,72 @@ public class SettingUnitTest extends TestBase implements StandAloneSelectableUni
 		record2.setSubGroup("test_subgroup2");
 		records.add(record2);
 		settingDao.insert(records, TEST_CREATE_USER_ID);
+	}
+
+	// --------------------------------- for update
+	@Override
+	@Test(groups = { "update" })
+	@Transactional
+	@Rollback(true)
+	public void testSingleRecordUpdate() throws DAOException, DuplicatedEntryException {
+		SettingBean setting = new SettingBean();
+		setting.setId(1);
+		setting.setName("test_name");
+		setting.setValue("test_value");
+		setting.setType("test_type");
+		setting.setGroup("test_group");
+		setting.setSubGroup("test_subgroup");
+		long totalEffectedRows = settingDao.update(setting, TEST_UPDATE_USER_ID);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
+	}
+
+	@Override
+	@Test(groups = { "update" })
+	@Transactional
+	@Rollback(true)
+	public void testMultiRecordsUpdate() throws DAOException, DuplicatedEntryException {
+		List<SettingBean> records = new ArrayList<>();
+		SettingBean record1 = new SettingBean();
+		record1.setId(1);
+		record1.setName("test_name");
+		record1.setValue("test_value");
+		record1.setType("test_type");
+		record1.setGroup("test_group");
+		record1.setSubGroup("test_subgroup");
+		records.add(record1);
+
+		SettingBean record2 = new SettingBean();
+		record2.setId(2);
+		record2.setName("test_name2");
+		record2.setValue("test_value2");
+		record2.setType("test_type2");
+		record2.setGroup("test_group2");
+		record2.setSubGroup("test_subgroup2");
+		records.add(record2);
+		settingDao.update(records, TEST_UPDATE_USER_ID);
+	}
+
+	@Override
+	@Test(groups = { "update" })
+	@Transactional
+	@Rollback(true)
+	public void testUpdateByCriteria() throws DAOException, DuplicatedEntryException {
+		HashMap<String, Object> criteria = new HashMap<>();
+		criteria.put("id", 280);
+		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
+		// criteria.put("name", "UploadPath");
+		// criteria.put("type", "String");
+		// criteria.put("group", "Application");
+		// criteria.put("subGroup", "File Directory");
+		// criteria.put("value", "MMK");
+
+		HashMap<String, Object> updateItems = new HashMap<>();
+		updateItems.put("name", "test_name");
+		updateItems.put("value", "test_value");
+		updateItems.put("type", "test_type");
+		updateItems.put("group", "test_group");
+		updateItems.put("subGroup", "test_subgroup");
+
+		settingDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
 	}
 }

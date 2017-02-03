@@ -6,6 +6,7 @@
 package com.mycom.products.mywebsite.core.dao.config;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			user.setTransactionType(TransactionType.INSERT);
 			userMapper.insert(user);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history after successfully inserted in major table ---");
-			userMapper.saveHistory(user);
+			userMapper.insertSingleHistoryRecord(user);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
@@ -79,7 +80,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 		try {
 			userMapper.insertList(users);
 			daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history after successfully inserted in major table ---");
-			userMapper.saveHistoryList(users);
+			userMapper.insertMultiHistoryRecords(users);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
@@ -110,7 +111,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			}
 			oldData.setTransactionType(TransactionType.UPDATE);
 			oldData.setRecordUpdId(recordUpdId);
-			userMapper.saveHistory(oldData);
+			userMapper.insertSingleHistoryRecord(oldData);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
 			totalEffectedRows = userMapper.update(user);
 		} catch (DuplicateKeyException e) {
@@ -143,7 +144,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 				}
 				oldData.setTransactionType(TransactionType.UPDATE);
 				oldData.setRecordUpdId(recordUpdId);
-				userMapper.saveHistory(oldData);
+				userMapper.insertSingleHistoryRecord(oldData);
 				daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
 				userMapper.update(user);
 			} catch (DuplicateKeyException e) {
@@ -164,6 +165,43 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	public long update(HashMap<String, Object> criteria, HashMap<String, Object> updateItems,
+			long recordUpdId) throws DAOException, DuplicatedEntryException {
+		long totalEffectedRows = 0;
+		daoLogger.debug("[START] : >>> --- Updating multi 'User' informations with criteria ---");
+		try {
+			criteria.put("recordUpdId", recordUpdId);
+			daoLogger.debug("[HISTORY][START] : $1 --- Save 'User' informations in history before update on major table ---");
+			List<UserBean> users = userMapper.selectMultiRecords(criteria, FetchMode.LAZY);
+			if (users == null) {
+				throw new SaveHistoryFailedException();
+			} else if (users != null && users.size() > 0) {
+				for (UserBean user : users) {
+					user.setTransactionType(TransactionType.UPDATE);
+					user.setRecordUpdId(recordUpdId);
+					userMapper.insertSingleHistoryRecord(user);
+				}
+			}
+			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
+			totalEffectedRows = userMapper.updateWithCriteria(criteria, updateItems);
+		} catch (DuplicateKeyException e) {
+			String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DuplicatedEntryException(errorMsg, e);
+		} catch (SaveHistoryFailedException e) {
+			String errorMsg = "xxx Error occured while saving 'User' informations in history for later tracking xxx";
+			daoLogger.error(errorMsg, e);
+			throw new SaveHistoryFailedException(errorMsg, e.getCause());
+		} catch (Exception e) {
+			String errorMsg = "xxx Error occured while updating multiple 'User' informations [Values] ==> " + updateItems + " with [Criteria] ==> " + criteria + " xxx";
+			daoLogger.error(errorMsg, e);
+			throw new DAOException(errorMsg, e);
+		}
+		daoLogger.debug("[FINISH] : <<< --- Updating multi 'User' informations with criteria ---");
+		return totalEffectedRows;
+	}
+
+	@Override
 	public long delete(long primaryKey,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'User' informations with primaryKey # " + primaryKey + " ---");
@@ -176,7 +214,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			}
 			oldData.setTransactionType(TransactionType.UPDATE);
 			oldData.setRecordUpdId(recordUpdId);
-			userMapper.saveHistory(oldData);
+			userMapper.insertSingleHistoryRecord(oldData);
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
 			totalEffectedRows = userMapper.deleteByPrimaryKey(primaryKey);
 		} catch (DataIntegrityViolationException e) {
@@ -206,13 +244,12 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			List<UserBean> users = userMapper.selectMultiRecords(criteria, FetchMode.LAZY);
 			if (users == null) {
 				throw new SaveHistoryFailedException();
-			}
-			if (users != null && users.size() > 0) {
+			} else if (users != null && users.size() > 0) {
 				for (UserBean user : users) {
 					user.setTransactionType(TransactionType.DELETE);
 					user.setRecordUpdId(recordUpdId);
-					userMapper.saveHistory(user);
 				}
+				userMapper.insertMultiHistoryRecords(users);
 			}
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
 			totalEffectedRows = userMapper.deleteByCriteria(criteria);

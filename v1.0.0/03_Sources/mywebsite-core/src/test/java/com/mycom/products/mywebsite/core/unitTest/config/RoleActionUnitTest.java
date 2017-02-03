@@ -127,7 +127,7 @@ public class RoleActionUnitTest extends TestBase implements XGenericUnitTest {
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsert() throws DAOException, DuplicatedEntryException {
+	public void testInsertSingleRecord() throws DAOException, DuplicatedEntryException {
 		RoleActionBean roleAction = new RoleActionBean();
 		roleAction.setRoleId(1001);
 		roleAction.setActionId(2002);
@@ -138,7 +138,7 @@ public class RoleActionUnitTest extends TestBase implements XGenericUnitTest {
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertList() throws DAOException, DuplicatedEntryException {
+	public void testInsertMultiRecords() throws DAOException, DuplicatedEntryException {
 		List<RoleActionBean> records = new ArrayList<>();
 		RoleActionBean record1 = new RoleActionBean();
 		record1.setRoleId(1001);
@@ -156,7 +156,7 @@ public class RoleActionUnitTest extends TestBase implements XGenericUnitTest {
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertWithRelatedKeys() throws DAOException, DuplicatedEntryException {
+	public void testInsertWithKeys() throws DAOException, DuplicatedEntryException {
 		roleActionDao.insert(5005, 6006, TEST_CREATE_USER_ID);
 	}
 }

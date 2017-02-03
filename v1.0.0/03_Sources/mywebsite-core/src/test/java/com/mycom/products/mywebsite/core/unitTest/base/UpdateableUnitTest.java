@@ -5,14 +5,14 @@
  */
 package com.mycom.products.mywebsite.core.unitTest.base;
 
-import java.util.List;
-
-import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 
-public interface UpdateableUnitTest<T extends BaseBean> {
-	public int update(T record, int recordUpdId) throws DuplicatedEntryException, DAOException;
+public interface UpdateableUnitTest {
 
-	public void update(List<T> records, int recordUpdId) throws DuplicatedEntryException, DAOException;
+	public void testSingleRecordUpdate() throws DuplicatedEntryException, DAOException;
+
+	public void testMultiRecordsUpdate() throws DuplicatedEntryException, DAOException;
+
+	public void testUpdateByCriteria() throws DuplicatedEntryException, DAOException;
 }

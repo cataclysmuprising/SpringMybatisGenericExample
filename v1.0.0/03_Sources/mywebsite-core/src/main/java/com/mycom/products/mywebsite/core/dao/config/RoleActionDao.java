@@ -44,11 +44,9 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			roleActionMapper.insert(roleAction);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting 'RoleAction' data ==> " + roleAction + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting single 'RoleAction' informations ---");
@@ -69,11 +67,9 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			roleActionMapper.insertList(roleActions);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting 'RoleAction' datas ==> " + roleActions + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'RoleAction' informations ---");
@@ -86,11 +82,9 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			roleActionMapper.insertWithRelatedKeys(roleId, actionId, recordRegId);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting 'RoleAction' data ==> roleId = " + roleId + " , actionId = " + actionId + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting single 'RoleAction' informations ---");
@@ -105,11 +99,9 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			effectedRows = roleActionMapper.deleteByKeys(roleId, actionId);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
-			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while deleting 'RoleAction' data with ==> roleId = " + roleId + " , actionId = " + actionId + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Deleting single 'RoleAction' informations with ==> roleId " + roleId + " , actionId = " + actionId + " ---");
@@ -125,11 +117,9 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			effectedRows = roleActionMapper.deleteByCriteria(criteria);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
-			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while deleting 'RoleAction' data with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Deleting 'RoleAction' informations with criteria  ---");
@@ -198,7 +188,6 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			actionIds = roleActionMapper.selectRelatedKeys(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching related 'Action' keys with roleId ==> " + key1 + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching related actionIds with roleId # " + key1 + " ---");
@@ -215,7 +204,6 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			roleIds = roleActionMapper.selectRelatedKeys(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching related 'Role' keys with actionId ==> " + key2 + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching related roleIds with actionId # " + key2 + " ---");
@@ -232,7 +220,6 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			roleAction = roleActionMapper.selectByKeys(roleId, actionId, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'RoleAction' informations with ==> roleId = " + roleId + " , actionId = " + actionId + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching single 'RoleAction' informations with ==> roleId = " + roleId + " , actionId = " + actionId + " ---");
@@ -249,7 +236,6 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			results = roleActionMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'RoleAction' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching multi 'RoleAction' informations with criteria ---");
@@ -265,7 +251,6 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			count = roleActionMapper.selectCounts(criteria, null);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'RoleAction' records with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'RoleAction' counts with criteria ---");

@@ -43,11 +43,9 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 			loginHistoryMapper.insert(loginHistory);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting 'LoginHistory' data ==> " + loginHistory + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting single 'LoginHistory' informations with new Id # " + loginHistory.getId() + " ---");
@@ -70,11 +68,9 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 			loginHistoryMapper.insertList(loginHistories);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting multi 'LoginHistory' datas ==> " + loginHistories + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'LoginHistory' informations ---");
@@ -88,7 +84,6 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 			loginHistory = loginHistoryMapper.selectByPrimaryKey(primaryKey, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'LoginHistory' informations with primaryKey ==> " + primaryKey + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'LoginHistory' informations with primaryKey # " + primaryKey + " ---");
@@ -103,7 +98,6 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 			loginHistory = loginHistoryMapper.selectSingleRecord(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'LoginHistory' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching single 'LoginHistory' informations with criteria ---");
@@ -118,7 +112,6 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 			loginHistorys = loginHistoryMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'LoginHistory' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching multi 'LoginHistory' informations with criteria ---");
@@ -133,7 +126,6 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 			count = loginHistoryMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'LoginHistory' records with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'LoginHistory' counts with criteria ---");

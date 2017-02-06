@@ -44,11 +44,9 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			userRoleMapper.insert(userRole);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting 'UserRole' data ==> " + userRole + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting single 'UserRole' informations ---");
@@ -68,11 +66,9 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			userRoleMapper.insertList(userRoles);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting 'UserRole' datas ==> " + userRoles + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'UserRole' informations ---");
@@ -85,11 +81,9 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			userRoleMapper.insertWithRelatedKeys(userId, roleId, recordRegId);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting 'UserRole' data ==> userId = " + userId + " , roleId = " + roleId + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting single 'UserRole' informations ---");
@@ -104,11 +98,9 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			effectedRows = userRoleMapper.deleteByKeys(userId, roleId);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
-			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while deleting 'UserRole' data with ==> userId = " + userId + " , roleId = " + roleId + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Deleting single 'UserRole' informations with ==> userId " + userId + " , roleId = " + roleId + " ---");
@@ -124,11 +116,9 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			effectedRows = userRoleMapper.deleteByCriteria(criteria);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
-			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while deleting 'UserRole' data with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Deleting 'UserRole' informations with criteria  ---");
@@ -197,7 +187,6 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			roleIds = userRoleMapper.selectRelatedKeys(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching related 'Action' keys with userId ==> " + key1 + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching related roleIds with userId # " + key1 + " ---");
@@ -214,7 +203,6 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			userIds = userRoleMapper.selectRelatedKeys(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching related 'Role' keys with roleId ==> " + key2 + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching related userIds with roleId # " + key2 + " ---");
@@ -231,7 +219,6 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			userRole = userRoleMapper.selectByKeys(userId, roleId, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " ---");
@@ -248,7 +235,6 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			results = userRoleMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'UserRole' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching multi 'UserRole' informations with criteria ---");
@@ -264,7 +250,6 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			count = userRoleMapper.selectCounts(criteria, null);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'UserRole' records with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'UserRole' counts with criteria ---");

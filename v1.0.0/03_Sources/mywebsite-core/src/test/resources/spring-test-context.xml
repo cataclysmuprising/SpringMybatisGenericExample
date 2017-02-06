@@ -16,7 +16,10 @@
 	 </context:component-scan>	
 	 
 	<import resource="classpath:spring-core/spring-datasource.xml"/>
-  	<cache:annotation-driven />
+	
+  	<cache:annotation-driven cache-manager="cacheManager" key-generator="cacheKeyGenerator" />
+  	
+  	<bean id="cacheKeyGenerator" name="CacheKeyGenerator" class="com.mycom.products.mywebsite.core.util.CacheKeyGenerator" />
   		 
 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" 
 	                p:cache-manager-ref="ehcache"/>

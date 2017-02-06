@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.core.exception;
 
 public class BusinessException extends Exception {
@@ -13,12 +18,10 @@ public class BusinessException extends Exception {
 
 	public BusinessException(final String message, final Throwable cause) {
 		super(message, cause);
-		cause.printStackTrace();
 	}
 
 	public BusinessException(final Throwable cause) {
 		super(cause);
-		cause.printStackTrace();
 	}
 
 }

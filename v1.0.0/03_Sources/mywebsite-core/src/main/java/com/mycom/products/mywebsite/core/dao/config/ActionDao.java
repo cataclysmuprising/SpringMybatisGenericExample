@@ -33,7 +33,6 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 			action = actionMapper.selectByPrimaryKey(primaryKey, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Action' informations with primaryKey ==> " + primaryKey + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'Action' informations with primaryKey # " + primaryKey + " ---");
@@ -48,7 +47,6 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 			action = actionMapper.selectSingleRecord(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Action' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching single 'Action' informations with criteria ---");
@@ -63,7 +61,6 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 			actions = actionMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'Action' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching multi 'Action' informations with criteria ---");
@@ -78,7 +75,6 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 			count = actionMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'Action' records with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'Action' counts with criteria ---");
@@ -92,7 +88,6 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 			pageNames = actionMapper.selectPageNamesByModule(module);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching all 'PageNames' by module = '" + module + "' xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching all 'PageNames' by module = '" + module + "' ---");

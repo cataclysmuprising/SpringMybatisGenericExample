@@ -2,95 +2,14 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      xsi:noNamespaceSchemaLocation="ehcache.xsd"
      updateCheck="false" monitoring="autodetect" dynamicConfig="true">
-   <diskStore path="java.io.tmpdir" /><!--D:/caches/fams_appCaches-->
-    <defaultCache
-        maxEntriesLocalHeap="500" 
-        eternal="false"
-        timeToIdleSeconds="1800" 
-        timeToLiveSeconds="1800" 
-        maxElementsOnDisk="100000" 
-        memoryStoreEvictionPolicy="LRU">
-     	<persistence strategy="localTempSwap" />
-     </defaultCache>
-
+   <diskStore path="java.io.tmpdir" /><!--D:/caches/mywebsite_appCaches-->
     <cache 
-        name="ApplicationCache.Action" 
+        name="ApplicationCache" 
         maxEntriesLocalHeap="200" 
         eternal="false"
         timeToIdleSeconds="1800" 
         timeToLiveSeconds="3600"
         memoryStoreEvictionPolicy="LRU">
-        <persistence strategy="localTempSwap" />
 	</cache>   
-
-    <cache 
-        name="ApplicationCache.RoleAction" 
-        maxEntriesLocalHeap="200" 
-        eternal="false"
-        timeToIdleSeconds="1800" 
-        timeToLiveSeconds="3600"
-        memoryStoreEvictionPolicy="LRU">
-        <persistence strategy="localTempSwap" />
-	</cache>	    
-        
-    <cache 
-        name="ApplicationCache.LoginHistory" 
-        maxEntriesLocalHeap="100" 
-        eternal="false"
-        timeToIdleSeconds="1800" 
-        timeToLiveSeconds="3600"
-        memoryStoreEvictionPolicy="LRU">
-        <persistence strategy="localTempSwap" />
-	</cache>        
- 
-     <cache 
-        name="ApplicationCache.Role" 
-        maxEntriesLocalHeap="50" 
-        eternal="false"
-        timeToIdleSeconds="1800" 
-        timeToLiveSeconds="3600"
-        memoryStoreEvictionPolicy="LRU">
-        <persistence strategy="localTempSwap" />
-	</cache> 
- 
-     <cache 
-        name="ApplicationCache.Setting" 
-        maxEntriesLocalHeap="500" 
-        eternal="false"
-        timeToIdleSeconds="1800" 
-        timeToLiveSeconds="3600"
-        memoryStoreEvictionPolicy="LRU">
-        <persistence strategy="localTempSwap" />
-	</cache> 
-        
-    <cache 
-        name="ApplicationCache.UserRole" 
-        maxEntriesLocalHeap="200" 
-        eternal="false"
-        timeToIdleSeconds="1800" 
-        timeToLiveSeconds="3600"
-        memoryStoreEvictionPolicy="LRU">
-        <persistence strategy="localTempSwap" />
-	</cache>     
-        
-    <cache 
-        name="ApplicationCache.User" 
-        maxEntriesLocalHeap="100" 
-        eternal="false"
-        timeToIdleSeconds="1800" 
-        timeToLiveSeconds="3600"
-        memoryStoreEvictionPolicy="LRU">
-        <persistence strategy="localTempSwap" />
-	</cache>   
-	
-	<cache 
-        name="ApplicationCache.StaticContent" 
-        maxEntriesLocalHeap="100" 
-        eternal="false"
-        timeToIdleSeconds="1800" 
-        timeToLiveSeconds="3600"
-        memoryStoreEvictionPolicy="LRU">
-        <persistence strategy="localTempSwap" />
-	</cache> 	 
 	
   </ehcache>

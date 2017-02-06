@@ -52,15 +52,12 @@ public class StaticContentDao
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'StaticContent' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting 'StaticContent' data ==> " + staticContent + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting single 'StaticContent' informations with new Id # " + staticContent.getId() + " ---");
@@ -86,15 +83,12 @@ public class StaticContentDao
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'StaticContent' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'StaticContent' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting multi 'StaticContent' datas ==> " + staticContents + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'StaticContent' informations ---");
@@ -119,15 +113,12 @@ public class StaticContentDao
 			totalEffectedRows = staticContentMapper.update(staticContent);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'StaticContent' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while updating 'StaticContent' data ==> " + staticContent + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Updating single 'StaticContent' informations with Id # " + staticContent.getId() + " ---");
@@ -153,15 +144,12 @@ public class StaticContentDao
 				staticContentMapper.update(staticContent);
 			} catch (DuplicateKeyException e) {
 				String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
-				daoLogger.error(errorMsg, e);
 				throw new DuplicatedEntryException(errorMsg, e);
 			} catch (SaveHistoryFailedException e) {
 				String errorMsg = "xxx Error occured while saving 'StaticContent' informations in history for later tracking xxx";
-				daoLogger.error(errorMsg, e);
 				throw new SaveHistoryFailedException(errorMsg, e.getCause());
 			} catch (Exception e) {
 				String errorMsg = "xxx Error occured while updating 'StaticContent' data ==> " + staticContent + " xxx";
-				daoLogger.error(errorMsg, e);
 				throw new DAOException(errorMsg, e);
 			}
 		}
@@ -190,15 +178,12 @@ public class StaticContentDao
 			totalEffectedRows = staticContentMapper.updateWithCriteria(criteria, updateItems);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'StaticContent' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while updating multiple 'StaticContent' informations [Values] ==> " + updateItems + " with [Criteria] ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Updating multi 'StaticContent' informations with criteria ---");
@@ -223,15 +208,12 @@ public class StaticContentDao
 			totalEffectedRows = staticContentMapper.deleteByPrimaryKey(primaryKey);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
-			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'StaticContent' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while deleting 'StaticContent' data with primaryKey ==> " + primaryKey + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Deleting single 'StaticContent' informations with primaryKey # " + primaryKey + " ---");
@@ -259,15 +241,12 @@ public class StaticContentDao
 			totalEffectedRows = staticContentMapper.deleteByCriteria(criteria);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
-			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'StaticContent' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while deleting 'StaticContent' data with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Deleting 'StaticContent' informations with criteria  ---");
@@ -282,7 +261,6 @@ public class StaticContentDao
 			staticContent = staticContentMapper.selectByPrimaryKey(primaryKey);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'StaticContent' informations with primaryKey ==> " + primaryKey + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'StaticContent' informations with primaryKey # " + primaryKey + " ---");
@@ -297,7 +275,6 @@ public class StaticContentDao
 			staticContent = staticContentMapper.selectSingleRecord(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'StaticContent' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching single 'StaticContent' informations with criteria ---");
@@ -312,7 +289,6 @@ public class StaticContentDao
 			staticContents = staticContentMapper.selectMultiRecords(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'StaticContent' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching multi 'StaticContent' informations with criteria ---");
@@ -327,7 +303,6 @@ public class StaticContentDao
 			count = staticContentMapper.selectCounts(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'StaticContent' records with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'StaticContent' counts with criteria ---");

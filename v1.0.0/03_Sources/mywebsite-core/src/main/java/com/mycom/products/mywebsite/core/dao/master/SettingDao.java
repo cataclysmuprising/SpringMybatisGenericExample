@@ -50,15 +50,12 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'Setting' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting 'Setting' data ==> " + setting + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting single 'Setting' informations with new Id # " + setting.getId() + " ---");
@@ -83,15 +80,12 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'Setting' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'Setting' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting multi 'Setting' datas ==> " + settings + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'Setting' informations ---");
@@ -115,15 +109,12 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			totalEffectedRows = settingMapper.update(setting);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'Setting' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while updating 'Setting' data ==> " + setting + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Updating single 'Setting' informations with Id # " + setting.getId() + " ---");
@@ -148,15 +139,12 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 				settingMapper.update(setting);
 			} catch (DuplicateKeyException e) {
 				String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
-				daoLogger.error(errorMsg, e);
 				throw new DuplicatedEntryException(errorMsg, e);
 			} catch (SaveHistoryFailedException e) {
 				String errorMsg = "xxx Error occured while saving 'Setting' informations in history for later tracking xxx";
-				daoLogger.error(errorMsg, e);
 				throw new SaveHistoryFailedException(errorMsg, e.getCause());
 			} catch (Exception e) {
 				String errorMsg = "xxx Error occured while updating 'Setting' data ==> " + setting + " xxx";
-				daoLogger.error(errorMsg, e);
 				throw new DAOException(errorMsg, e);
 			}
 		}
@@ -185,15 +173,12 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			totalEffectedRows = settingMapper.updateWithCriteria(criteria, updateItems);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'Setting' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while updating multiple 'Setting' informations [Values] ==> " + updateItems + " with [Criteria] ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Updating multi 'Setting' informations with criteria ---");
@@ -218,15 +203,12 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			totalEffectedRows = settingMapper.deleteByPrimaryKey(primaryKey);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
-			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'Setting' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while deleting 'Setting' data with primaryKey ==> " + primaryKey + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Deleting single 'Setting' informations with primaryKey # " + primaryKey + " ---");
@@ -254,15 +236,12 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			totalEffectedRows = settingMapper.deleteByCriteria(criteria);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
-			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'Setting' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while deleting 'Setting' data with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Deleting 'Setting' informations with criteria  ---");
@@ -277,7 +256,6 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			setting = settingMapper.selectByPrimaryKey(primaryKey);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Setting' informations with primaryKey ==> " + primaryKey + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'Setting' informations with primaryKey # " + primaryKey + " ---");
@@ -292,7 +270,6 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			setting = settingMapper.selectSingleRecord(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'Setting' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching single 'Setting' informations with criteria ---");
@@ -307,7 +284,6 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			settings = settingMapper.selectMultiRecords(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'Setting' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching multi 'Setting' informations with criteria ---");
@@ -322,7 +298,6 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 			count = settingMapper.selectCounts(criteria);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'Setting' records with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'Setting' counts with criteria ---");

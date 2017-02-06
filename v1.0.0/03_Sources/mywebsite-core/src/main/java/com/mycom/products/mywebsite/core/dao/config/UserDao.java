@@ -51,15 +51,12 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'User' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting 'User' data ==> " + user + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting single 'User' informations with new Id # " + user.getId() + " ---");
@@ -84,15 +81,12 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			daoLogger.debug("[HISTORY][FINISH] : $1 --- Save 'User' informations in history ---");
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Insertion process was failed due to Unique Key constraint. xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'User' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while inserting multi 'User' datas ==> " + users + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Inserting multi 'User' informations ---");
@@ -116,15 +110,12 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			totalEffectedRows = userMapper.update(user);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'User' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while updating 'User' data ==> " + user + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Updating single 'User' informations with Id # " + user.getId() + " ---");
@@ -149,15 +140,12 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 				userMapper.update(user);
 			} catch (DuplicateKeyException e) {
 				String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
-				daoLogger.error(errorMsg, e);
 				throw new DuplicatedEntryException(errorMsg, e);
 			} catch (SaveHistoryFailedException e) {
 				String errorMsg = "xxx Error occured while saving 'User' informations in history for later tracking xxx";
-				daoLogger.error(errorMsg, e);
 				throw new SaveHistoryFailedException(errorMsg, e.getCause());
 			} catch (Exception e) {
 				String errorMsg = "xxx Error occured while updating 'User' data ==> " + user + " xxx";
-				daoLogger.error(errorMsg, e);
 				throw new DAOException(errorMsg, e);
 			}
 		}
@@ -186,15 +174,12 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			totalEffectedRows = userMapper.updateWithCriteria(criteria, updateItems);
 		} catch (DuplicateKeyException e) {
 			String errorMsg = "xxx Updating process was failed due to Unique Key constraint xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DuplicatedEntryException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'User' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while updating multiple 'User' informations [Values] ==> " + updateItems + " with [Criteria] ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Updating multi 'User' informations with criteria ---");
@@ -219,15 +204,12 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			totalEffectedRows = userMapper.deleteByPrimaryKey(primaryKey);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
-			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'User' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while deleting 'User' data with primaryKey ==> " + primaryKey + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Deleting single 'User' informations with primaryKey # " + primaryKey + " ---");
@@ -255,15 +237,12 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			totalEffectedRows = userMapper.deleteByCriteria(criteria);
 		} catch (DataIntegrityViolationException e) {
 			String errorMsg = "xxx Rejected : Deleting process was failed because this entity was connected with other resources.If you try to forcely remove it, entire database will loose consistency xxx";
-			daoLogger.error(errorMsg, e);
 			throw new ConsistencyViolationException(errorMsg, e);
 		} catch (SaveHistoryFailedException e) {
 			String errorMsg = "xxx Error occured while saving 'User' informations in history for later tracking xxx";
-			daoLogger.error(errorMsg, e);
 			throw new SaveHistoryFailedException(errorMsg, e.getCause());
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while deleting 'User' data with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Deleting 'User' informations with criteria  ---");
@@ -278,7 +257,6 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			user = userMapper.selectByPrimaryKey(primaryKey, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'User' informations with primaryKey ==> " + primaryKey + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'User' informations with primaryKey # " + primaryKey + " ---");
@@ -293,7 +271,6 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			user = userMapper.selectSingleRecord(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching single 'User' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching single 'User' informations with criteria ---");
@@ -308,7 +285,6 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			users = userMapper.selectMultiRecords(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching multiple 'User' informations with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching multi 'User' informations with criteria ---");
@@ -323,7 +299,6 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			count = userMapper.selectCounts(criteria, fetchMode);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while counting 'User' records with criteria ==> " + criteria + " xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< --- Fetching 'User' counts with criteria ---");
@@ -337,7 +312,6 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 			user = userMapper.selectAuthenticatedUser(loginId, password, FetchMode.EAGER);
 		} catch (Exception e) {
 			String errorMsg = "xxx Error occured while fetching Authenticated 'User' informations xxx";
-			daoLogger.error(errorMsg, e);
 			throw new DAOException(errorMsg, e);
 		}
 		daoLogger.debug("[FINISH] : <<< ---  Fetching Authenticated 'User' informations ---");

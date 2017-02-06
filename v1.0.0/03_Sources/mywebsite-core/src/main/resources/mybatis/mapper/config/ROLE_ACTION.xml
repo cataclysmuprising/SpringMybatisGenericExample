@@ -124,7 +124,27 @@
 				<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_iterate_fields" />
 	       </foreach>	
        </if>			
-	</insert>		
+	</insert>	
+	
+	<delete id="deleteByKeys">
+		DELETE FROM mjr_role_action
+		WHERE role_id = #{key1}
+		AND   action_id = #{key2}
+	</delete>
+	
+	<delete id="deleteByCriteria">
+		<if test="criteria != null and criteria.keySet().size() > 0">
+			DELETE FROM mjr_role_action
+			<where>
+				<if test="criteria.roleId != null">
+					AND role_id = #{criteria.roleId}
+				</if>
+				<if test="criteria.actionId != null">
+					AND action_id = #{criteria.actionId}
+				</if>
+			</where>
+		</if>
+	</delete>		
 	
 	<select id="selectMultiRecords"  resultMap="RoleActionResult">
 		SELECT

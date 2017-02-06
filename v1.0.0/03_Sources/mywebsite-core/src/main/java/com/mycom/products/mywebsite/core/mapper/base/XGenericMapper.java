@@ -21,7 +21,7 @@ public interface XGenericMapper<T extends BaseBean> extends InsertableMapper<T> 
 
 	public long deleteByCriteria(@Param("criteria") Map<String, Object> criteria);
 
-	public List<Integer> selectRelatedKeys(@Param("criteria") Map<String, Object> criteria);
+	public List<Long> selectRelatedKeys(@Param("criteria") Map<String, Object> criteria);
 
 	public T selectByKeys(@Param("key1") long key1, @Param("key2") long key2, @Param("fetchMode") FetchMode fetchMode);
 

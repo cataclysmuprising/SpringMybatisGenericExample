@@ -214,6 +214,8 @@ public class SettingUnitTest extends TestBase
 		settingDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
 	}
 
+	// --------------------------------- for delete
+
 	@Override
 	@Test(groups = { "delete" })
 	@Transactional

@@ -243,6 +243,8 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 		roleDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
 	}
 
+	// --------------------------------- for delete
+
 	@Override
 	@Test(groups = { "delete" })
 	@Transactional

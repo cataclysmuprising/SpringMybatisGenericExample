@@ -6,6 +6,7 @@
 package com.mycom.products.mywebsite.core.unitTest.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.testng.annotations.Test;
 import com.mycom.products.mywebsite.core.TestBase;
 import com.mycom.products.mywebsite.core.bean.config.UserRoleBean;
 import com.mycom.products.mywebsite.core.dao.config.UserRoleDao;
+import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.unitTest.base.XGenericUnitTest;
@@ -59,7 +61,7 @@ public class UserRoleUnitTest extends TestBase implements XGenericUnitTest {
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectRelatedKeysByKey1() throws DAOException {
-		List<Integer> results = userRoleDao.selectByKey1(1);
+		List<Long> results = userRoleDao.selectByKey1(1);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
@@ -68,7 +70,7 @@ public class UserRoleUnitTest extends TestBase implements XGenericUnitTest {
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectRelatedKeysByKey2() throws DAOException {
-		List<Integer> results = userRoleDao.selectByKey2(1);
+		List<Long> results = userRoleDao.selectByKey2(1);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
@@ -158,5 +160,41 @@ public class UserRoleUnitTest extends TestBase implements XGenericUnitTest {
 	@Rollback(true)
 	public void testInsertWithKeys() throws DAOException, DuplicatedEntryException {
 		userRoleDao.insert(5005, 6006, TEST_CREATE_USER_ID);
+	}
+
+	// --------------------------------- for update
+	@Override
+	@Test(groups = { "update" })
+	@Transactional
+	@Rollback(true)
+	public void testMerge() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		userRoleDao.merge(1, Arrays.asList(new Long[] { 2l, 3l, 4l }), TEST_UPDATE_USER_ID);
+
+	}
+
+	// --------------------------------- for delete
+	@Override
+	@Test(groups = { "delete" })
+	@Transactional
+	@Rollback(true)
+	public void testDeleteByKeys() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		long totalEffectedRows = userRoleDao.delete(1, 1, TEST_UPDATE_USER_ID);
+		Assert.assertEquals(true, totalEffectedRows > 0);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
+
+	}
+
+	@Override
+	@Test(groups = { "delete" })
+	@Transactional
+	@Rollback(true)
+	public void testDeleteByCriteria() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+		HashMap<String, Object> criteria = new HashMap<>();
+		criteria.put("userId", 1);
+		criteria.put("roleId", 1);
+		long totalEffectedRows = userRoleDao.delete(criteria, TEST_UPDATE_USER_ID);
+		Assert.assertEquals(true, totalEffectedRows > 0);
+		testLogger.info("Total effected rows = " + totalEffectedRows);
+
 	}
 }

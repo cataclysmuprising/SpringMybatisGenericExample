@@ -330,6 +330,8 @@ public class UserUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 		userDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
 	}
 
+	// --------------------------------- for delete
+
 	@Override
 	@Test(groups = { "delete" })
 	@Transactional

@@ -136,54 +136,61 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public void merge(long userId, List<Integer> roleIds,
+	public void merge(long userId, List<Long> roleIds,
 			long recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Merging  'UserRole' informations for userId # =" + userId + " with related roleIds =" + roleIds + " ---");
-		List<Integer> insertIds = new ArrayList<>();
-		List<Integer> removeIds = new ArrayList<>();
+		List<Long> insertIds = new ArrayList<>();
+		List<Long> removeIds = new ArrayList<>();
 		daoLogger.debug("[START] : $1 --- Fetching old related roleIds for userId # " + userId + " ---");
-		List<Integer> oldRelatedActions = selectByKey1(userId);
+		List<Long> oldRelatedActions = selectByKey1(userId);
 		daoLogger.debug("[FINISH] : $1 --- Fetching old related roleIds for userId # " + userId + " ==> " + oldRelatedActions + " ---");
 		if (oldRelatedActions != null && oldRelatedActions.size() > 0) {
-			for (Integer roleId : roleIds) {
+			for (Long roleId : roleIds) {
 				if (!oldRelatedActions.contains(roleId)) {
 					insertIds.add(roleId);
 				}
 			}
 
-			for (Integer roleId : oldRelatedActions) {
+			for (Long roleId : oldRelatedActions) {
 				if (!roleIds.contains(roleId)) {
 					removeIds.add(roleId);
 				}
 			}
 		}
-		daoLogger.debug("[FINISH] : $2 --- Removing  related roleIds[ " + removeIds + " ] for userId # " + userId + " these have been no longer used  ---");
 		if (removeIds.size() > 0) {
+			daoLogger.debug("[START] : $2 --- Removing  related roleIds " + removeIds + "  for userId # " + userId + " these have been no longer used  ---");
 			HashMap<String, Object> criteria = new HashMap<>();
 			criteria.put("roleIds", removeIds);
 			userRoleMapper.deleteByCriteria(criteria);
+			daoLogger.debug("[FINISH] : $2 --- Removing  related roleIds " + removeIds + "  for userId # " + userId + " these have been no longer used  ---");
 		}
-		daoLogger.debug("[FINISH] : $2 --- Removing  related roleIds[ " + removeIds + " ] for userId # " + userId + " these have been no longer used  ---");
 
-		daoLogger.debug("[START] : $3 --- Inserting newly selected roleIds[ " + insertIds + " ] for userId # " + userId + " ---");
 		if (insertIds.size() > 0) {
+			daoLogger.debug("[START] : $3 --- Inserting newly selected roleIds " + insertIds + "  for userId # " + userId + " ---");
 			List<UserRoleBean> userRoles = new ArrayList<>();
-			for (Integer roleId : insertIds) {
+			for (Long roleId : insertIds) {
 				UserRoleBean userRole = new UserRoleBean(userId, roleId);
 				userRoles.add(userRole);
 			}
+			LocalDateTime now = LocalDateTime.now();
+			for (UserRoleBean userRole : userRoles) {
+				userRole.setRecordRegDate(now);
+				userRole.setRecordUpdDate(now);
+				userRole.setRecordRegId(recordUpdId);
+				userRole.setRecordUpdId(recordUpdId);
+			}
 			userRoleMapper.insertList(userRoles);
+			daoLogger.debug("[FINISH] : $3 --- Inserting newly selected roleIds " + insertIds + " for userId # " + userId + " ---");
 		}
-		daoLogger.debug("[FINISH] : $3 --- Inserting newly selected roleIds[ " + insertIds + " ] for userId # " + userId + " ---");
 
 		daoLogger.debug("[FINISH] : <<< --- Merging 'UserRole' informations for userId # =" + userId + " with related roleIds =" + roleIds.toArray() + " ---");
 
 	}
 
 	@Override
-	public List<Integer> selectByKey1(long key1) throws DAOException {
+	public List<Long> selectByKey1(long key1) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching related roleIds with userId # " + key1 + " ---");
-		List<Integer> roleIds = null;
+		List<Long> roleIds = null;
 		try {
 			Map<String, Object> criteria = new HashMap<>();
 			criteria.put("userId", key1);
@@ -198,9 +205,9 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
-	public List<Integer> selectByKey2(long key2) throws DAOException {
+	public List<Long> selectByKey2(long key2) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching related userIds with roleId # " + key2 + " ---");
-		List<Integer> userIds = null;
+		List<Long> userIds = null;
 		try {
 			Map<String, Object> criteria = new HashMap<>();
 			criteria.put("roleId", key2);

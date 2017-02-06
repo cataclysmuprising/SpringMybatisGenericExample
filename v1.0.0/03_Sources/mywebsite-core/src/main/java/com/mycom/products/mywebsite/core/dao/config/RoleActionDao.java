@@ -137,56 +137,61 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
-	public void merge(long roleId, List<Integer> actionIds,
+	public void merge(long roleId, List<Long> actionIds,
 			long recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Merging  'RoleAction' informations for roleId # =" + roleId + " with related actionIds =" + actionIds + " ---");
-		List<Integer> insertIds = new ArrayList<>();
-		List<Integer> removeIds = new ArrayList<>();
+		List<Long> insertIds = new ArrayList<>();
+		List<Long> removeIds = new ArrayList<>();
 		daoLogger.debug("[START] : $1 --- Fetching old related actionIds for roleId # " + roleId + " ---");
-		List<Integer> oldRelatedActions = selectByKey1(roleId);
+		List<Long> oldRelatedActions = selectByKey1(roleId);
 		daoLogger.debug("[FINISH] : $1 --- Fetching old related actionIds for roleId # " + roleId + " ==> " + oldRelatedActions + " ---");
 		if (oldRelatedActions != null && oldRelatedActions.size() > 0) {
-			for (Integer actionId : actionIds) {
+			for (long actionId : actionIds) {
 				if (!oldRelatedActions.contains(actionId)) {
 					insertIds.add(actionId);
 				}
 			}
 
-			for (Integer actionId : oldRelatedActions) {
+			for (long actionId : oldRelatedActions) {
 				if (!actionIds.contains(actionId)) {
 					removeIds.add(actionId);
 				}
 			}
 		}
-		daoLogger.debug("[FINISH] : $2 --- Removing  related actionIds[ " + removeIds + " ] for roleId # " + roleId + " these have been no longer used  ---");
 		if (removeIds.size() > 0) {
+			daoLogger.debug("[START] : $2 --- Removing  related actionIds " + removeIds + " for roleId # " + roleId + " these have been no longer used  ---");
 			HashMap<String, Object> criteria = new HashMap<>();
 			criteria.put("actionIds", removeIds);
 			roleActionMapper.deleteByCriteria(criteria);
+			daoLogger.debug("[FINISH] : $2 --- Removing  related actionIds " + removeIds + " for roleId # " + roleId + " these have been no longer used  ---");
 		}
-		daoLogger.debug("[FINISH] : $2 --- Removing  related actionIds[ " + removeIds + " ] for roleId # " + roleId + " these have been no longer used  ---");
 
-		daoLogger.debug("[START] : $3 --- Inserting newly selected actionIds[ " + insertIds + " ] for roleId # " + roleId + " ---");
 		if (insertIds.size() > 0) {
+			daoLogger.debug("[START] : $3 --- Inserting newly selected actionIds " + insertIds + " for roleId # " + roleId + " ---");
 			List<RoleActionBean> roleActions = new ArrayList<>();
-			for (Integer actionId : insertIds) {
-
+			for (Long actionId : insertIds) {
 				RoleActionBean roleAction = new RoleActionBean(roleId, actionId);
 				roleActions.add(roleAction);
-
+			}
+			LocalDateTime now = LocalDateTime.now();
+			for (RoleActionBean roleAction : roleActions) {
+				roleAction.setRecordRegDate(now);
+				roleAction.setRecordUpdDate(now);
+				roleAction.setRecordRegId(recordUpdId);
+				roleAction.setRecordUpdId(recordUpdId);
 			}
 			roleActionMapper.insertList(roleActions);
+			daoLogger.debug("[FINISH] : $3 --- Inserting newly selected actionIds " + insertIds + " for roleId # " + roleId + " ---");
 		}
-		daoLogger.debug("[FINISH] : $3 --- Inserting newly selected actionIds[ " + insertIds + " ] for roleId # " + roleId + " ---");
 
 		daoLogger.debug("[FINISH] : <<< --- Merging 'RoleAction' informations for roleId # =" + roleId + " with related actionIds =" + actionIds.toArray() + " ---");
 
 	}
 
 	@Override
-	public List<Integer> selectByKey1(long key1) throws DAOException {
+	public List<Long> selectByKey1(long key1) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching related actionIds with roleId # " + key1 + " ---");
-		List<Integer> actionIds = null;
+		List<Long> actionIds = null;
 		try {
 			Map<String, Object> criteria = new HashMap<>();
 			criteria.put("roleId", key1);
@@ -201,9 +206,9 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
-	public List<Integer> selectByKey2(long key2) throws DAOException {
+	public List<Long> selectByKey2(long key2) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching related roleIds with actionId # " + key2 + " ---");
-		List<Integer> roleIds = null;
+		List<Long> roleIds = null;
 		try {
 			Map<String, Object> criteria = new HashMap<>();
 			criteria.put("actionId", key2);

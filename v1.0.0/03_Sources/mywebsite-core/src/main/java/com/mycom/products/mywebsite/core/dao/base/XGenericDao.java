@@ -27,12 +27,12 @@ public interface XGenericDao<T extends BaseBean> {
 	public long delete(Map<String, Object> criteria,
 			long recordUpdId) throws ConsistencyViolationException, DAOException;
 
-	public void merge(long mainKey, List<Integer> relatedKeys,
+	public void merge(long mainKey, List<Long> relatedKeys,
 			long recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, DAOException;
 
-	public List<Integer> selectByKey1(long key1) throws DAOException;
+	public List<Long> selectByKey1(long key1) throws DAOException;
 
-	public List<Integer> selectByKey2(long key2) throws DAOException;
+	public List<Long> selectByKey2(long key2) throws DAOException;
 
 	public T select(long key1, long key2, FetchMode fetchMode) throws DAOException;
 

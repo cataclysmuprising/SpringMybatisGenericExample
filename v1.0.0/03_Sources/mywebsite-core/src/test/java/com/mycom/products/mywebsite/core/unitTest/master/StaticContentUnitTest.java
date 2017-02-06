@@ -201,6 +201,8 @@ public class StaticContentUnitTest extends TestBase
 		staticContentDao.update(criteria, updateItems, TEST_UPDATE_USER_ID);
 	}
 
+	// --------------------------------- for delete
+
 	@Override
 	@Test(groups = { "delete" })
 	@Transactional

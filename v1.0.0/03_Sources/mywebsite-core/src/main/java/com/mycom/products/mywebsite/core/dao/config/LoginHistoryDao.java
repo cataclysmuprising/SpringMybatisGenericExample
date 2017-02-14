@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean.TransactionType;
 import com.mycom.products.mywebsite.core.bean.config.LoginHistoryBean;
-import com.mycom.products.mywebsite.core.dao.base.InsertableDao;
-import com.mycom.products.mywebsite.core.dao.base.JoinedSelectableDao;
+import com.mycom.products.mywebsite.core.dao.api.InsertableDao;
+import com.mycom.products.mywebsite.core.dao.api.JoinedSelectableDao;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.mapper.config.LoginHistoryMapper;

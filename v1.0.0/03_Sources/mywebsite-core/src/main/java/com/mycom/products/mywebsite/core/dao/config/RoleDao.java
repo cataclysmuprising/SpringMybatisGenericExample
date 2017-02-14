@@ -18,8 +18,8 @@ import org.springframework.stereotype.Repository;
 
 import com.mycom.products.mywebsite.core.bean.BaseBean.TransactionType;
 import com.mycom.products.mywebsite.core.bean.config.RoleBean;
-import com.mycom.products.mywebsite.core.dao.base.CommonGenericDao;
-import com.mycom.products.mywebsite.core.dao.base.JoinedSelectableDao;
+import com.mycom.products.mywebsite.core.dao.api.CommonGenericDao;
+import com.mycom.products.mywebsite.core.dao.api.JoinedSelectableDao;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;

@@ -4,8 +4,8 @@
      updateCheck="false" monitoring="autodetect" dynamicConfig="true">
    <diskStore path="java.io.tmpdir" /><!--D:/caches/mywebsite_appCaches-->
     <cache 
-        name="ApplicationCache" 
-        maxEntriesLocalHeap="200" 
+        name="ApplicationCache.Action" 
+        maxEntriesLocalHeap="100" 
         eternal="false"
         timeToIdleSeconds="1800" 
         timeToLiveSeconds="3600"

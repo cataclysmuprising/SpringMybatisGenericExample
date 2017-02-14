@@ -18,7 +18,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import com.mycom.products.mywebsite.core.bean.config.UserRoleBean;
-import com.mycom.products.mywebsite.core.dao.base.XGenericDao;
+import com.mycom.products.mywebsite.core.dao.api.XGenericDao;
 import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
 import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;

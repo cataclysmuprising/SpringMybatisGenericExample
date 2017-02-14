@@ -59,15 +59,4 @@ public class TestBase extends AbstractTransactionalTestNGSpringContextTests {
 		}
 	}
 
-	// @Test
-	// private void testMockObject() {
-	// try {
-	// UserBean action = new UserBean();
-	// MockDataGenerator.mock(action, GenerateMode.SINGLE);
-	// daoLogger.info("After making mock object >>> " + action);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-
 }

@@ -7,21 +7,30 @@ package com.mycom.products.mywebsite.core.util;
 
 import java.lang.reflect.Method;
 
+import org.apache.log4j.Logger;
 import org.springframework.cache.interceptor.KeyGenerator;
 
 public class CacheKeyGenerator implements KeyGenerator {
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@Override
 	public Object generate(Object target, Method method, Object... params) {
-		String key = target.getClass().getName();
-		key += "#";
+		String key = target.getClass().getSimpleName();
+		key += "@";
 		key += method.getName();
-		for (Object param : params) {
-			if (param != null) {
-				key += "-" + param.toString();
+		if (params != null && params.length > 0) {
+			key += "-";
+			for (int i = 0; i < params.length; i++) {
+				Object param = params[i];
+				if (param != null) {
+					key += param.toString();
+					if (i + 1 != params.length) {
+						key += ",";
+					}
+				}
 			}
 		}
-		System.err.println("Final Key is ==> " + key);
+		logger.debug("Cache Key ==> " + key);
 		return key;
 	}
 }

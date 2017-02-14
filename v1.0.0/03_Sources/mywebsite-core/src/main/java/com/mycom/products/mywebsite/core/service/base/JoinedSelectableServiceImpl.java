@@ -8,17 +8,14 @@ package com.mycom.products.mywebsite.core.service.base;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.mycom.products.mywebsite.core.bean.BaseBean;
-import com.mycom.products.mywebsite.core.dao.base.JoinedSelectableDao;
+import com.mycom.products.mywebsite.core.dao.api.JoinedSelectableDao;
 import com.mycom.products.mywebsite.core.exception.BusinessException;
 import com.mycom.products.mywebsite.core.exception.DAOException;
+import com.mycom.products.mywebsite.core.service.base.api.root.JoinedSelectableService;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
 public class JoinedSelectableServiceImpl<T extends BaseBean> implements JoinedSelectableService<T> {
-
 	private JoinedSelectableDao<T> dao;
 
 	public JoinedSelectableServiceImpl(JoinedSelectableDao<T> dao) {
@@ -27,48 +24,62 @@ public class JoinedSelectableServiceImpl<T extends BaseBean> implements JoinedSe
 
 	@Override
 	public T select(long primaryKey, FetchMode fetchMode) throws BusinessException {
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		serviceLogger.info("Transaction start for fetch by primary key # " + primaryKey + " with fetchMode ==> " + fetchMode);
+		T record = null;
 		try {
-			return dao.select(primaryKey, fetchMode);
+			record = dao.select(primaryKey, fetchMode);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new BusinessException(e.getMessage(), e);
 		}
-		return null;
+		serviceLogger.info("Transaction finished successfully.");
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		return record;
 	}
 
 	@Override
 	public T select(Map<String, Object> criteria, FetchMode fetchMode) throws BusinessException {
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		serviceLogger.info("Transaction start for fetching single record by criteria ==> " + criteria + " with fetchMode ==> " + fetchMode);
+		T record = null;
 		try {
-			return dao.select(criteria, fetchMode);
+			record = dao.select(criteria, fetchMode);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new BusinessException(e.getMessage(), e);
 		}
-		return null;
+		serviceLogger.info("Transaction finished successfully.");
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		return record;
 	}
 
 	@Override
-	@Transactional(readOnly = true)
-	@Cacheable(value = "ApplicationCache")
 	public List<T> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws BusinessException {
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		serviceLogger.info("Transaction start for fetching multi records by criteria ==> " + criteria + " with fetchMode ==> " + fetchMode);
+		List<T> records = null;
 		try {
-			return dao.selectList(criteria, fetchMode);
+			records = dao.selectList(criteria, fetchMode);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new BusinessException(e.getMessage(), e);
 		}
-		return null;
+		serviceLogger.info("Transaction finished successfully.");
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		return records;
 	}
 
 	@Override
 	public long selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws BusinessException {
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		serviceLogger.info("Transaction start for fetching record counts by criteria ==> " + criteria + " with fetchMode ==> " + fetchMode);
+		long count = 0;
 		try {
-			return dao.selectCounts(criteria, fetchMode);
+			count = dao.selectCounts(criteria, fetchMode);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new BusinessException(e.getMessage(), e);
 		}
-		return 0l;
+		serviceLogger.info("Transaction finished successfully.");
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		return count;
 	}
 
 }

@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class BaseBean implements Serializable {
 	private static final long serialVersionUID = 5987804145999725843L;
-	public static final String LOGBREAKER = "---------------------------------------";
+	public static final String LOGBREAKER = "--------------------------------------------------";
 	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	public enum TransactionType {

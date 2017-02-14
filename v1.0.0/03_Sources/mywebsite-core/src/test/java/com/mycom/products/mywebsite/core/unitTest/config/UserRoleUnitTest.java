@@ -27,11 +27,11 @@ import com.mycom.products.mywebsite.core.unitTest.base.XGenericUnitTest;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
 public class UserRoleUnitTest extends TestBase implements XGenericUnitTest {
-	// --------------------------------- for fetching
 	@Autowired
 	private UserRoleDao userRoleDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
 
+	// --------------------------------- for fetching
 	@Override
 	@Test(groups = { "fetch" })
 	public void testSelectAllWithLazyMode() throws DAOException {

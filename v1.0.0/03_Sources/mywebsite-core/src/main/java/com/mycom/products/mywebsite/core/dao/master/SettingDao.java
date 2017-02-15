@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -35,6 +37,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
+	@CacheEvict(value = "MasterCache.Setting", allEntries = true)
 	public long insert(SettingBean setting, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'Setting' informations ---");
@@ -63,6 +66,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.Setting", allEntries = true)
 	public void insert(List<SettingBean> settings, long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'Setting' informations ---");
 		LocalDateTime now = LocalDateTime.now();
@@ -92,6 +96,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.Setting", allEntries = true)
 	public long update(SettingBean setting, long recordUpdId) throws DAOException, DuplicatedEntryException {
 		long totalEffectedRows = 0;
 		daoLogger.debug("[START] : >>> --- Updating single 'Setting' informations ---");
@@ -122,6 +127,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.Setting", allEntries = true)
 	public void update(List<SettingBean> settings, long recordUpdId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Updating multi 'Setting' informations ---");
 		for (SettingBean setting : settings) {
@@ -152,6 +158,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.Setting", allEntries = true)
 	public long update(HashMap<String, Object> criteria, HashMap<String, Object> updateItems,
 			long recordUpdId) throws DAOException, DuplicatedEntryException {
 		long totalEffectedRows = 0;
@@ -186,6 +193,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.Setting", allEntries = true)
 	public long delete(long primaryKey,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'Setting' informations with primaryKey # " + primaryKey + " ---");
@@ -216,6 +224,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.Setting", allEntries = true)
 	public long delete(Map<String, Object> criteria,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		long totalEffectedRows = 0;
@@ -249,6 +258,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	@Cacheable(value = "MasterCache.Setting")
 	public SettingBean select(long primaryKey) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Setting' informations with primaryKey # " + primaryKey + " ---");
 		SettingBean setting = new SettingBean();
@@ -263,6 +273,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	@Cacheable(value = "MasterCache.Setting")
 	public SettingBean select(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'Setting' informations with criteria ---");
 		SettingBean setting = new SettingBean();
@@ -277,6 +288,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	@Cacheable(value = "MasterCache.Setting")
 	public List<SettingBean> selectList(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'Setting' informations with criteria ---");
 		List<SettingBean> settings = null;
@@ -291,6 +303,7 @@ public class SettingDao implements CommonGenericDao<SettingBean>, StandAloneSele
 	}
 
 	@Override
+	@Cacheable(value = "MasterCache.Setting")
 	public long selectCounts(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Setting' counts with criteria ---");
 		long count = 0;

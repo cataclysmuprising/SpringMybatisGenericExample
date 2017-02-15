@@ -184,15 +184,6 @@ public class UserUnitTest extends TestBase implements JoinedSelectableTest, Comm
 		testLogger.info("User ==> " + user);
 	}
 
-	@Test(groups = { "fetch" })
-	public void testSelectAuthenticatedUserInformation() throws Exception {
-		HashMap<String, Object> criteria = new HashMap<>();
-		criteria.put("id", 1);
-		UserBean user = userDao.selectAuthenticatedUser("super-user", Cryptographic.getSha256CheckSum("SUP@ssw0rd"));
-		Assert.assertNotNull(user);
-		testLogger.info("User ==> " + user);
-	}
-
 	// --------------------------------- for insertion
 	@Override
 	@Test(groups = { "insert" })

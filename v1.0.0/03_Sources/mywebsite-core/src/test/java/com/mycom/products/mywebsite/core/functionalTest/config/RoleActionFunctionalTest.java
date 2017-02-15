@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -158,7 +157,7 @@ public class RoleActionFunctionalTest extends TestBase implements XGenericTest {
 
 	@Override
 	@Test(groups = { "update" })
-	@Rollback(false)
+	// @Rollback(false)
 	public void testMerge() throws Exception {
 		roleActionService.merge(1, Arrays.asList(new Long[] { 3l, 4l }), TEST_UPDATE_USER_ID);
 

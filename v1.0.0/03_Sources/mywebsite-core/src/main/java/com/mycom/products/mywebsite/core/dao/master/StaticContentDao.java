@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -36,6 +38,7 @@ public class StaticContentDao
 	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
+	@CacheEvict(value = "MasterCache.StaticContent", allEntries = true)
 	public long insert(StaticContentBean staticContent,
 			long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
@@ -65,6 +68,7 @@ public class StaticContentDao
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.StaticContent", allEntries = true)
 	public void insert(List<StaticContentBean> staticContents,
 			long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'StaticContent' informations ---");
@@ -95,6 +99,7 @@ public class StaticContentDao
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.StaticContent", allEntries = true)
 	public long update(StaticContentBean staticContent,
 			long recordUpdId) throws DAOException, DuplicatedEntryException {
 		long totalEffectedRows = 0;
@@ -126,6 +131,7 @@ public class StaticContentDao
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.StaticContent", allEntries = true)
 	public void update(List<StaticContentBean> staticContents,
 			long recordUpdId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Updating multi 'StaticContent' informations ---");
@@ -157,6 +163,7 @@ public class StaticContentDao
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.StaticContent", allEntries = true)
 	public long update(HashMap<String, Object> criteria, HashMap<String, Object> updateItems,
 			long recordUpdId) throws DAOException, DuplicatedEntryException {
 		long totalEffectedRows = 0;
@@ -191,6 +198,7 @@ public class StaticContentDao
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.StaticContent", allEntries = true)
 	public long delete(long primaryKey,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'StaticContent' informations with primaryKey # " + primaryKey + " ---");
@@ -221,6 +229,7 @@ public class StaticContentDao
 	}
 
 	@Override
+	@CacheEvict(value = "MasterCache.StaticContent", allEntries = true)
 	public long delete(Map<String, Object> criteria,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		long totalEffectedRows = 0;
@@ -254,6 +263,7 @@ public class StaticContentDao
 	}
 
 	@Override
+	@Cacheable(value = "MasterCache.StaticContent")
 	public StaticContentBean select(long primaryKey) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'StaticContent' informations with primaryKey # " + primaryKey + " ---");
 		StaticContentBean staticContent = new StaticContentBean();
@@ -268,6 +278,7 @@ public class StaticContentDao
 	}
 
 	@Override
+	@Cacheable(value = "MasterCache.StaticContent")
 	public StaticContentBean select(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'StaticContent' informations with criteria ---");
 		StaticContentBean staticContent = new StaticContentBean();
@@ -282,6 +293,7 @@ public class StaticContentDao
 	}
 
 	@Override
+	@Cacheable(value = "MasterCache.StaticContent")
 	public List<StaticContentBean> selectList(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'StaticContent' informations with criteria ---");
 		List<StaticContentBean> staticContents = null;
@@ -296,6 +308,7 @@ public class StaticContentDao
 	}
 
 	@Override
+	@Cacheable(value = "MasterCache.StaticContent")
 	public long selectCounts(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'StaticContent' counts with criteria ---");
 		long count = 0;

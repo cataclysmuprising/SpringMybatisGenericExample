@@ -10,6 +10,4 @@ import com.mycom.products.mywebsite.core.service.base.api.JoinedService;
 
 public interface UserService extends JoinedService<UserBean> {
 
-	UserBean selectAuthenticatedUser(String loginId, String password);
-
 }

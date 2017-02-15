@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -36,6 +38,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.Role", allEntries = true)
 	public long insert(RoleBean role, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'Role' informations ---");
@@ -64,6 +67,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.Role", allEntries = true)
 	public void insert(List<RoleBean> roles, long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'Role' informations ---");
 		LocalDateTime now = LocalDateTime.now();
@@ -93,6 +97,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.Role", allEntries = true)
 	public long update(RoleBean role, long recordUpdId) throws DAOException, DuplicatedEntryException {
 		long totalEffectedRows = 0;
 		daoLogger.debug("[START] : >>> --- Updating single 'Role' informations ---");
@@ -123,6 +128,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.Role", allEntries = true)
 	public void update(List<RoleBean> roles, long recordUpdId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Updating multi 'Role' informations ---");
 		for (RoleBean role : roles) {
@@ -153,6 +159,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.Role", allEntries = true)
 	public long update(HashMap<String, Object> criteria, HashMap<String, Object> updateItems,
 			long recordUpdId) throws DAOException, DuplicatedEntryException {
 		long totalEffectedRows = 0;
@@ -187,6 +194,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.Role", allEntries = true)
 	public long delete(long primaryKey,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'Role' informations with primaryKey # " + primaryKey + " ---");
@@ -217,6 +225,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.Role", allEntries = true)
 	public long delete(Map<String, Object> criteria,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		long totalEffectedRows = 0;
@@ -250,6 +259,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.Role")
 	public RoleBean select(long primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Role' informations with primaryKey # " + primaryKey + " ---");
 		RoleBean role = new RoleBean();
@@ -264,6 +274,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.Role")
 	public RoleBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'Role' informations with criteria ---");
 		RoleBean role = new RoleBean();
@@ -278,6 +289,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.Role")
 	public List<RoleBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'Role' informations with criteria ---");
 		List<RoleBean> roles = null;
@@ -292,6 +304,7 @@ public class RoleDao implements CommonGenericDao<RoleBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.Role")
 	public long selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Role' counts with criteria ---");
 		long count = 0;

@@ -7,10 +7,10 @@ package com.mycom.products.mywebsite.core.service.config;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.bean.config.LoginHistoryBean;
 import com.mycom.products.mywebsite.core.dao.config.LoginHistoryDao;
 import com.mycom.products.mywebsite.core.exception.BusinessException;
@@ -22,9 +22,6 @@ import com.mycom.products.mywebsite.core.service.config.api.LoginHistoryService;
 @Service
 public class LoginHistoryServiceImpl extends JoinedSelectableServiceImpl<LoginHistoryBean>
 		implements LoginHistoryService {
-	private Logger serviceLogger = Logger.getLogger("ServiceLogger");
-	private Logger errorLogger = Logger.getLogger("ErrorLogger");
-
 	private LoginHistoryDao loginHistoryDao;
 
 	@Autowired
@@ -34,26 +31,34 @@ public class LoginHistoryServiceImpl extends JoinedSelectableServiceImpl<LoginHi
 	}
 
 	@Override
-	public long insert(LoginHistoryBean loginHistory,
-			long recordRegId) throws DuplicatedEntryException, BusinessException {
+	public long insert(LoginHistoryBean record, long recordRegId) throws DuplicatedEntryException, BusinessException {
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		serviceLogger.info("*** This transaction was initiated by User ID # " + recordRegId + " ***");
+		serviceLogger.info("Transaction start for inserting" + getObjectName(record) + "informations.");
+		long lastInsertedId = 0;
 		try {
-			return loginHistoryDao.insert(loginHistory, recordRegId);
+			lastInsertedId = loginHistoryDao.insert(record, recordRegId);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new BusinessException(e.getMessage(), e);
 		}
-		return 0;
+		serviceLogger.info("Transaction finished successfully for inserting" + getObjectName(record) + "informations.");
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		return lastInsertedId;
 	}
 
 	@Override
-	public void insert(List<LoginHistoryBean> loginHistories,
+	public void insert(List<LoginHistoryBean> records,
 			long recordRegId) throws DuplicatedEntryException, BusinessException {
+		serviceLogger.info(BaseBean.LOGBREAKER);
+		serviceLogger.info("*** This transaction was initiated by User ID # " + recordRegId + " ***");
+		serviceLogger.info("Transaction start for inserting multi" + getObjectName(records) + "informations.");
 		try {
-			loginHistoryDao.insert(loginHistories, recordRegId);
+			loginHistoryDao.insert(records, recordRegId);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new BusinessException(e.getMessage(), e);
 		}
+		serviceLogger.info("Transaction finished successfully for inserting multi" + getObjectName(records) + "informations.");
+		serviceLogger.info(BaseBean.LOGBREAKER);
 
 	}
 }

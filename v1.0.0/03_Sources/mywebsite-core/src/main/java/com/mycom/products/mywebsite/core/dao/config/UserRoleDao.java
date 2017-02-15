@@ -13,6 +13,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -33,6 +35,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.UserRole", allEntries = true)
 	public void insert(UserRoleBean userRole, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'UserRole' informations ---");
@@ -53,6 +56,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.UserRole", allEntries = true)
 	public void insert(List<UserRoleBean> userRoles, long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'UserRole' informations ---");
 		LocalDateTime now = LocalDateTime.now();
@@ -75,6 +79,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.UserRole", allEntries = true)
 	public void insert(long userId, long roleId, long recordRegId) throws DuplicatedEntryException, DAOException {
 		daoLogger.debug("[START] : >>> --- Inserting single 'UserRole' informations ---");
 		try {
@@ -90,6 +95,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.UserRole", allEntries = true)
 	public long delete(long userId, long roleId,
 			long recordUpdId) throws ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'UserRole' informations with ==> userId " + userId + " , roleId = " + roleId + " ---");
@@ -108,6 +114,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.UserRole", allEntries = true)
 	public long delete(Map<String, Object> criteria,
 			long recordUpdId) throws ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Deleting 'UserRole' informations with criteria  ---");
@@ -126,6 +133,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.UserRole", allEntries = true)
 	public void merge(long userId, List<Long> roleIds,
 			long recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Merging  'UserRole' informations for userId # =" + userId + " with related roleIds =" + roleIds + " ---");
@@ -180,6 +188,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.UserRole")
 	public List<Long> selectByKey1(long key1) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching related roleIds with userId # " + key1 + " ---");
 		List<Long> roleIds = null;
@@ -196,6 +205,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.UserRole")
 	public List<Long> selectByKey2(long key2) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching related userIds with roleId # " + key2 + " ---");
 		List<Long> userIds = null;
@@ -212,6 +222,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.UserRole")
 	public UserRoleBean select(long userId, long roleId, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'UserRole' informations with ==> userId = " + userId + " , roleId = " + roleId + " ---");
 		UserRoleBean userRole = null;
@@ -228,6 +239,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.UserRole")
 	public List<UserRoleBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'UserRole' informations with criteria ---");
 		List<UserRoleBean> results = null;
@@ -244,6 +256,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.UserRole")
 	public long selectCounts(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'UserRole' counts with criteria ---");
 		long count = 0;

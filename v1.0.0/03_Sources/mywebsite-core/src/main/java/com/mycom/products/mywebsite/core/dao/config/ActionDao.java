@@ -5,6 +5,7 @@
  */
 package com.mycom.products.mywebsite.core.dao.config;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -20,14 +21,14 @@ import com.mycom.products.mywebsite.core.mapper.config.ActionMapper;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
 @Repository
-public class ActionDao implements JoinedSelectableDao<ActionBean> {
-
+public class ActionDao implements JoinedSelectableDao<ActionBean>, Serializable {
+	private static final long serialVersionUID = 1L;
 	@Autowired
 	private ActionMapper actionMapper;
 	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
-	@Cacheable(value = "ApplicationCache.Action")
+	@Cacheable(value = "ConfigurationCache.Action")
 	public ActionBean select(long primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Action' informations with primaryKey # " + primaryKey + " ---");
 		ActionBean action = new ActionBean();
@@ -42,7 +43,7 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 	}
 
 	@Override
-	@Cacheable(value = "ApplicationCache.Action")
+	@Cacheable(value = "ConfigurationCache.Action")
 	public ActionBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'Action' informations with criteria ---");
 		ActionBean action = new ActionBean();
@@ -57,7 +58,7 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 	}
 
 	@Override
-	@Cacheable(value = "ApplicationCache.Action")
+	@Cacheable(value = "ConfigurationCache.Action")
 	public List<ActionBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'Action' informations with criteria ---");
 		List<ActionBean> actions = null;
@@ -72,7 +73,7 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 	}
 
 	@Override
-	@Cacheable(value = "ApplicationCache.Action")
+	@Cacheable(value = "ConfigurationCache.Action")
 	public long selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'Action' counts with criteria ---");
 		long count = 0;
@@ -86,7 +87,7 @@ public class ActionDao implements JoinedSelectableDao<ActionBean> {
 		return count;
 	}
 
-	@Cacheable(value = "ApplicationCache.Action")
+	@Cacheable(value = "ConfigurationCache.Action")
 	public List<String> selectPageNamesByModule(String module) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching all 'PageNames' by module = '" + module + "' ---");
 		List<String> pageNames = null;

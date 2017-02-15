@@ -27,7 +27,7 @@
 			</define>
 															
 			<run>
-				<include name="fetch_test" />
+				<include name="all_test" />
 			</run>
 		</groups>
 <!-- 		<classes>

@@ -15,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class BaseBean implements Serializable {
 	private static final long serialVersionUID = 5987804145999725843L;
 	public static final String LOGBREAKER = "--------------------------------------------------";
-	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	public enum TransactionType {
 		INSERT, UPDATE, DELETE;
@@ -83,6 +82,7 @@ public class BaseBean implements Serializable {
 	}
 
 	protected String convertDateAsString(LocalDate date) {
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		String dateString = "";
 		if (date != null) {
 			dateString = dateFormatter.format(date);
@@ -91,6 +91,7 @@ public class BaseBean implements Serializable {
 	}
 
 	protected LocalDate convertStringAsDate(String dateString) {
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate date = null;
 		if (dateString != null && dateString.length() > 0) {
 			date = LocalDate.parse(dateString, dateFormatter);

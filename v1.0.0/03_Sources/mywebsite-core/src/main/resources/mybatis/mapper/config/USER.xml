@@ -40,6 +40,7 @@
 	<sql id="main_columns">
 		usr.id AS userId,
 		usr.login_id,
+		usr.password,
 		usr.age,
 		usr.name,
 		usr.gender,
@@ -371,15 +372,5 @@
 		<include refid="tables" />
 		<include refid="criterias" />
 	</select>
-	
-	<select id="selectAuthenticatedUser" resultMap="UserResult">
-		SELECT
-		<include refid="columns" />
-		,usr.password
-		<include refid="tables" />
-		WHERE 
-			usr.login_id = #{loginId}
-			AND usr.password = #{password}
-	</select>		
-		
+
 </mapper>

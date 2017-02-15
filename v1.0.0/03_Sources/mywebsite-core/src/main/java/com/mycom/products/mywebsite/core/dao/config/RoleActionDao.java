@@ -13,6 +13,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -33,6 +35,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.RoleAction", allEntries = true)
 	public void insert(RoleActionBean roleAction, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'RoleAction' informations ---");
@@ -76,6 +79,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.RoleAction", allEntries = true)
 	public void insert(long roleId, long actionId, long recordRegId) throws DuplicatedEntryException, DAOException {
 		daoLogger.debug("[START] : >>> --- Inserting single 'RoleAction' informations ---");
 		try {
@@ -91,6 +95,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.RoleAction", allEntries = true)
 	public long delete(long roleId, long actionId,
 			long recordUpdId) throws ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'RoleAction' informations with ==> roleId " + roleId + " , actionId = " + actionId + " ---");
@@ -109,6 +114,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.RoleAction", allEntries = true)
 	public long delete(Map<String, Object> criteria,
 			long recordUpdId) throws ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Deleting 'RoleAction' informations with criteria  ---");
@@ -127,6 +133,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.RoleAction", allEntries = true)
 	public void merge(long roleId, List<Long> actionIds,
 			long recordUpdId) throws DuplicatedEntryException, ConsistencyViolationException, DAOException {
 		daoLogger.debug("[START] : >>> --- Merging  'RoleAction' informations for roleId # =" + roleId + " with related actionIds =" + actionIds + " ---");
@@ -181,6 +188,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.RoleAction")
 	public List<Long> selectByKey1(long key1) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching related actionIds with roleId # " + key1 + " ---");
 		List<Long> actionIds = null;
@@ -197,6 +205,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.RoleAction")
 	public List<Long> selectByKey2(long key2) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching related roleIds with actionId # " + key2 + " ---");
 		List<Long> roleIds = null;
@@ -213,6 +222,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.RoleAction")
 	public RoleActionBean select(long roleId, long actionId, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'RoleAction' informations with ==> roleId = " + roleId + " , actionId = " + actionId + " ---");
 		RoleActionBean roleAction = null;
@@ -229,6 +239,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.RoleAction")
 	public List<RoleActionBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'RoleAction' informations with criteria ---");
 		List<RoleActionBean> results = null;
@@ -245,6 +256,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.RoleAction")
 	public long selectCounts(Map<String, Object> criteria) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'RoleAction' counts with criteria ---");
 		long count = 0;

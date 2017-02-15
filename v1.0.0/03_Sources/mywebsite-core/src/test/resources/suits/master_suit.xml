@@ -27,11 +27,12 @@
 			</define>
 															
 			<run>
-				<include name="fetch_test" />
+				<include name="all_test" />
 			</run>
 		</groups>
 		<classes>
-			<class name="com.mycom.products.mywebsite.core.master.SettingServiceTest" />
+			<class name="com.mycom.products.mywebsite.core.unitTest.master.SettingUnitTest" />
+			<class name="com.mycom.products.mywebsite.core.unitTest.master.StaticContentUnitTest" />
 		</classes>
 	</test>
 </suite>

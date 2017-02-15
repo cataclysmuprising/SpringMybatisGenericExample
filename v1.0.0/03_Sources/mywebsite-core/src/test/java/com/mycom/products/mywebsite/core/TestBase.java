@@ -29,14 +29,14 @@ public class TestBase extends AbstractTransactionalTestNGSpringContextTests {
 	@Autowired
 	private BaseMapper baseMapper;
 
-	@BeforeClass
+	@BeforeClass(alwaysRun = true)
 	public void beforeClass() {
-		// baseMapper.disableAllConstraints();
+		baseMapper.disableAllConstraints();
 	}
 
-	@AfterClass
+	@AfterClass(alwaysRun = true)
 	public void afterClass() {
-		// baseMapper.enableAllConstraints();
+		baseMapper.enableAllConstraints();
 	}
 
 	@BeforeMethod

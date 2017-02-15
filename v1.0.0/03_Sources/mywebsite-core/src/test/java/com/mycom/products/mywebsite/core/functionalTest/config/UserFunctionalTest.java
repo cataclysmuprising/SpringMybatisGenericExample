@@ -184,15 +184,6 @@ public class UserFunctionalTest extends TestBase implements JoinedSelectableTest
 		testLogger.info("User ==> " + user);
 	}
 
-	@Test(groups = { "fetch" })
-	public void testSelectAuthenticatedUserInformation() {
-		HashMap<String, Object> criteria = new HashMap<>();
-		criteria.put("id", 1);
-		UserBean user = userService.selectAuthenticatedUser("super-user", Cryptographic.getSha256CheckSum("SUP@ssw0rd"));
-		Assert.assertNotNull(user);
-		testLogger.info("User ==> " + user);
-	}
-
 	// --------------------------------- for insertion
 
 	@Override

@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +33,7 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.LoginHistory", allEntries = true)
 	public long insert(LoginHistoryBean loginHistory, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'LoginHistory' informations ---");
@@ -53,6 +56,7 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.LoginHistory", allEntries = true)
 	public void insert(List<LoginHistoryBean> loginHistories,
 			long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'LoginHistory' informations ---");
@@ -77,6 +81,7 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.LoginHistory")
 	public LoginHistoryBean select(long primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'LoginHistory' informations with primaryKey # " + primaryKey + " ---");
 		LoginHistoryBean loginHistory = new LoginHistoryBean();
@@ -91,6 +96,7 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.LoginHistory")
 	public LoginHistoryBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'LoginHistory' informations with criteria ---");
 		LoginHistoryBean loginHistory = new LoginHistoryBean();
@@ -105,6 +111,7 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.LoginHistory")
 	public List<LoginHistoryBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'LoginHistory' informations with criteria ---");
 		List<LoginHistoryBean> loginHistorys = null;
@@ -119,6 +126,7 @@ public class LoginHistoryDao implements InsertableDao<LoginHistoryBean>, JoinedS
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.LoginHistory")
 	public long selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'LoginHistory' counts with criteria ---");
 		long count = 0;

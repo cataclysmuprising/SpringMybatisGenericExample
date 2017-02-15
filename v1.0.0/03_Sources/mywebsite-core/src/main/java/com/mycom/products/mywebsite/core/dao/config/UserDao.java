@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -36,6 +38,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	private Logger daoLogger = Logger.getLogger("daoLogger");
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.User", allEntries = true)
 	public long insert(UserBean user, long recordRegId) throws DAOException, DuplicatedEntryException {
 		try {
 			daoLogger.debug("[START] : >>> --- Inserting single 'User' informations ---");
@@ -64,6 +67,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.User", allEntries = true)
 	public void insert(List<UserBean> users, long recordRegId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Inserting multi 'User' informations ---");
 		LocalDateTime now = LocalDateTime.now();
@@ -93,6 +97,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.User", allEntries = true)
 	public long update(UserBean user, long recordUpdId) throws DAOException, DuplicatedEntryException {
 		long totalEffectedRows = 0;
 		daoLogger.debug("[START] : >>> --- Updating single 'User' informations ---");
@@ -123,6 +128,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.User", allEntries = true)
 	public void update(List<UserBean> users, long recordUpdId) throws DAOException, DuplicatedEntryException {
 		daoLogger.debug("[START] : >>> --- Updating multi 'User' informations ---");
 		for (UserBean user : users) {
@@ -153,6 +159,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.User", allEntries = true)
 	public long update(HashMap<String, Object> criteria, HashMap<String, Object> updateItems,
 			long recordUpdId) throws DAOException, DuplicatedEntryException {
 		long totalEffectedRows = 0;
@@ -187,6 +194,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.User", allEntries = true)
 	public long delete(long primaryKey,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		daoLogger.debug("[START] : >>> --- Deleting single 'User' informations with primaryKey # " + primaryKey + " ---");
@@ -217,6 +225,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@CacheEvict(value = "ConfigurationCache.User", allEntries = true)
 	public long delete(Map<String, Object> criteria,
 			long recordUpdId) throws DAOException, ConsistencyViolationException {
 		long totalEffectedRows = 0;
@@ -250,6 +259,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.User")
 	public UserBean select(long primaryKey, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'User' informations with primaryKey # " + primaryKey + " ---");
 		UserBean user = new UserBean();
@@ -264,6 +274,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.User")
 	public UserBean select(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching single 'User' informations with criteria ---");
 		UserBean user = new UserBean();
@@ -278,6 +289,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.User")
 	public List<UserBean> selectList(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching multi 'User' informations with criteria ---");
 		List<UserBean> users = null;
@@ -292,6 +304,7 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 	}
 
 	@Override
+	@Cacheable(value = "ConfigurationCache.User")
 	public long selectCounts(Map<String, Object> criteria, FetchMode fetchMode) throws DAOException {
 		daoLogger.debug("[START] : >>> --- Fetching 'User' counts with criteria ---");
 		long count = 0;
@@ -305,16 +318,4 @@ public class UserDao implements CommonGenericDao<UserBean>, JoinedSelectableDao<
 		return count;
 	}
 
-	public UserBean selectAuthenticatedUser(String loginId, String password) throws DAOException {
-		daoLogger.debug("[START] : >>> --- Fetching Authenticated 'User' informations ---");
-		UserBean user = new UserBean();
-		try {
-			user = userMapper.selectAuthenticatedUser(loginId, password, FetchMode.EAGER);
-		} catch (Exception e) {
-			String errorMsg = "xxx Error occured while fetching Authenticated 'User' informations xxx";
-			throw new DAOException(errorMsg, e);
-		}
-		daoLogger.debug("[FINISH] : <<< ---  Fetching Authenticated 'User' informations ---");
-		return user;
-	}
 }

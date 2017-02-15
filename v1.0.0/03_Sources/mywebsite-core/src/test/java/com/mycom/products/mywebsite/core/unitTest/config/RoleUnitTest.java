@@ -17,16 +17,13 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.TestBase;
+import com.mycom.products.mywebsite.core.api.CommonGenericTest;
+import com.mycom.products.mywebsite.core.api.JoinedSelectableTest;
 import com.mycom.products.mywebsite.core.bean.config.RoleBean;
 import com.mycom.products.mywebsite.core.dao.config.RoleDao;
-import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
-import com.mycom.products.mywebsite.core.exception.DAOException;
-import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.unitTest.base.CommonGenericUnitTest;
-import com.mycom.products.mywebsite.core.unitTest.base.JoinedSelectableUnitTest;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, CommonGenericUnitTest {
+public class RoleUnitTest extends TestBase implements JoinedSelectableTest, CommonGenericTest {
 	@Autowired
 	private RoleDao roleDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -34,7 +31,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 	// --------------------------------- for fetching
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllWithLazyMode() throws DAOException {
+	public void testSelectAllWithLazyMode() throws Exception {
 		List<RoleBean> results = roleDao.selectList(null, FetchMode.LAZY);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
@@ -43,7 +40,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllWithEagerMode() throws DAOException {
+	public void testSelectAllWithEagerMode() throws Exception {
 		List<RoleBean> results = roleDao.selectList(null, FetchMode.EAGER);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
@@ -52,7 +49,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllCount() throws DAOException {
+	public void testSelectAllCount() throws Exception {
 		long count = roleDao.selectCounts(null, null);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
@@ -60,7 +57,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountWithLazyCriteria() throws DAOException {
+	public void testSelectCountWithLazyCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -73,7 +70,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountWithEagerCriteria() throws DAOException {
+	public void testSelectCountWithEagerCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("userId", 1);
 		// criteria.put("actionId", 1);
@@ -88,7 +85,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteriaWithLazyMode() throws DAOException {
+	public void testSelectMultiRecordByCriteriaWithLazyMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -106,7 +103,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteriaWithEagerMode() throws DAOException {
+	public void testSelectMultiRecordByCriteriaWithEagerMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("userId", 1);
 		// criteria.put("actionId", 1);
@@ -126,7 +123,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKeyWithLazyMode() throws DAOException {
+	public void testSelectByPrimaryKeyWithLazyMode() throws Exception {
 		RoleBean role = roleDao.select(1, FetchMode.LAZY);
 		Assert.assertNotNull(role);
 		testLogger.info("Role ==> " + role);
@@ -134,7 +131,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKeyWithEagerMode() throws DAOException {
+	public void testSelectByPrimaryKeyWithEagerMode() throws Exception {
 		RoleBean role = roleDao.select(1, FetchMode.EAGER);
 		Assert.assertNotNull(role);
 		testLogger.info("Role ==> " + role);
@@ -142,7 +139,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteriaWithLazyMode() throws DAOException {
+	public void testSelectSingleRecordByCriteriaWithLazyMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		RoleBean role = roleDao.select(criteria, FetchMode.LAZY);
@@ -152,7 +149,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteriaWithEagerMode() throws DAOException {
+	public void testSelectSingleRecordByCriteriaWithEagerMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		RoleBean role = roleDao.select(criteria, FetchMode.EAGER);
@@ -165,7 +162,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertSingleRecord() throws DAOException, DuplicatedEntryException {
+	public void testInsertSingleRecord() throws Exception {
 		RoleBean role = new RoleBean();
 		role.setName("FINANCE");
 		role.setDescription("This role can manage the finicial processes.");
@@ -178,7 +175,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertMultiRecords() throws DAOException, DuplicatedEntryException {
+	public void testInsertMultiRecords() throws Exception {
 		List<RoleBean> records = new ArrayList<>();
 		RoleBean record1 = new RoleBean();
 		record1.setName("STAFF");
@@ -197,7 +194,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testSingleRecordUpdate() throws DAOException, DuplicatedEntryException {
+	public void testSingleRecordUpdate() throws Exception {
 		RoleBean role = new RoleBean();
 		role.setId(1);
 		role.setName("FINANCE-ADMIN");
@@ -210,7 +207,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testMultiRecordsUpdate() throws DAOException, DuplicatedEntryException {
+	public void testMultiRecordsUpdate() throws Exception {
 		List<RoleBean> records = new ArrayList<>();
 		RoleBean record = new RoleBean();
 		record.setId(1);
@@ -230,7 +227,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testUpdateByCriteria() throws DAOException, DuplicatedEntryException {
+	public void testUpdateByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		criteria.put("ids", new Integer[] { 1, 2, 3 });
@@ -249,7 +246,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 	@Test(groups = { "delete" })
 	@Transactional
 	@Rollback(true)
-	public void testDeleteByPrimaryKey() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+	public void testDeleteByPrimaryKey() throws Exception {
 		long totalEffectedRows = roleDao.delete(1, TEST_UPDATE_USER_ID);
 		Assert.assertEquals(true, totalEffectedRows > 0);
 		testLogger.info("Total effected rows = " + totalEffectedRows);
@@ -259,7 +256,7 @@ public class RoleUnitTest extends TestBase implements JoinedSelectableUnitTest, 
 	@Test(groups = { "delete" })
 	@Transactional
 	@Rollback(true)
-	public void testDeleteByCriteria() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+	public void testDeleteByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		criteria.put("ids", new Integer[] { 1, 2, 3 });

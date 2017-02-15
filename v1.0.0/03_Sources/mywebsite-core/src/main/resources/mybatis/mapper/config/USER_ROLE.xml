@@ -139,9 +139,21 @@
 				<if test="criteria.userId != null">
 					AND user_id = #{criteria.userId}
 				</if>
+				<if test="criteria.userIds != null">
+					AND user_id IN
+				    <foreach item="id" index="index" collection="criteria.userIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>					
+				</if>				
 				<if test="criteria.roleId != null">
 					AND role_id = #{criteria.roleId}
-				</if>				
+				</if>	
+				<if test="criteria.roleIds != null">
+					AND role_id IN
+				    <foreach item="id" index="index" collection="criteria.roleIds" open="(" separator="," close=")">
+				        ${id}
+				    </foreach>					
+				</if>							
 			</where>
 		</if>
 	</delete>			

@@ -147,6 +147,8 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 					removeIds.add(actionId);
 				}
 			}
+		} else {
+			insertIds = actionIds;
 		}
 		if (removeIds.size() > 0) {
 			daoLogger.debug("[START] : $2 --- Removing  related actionIds " + removeIds + " for roleId # " + roleId + " these have been no longer used  ---");
@@ -174,7 +176,7 @@ public class RoleActionDao implements XGenericDao<RoleActionBean> {
 			daoLogger.debug("[FINISH] : $3 --- Inserting newly selected actionIds " + insertIds + " for roleId # " + roleId + " ---");
 		}
 
-		daoLogger.debug("[FINISH] : <<< --- Merging 'RoleAction' informations for roleId # =" + roleId + " with related actionIds =" + actionIds.toArray() + " ---");
+		daoLogger.debug("[FINISH] : <<< --- Merging 'RoleAction' informations for roleId # =" + roleId + " with related actionIds =" + actionIds.toString() + " ---");
 
 	}
 

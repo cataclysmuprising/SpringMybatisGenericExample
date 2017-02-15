@@ -17,17 +17,14 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.TestBase;
+import com.mycom.products.mywebsite.core.api.CommonGenericTest;
+import com.mycom.products.mywebsite.core.api.StandAloneSelectableTest;
 import com.mycom.products.mywebsite.core.bean.master.StaticContentBean;
 import com.mycom.products.mywebsite.core.bean.master.StaticContentBean.FileType;
 import com.mycom.products.mywebsite.core.dao.master.StaticContentDao;
-import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
-import com.mycom.products.mywebsite.core.exception.DAOException;
-import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.unitTest.base.CommonGenericUnitTest;
-import com.mycom.products.mywebsite.core.unitTest.base.StandAloneSelectableUnitTest;
 
 public class StaticContentUnitTest extends TestBase
-		implements StandAloneSelectableUnitTest, CommonGenericUnitTest {
+		implements StandAloneSelectableTest, CommonGenericTest {
 	@Autowired
 	private StaticContentDao staticContentDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -35,7 +32,7 @@ public class StaticContentUnitTest extends TestBase
 	// --------------------------------- for fetching
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAll() throws DAOException {
+	public void testSelectAll() throws Exception {
 		List<StaticContentBean> results = staticContentDao.selectList(null);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
@@ -44,7 +41,7 @@ public class StaticContentUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllCount() throws DAOException {
+	public void testSelectAllCount() throws Exception {
 		long count = staticContentDao.selectCounts(null);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
@@ -52,7 +49,7 @@ public class StaticContentUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountByCriteria() throws DAOException {
+	public void testSelectCountByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -67,7 +64,7 @@ public class StaticContentUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteria() throws DAOException {
+	public void testSelectMultiRecordByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -87,7 +84,7 @@ public class StaticContentUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKey() throws DAOException {
+	public void testSelectByPrimaryKey() throws Exception {
 		StaticContentBean staticContent = staticContentDao.select(1);
 		Assert.assertNotNull(staticContent);
 		testLogger.info("StaticContent ==> " + staticContent);
@@ -95,7 +92,7 @@ public class StaticContentUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteria() throws DAOException {
+	public void testSelectSingleRecordByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		StaticContentBean staticContent = staticContentDao.select(criteria);
@@ -108,7 +105,7 @@ public class StaticContentUnitTest extends TestBase
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertSingleRecord() throws DAOException, DuplicatedEntryException {
+	public void testInsertSingleRecord() throws Exception {
 		StaticContentBean content = new StaticContentBean();
 		content.setFileType(FileType.IMAGE);
 		content.setFileName("favicon.ico");
@@ -123,7 +120,7 @@ public class StaticContentUnitTest extends TestBase
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertMultiRecords() throws DAOException, DuplicatedEntryException {
+	public void testInsertMultiRecords() throws Exception {
 		List<StaticContentBean> records = new ArrayList<>();
 		StaticContentBean record1 = new StaticContentBean();
 		record1.setFileType(FileType.IMAGE);
@@ -146,7 +143,7 @@ public class StaticContentUnitTest extends TestBase
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testSingleRecordUpdate() throws DAOException, DuplicatedEntryException {
+	public void testSingleRecordUpdate() throws Exception {
 		StaticContentBean content = new StaticContentBean();
 		content.setId(1);
 		content.setFileType(FileType.IMAGE);
@@ -161,7 +158,7 @@ public class StaticContentUnitTest extends TestBase
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testMultiRecordsUpdate() throws DAOException, DuplicatedEntryException {
+	public void testMultiRecordsUpdate() throws Exception {
 		List<StaticContentBean> records = new ArrayList<>();
 		StaticContentBean record1 = new StaticContentBean();
 		record1.setId(1);
@@ -185,7 +182,7 @@ public class StaticContentUnitTest extends TestBase
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testUpdateByCriteria() throws DAOException, DuplicatedEntryException {
+	public void testUpdateByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -207,7 +204,7 @@ public class StaticContentUnitTest extends TestBase
 	@Test(groups = { "delete" })
 	@Transactional
 	@Rollback(true)
-	public void testDeleteByPrimaryKey() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+	public void testDeleteByPrimaryKey() throws Exception {
 		long totalEffectedRows = staticContentDao.delete(1, TEST_UPDATE_USER_ID);
 		Assert.assertEquals(true, totalEffectedRows > 0);
 		testLogger.info("Total effected rows = " + totalEffectedRows);
@@ -217,7 +214,7 @@ public class StaticContentUnitTest extends TestBase
 	@Test(groups = { "delete" })
 	@Transactional
 	@Rollback(true)
-	public void testDeleteByCriteria() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+	public void testDeleteByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));

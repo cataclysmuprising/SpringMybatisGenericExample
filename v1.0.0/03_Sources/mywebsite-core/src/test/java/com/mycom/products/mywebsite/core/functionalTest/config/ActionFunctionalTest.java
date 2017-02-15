@@ -14,41 +14,45 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.TestBase;
+import com.mycom.products.mywebsite.core.api.JoinedSelectableTest;
 import com.mycom.products.mywebsite.core.bean.config.ActionBean;
-import com.mycom.products.mywebsite.core.exception.BusinessException;
 import com.mycom.products.mywebsite.core.service.config.api.ActionService;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class ActionFunctionalTest extends TestBase {
+public class ActionFunctionalTest extends TestBase implements JoinedSelectableTest {
 	@Autowired
 	private ActionService actionService;
 	private Logger testLogger = Logger.getLogger(this.getClass());
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllWithLazyMode() throws BusinessException {
+	public void testSelectAllWithLazyMode() throws Exception {
 		List<ActionBean> results = actionService.selectList(null, FetchMode.LAZY);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllWithEagerMode() throws BusinessException {
+	public void testSelectAllWithEagerMode() throws Exception {
 		List<ActionBean> results = actionService.selectList(null, FetchMode.EAGER);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllCount() throws BusinessException {
+	public void testSelectAllCount() throws Exception {
 		long count = actionService.selectCounts(null, null);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountWithLazyCriteria() throws BusinessException {
+	public void testSelectCountWithLazyCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -61,8 +65,9 @@ public class ActionFunctionalTest extends TestBase {
 		Assert.assertEquals(true, count > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountWithEagerCriteria() throws BusinessException {
+	public void testSelectCountWithEagerCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("roleId", 1);
 		// criteria.put("id", 1);
@@ -76,8 +81,9 @@ public class ActionFunctionalTest extends TestBase {
 		Assert.assertEquals(true, count > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteriaWithLazyMode() throws BusinessException {
+	public void testSelectMultiRecordByCriteriaWithLazyMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -95,8 +101,9 @@ public class ActionFunctionalTest extends TestBase {
 		showEntriesOfCollection(results);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteriaWithEagerMode() throws BusinessException {
+	public void testSelectMultiRecordByCriteriaWithEagerMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("roleId", 1);
 		// criteria.put("id", 1);
@@ -115,22 +122,25 @@ public class ActionFunctionalTest extends TestBase {
 		showEntriesOfCollection(results);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKeyWithLazyMode() throws BusinessException {
+	public void testSelectByPrimaryKeyWithLazyMode() throws Exception {
 		ActionBean action = actionService.select(1, FetchMode.LAZY);
 		Assert.assertNotNull(action);
 		testLogger.info("Action ==> " + action);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKeyWithEagerMode() throws BusinessException {
+	public void testSelectByPrimaryKeyWithEagerMode() throws Exception {
 		ActionBean action = actionService.select(1, FetchMode.EAGER);
 		Assert.assertNotNull(action);
 		testLogger.info("Action ==> " + action);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteriaWithLazyMode() throws BusinessException {
+	public void testSelectSingleRecordByCriteriaWithLazyMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		ActionBean action = actionService.select(criteria, FetchMode.LAZY);
@@ -138,8 +148,9 @@ public class ActionFunctionalTest extends TestBase {
 		testLogger.info("Action ==> " + action);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteriaWithEagerMode() throws BusinessException {
+	public void testSelectSingleRecordByCriteriaWithEagerMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		ActionBean action = actionService.select(criteria, FetchMode.EAGER);

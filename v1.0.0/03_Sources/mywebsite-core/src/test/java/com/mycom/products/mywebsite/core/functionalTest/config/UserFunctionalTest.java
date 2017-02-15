@@ -12,22 +12,19 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.TestBase;
+import com.mycom.products.mywebsite.core.api.CommonGenericTest;
+import com.mycom.products.mywebsite.core.api.JoinedSelectableTest;
 import com.mycom.products.mywebsite.core.bean.config.UserBean;
 import com.mycom.products.mywebsite.core.bean.config.UserBean.Gender;
-import com.mycom.products.mywebsite.core.exception.BusinessException;
-import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
-import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.service.config.api.UserService;
 import com.mycom.products.mywebsite.core.util.Cryptographic;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class UserFunctionalTest extends TestBase {
+public class UserFunctionalTest extends TestBase implements JoinedSelectableTest, CommonGenericTest {
 
 	@Autowired
 	private UserService userService;
@@ -35,31 +32,35 @@ public class UserFunctionalTest extends TestBase {
 
 	// --------------------------------- for fetching
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllWithLazyMode() throws BusinessException {
+	public void testSelectAllWithLazyMode() throws Exception {
 		List<UserBean> results = userService.selectList(null, FetchMode.LAZY);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllWithEagerMode() throws BusinessException {
+	public void testSelectAllWithEagerMode() throws Exception {
 		List<UserBean> results = userService.selectList(null, FetchMode.EAGER);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllCount() throws BusinessException {
+	public void testSelectAllCount() throws Exception {
 		long count = userService.selectCounts(null, null);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountWithLazyCriteria() throws BusinessException {
+	public void testSelectCountWithLazyCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -75,8 +76,9 @@ public class UserFunctionalTest extends TestBase {
 		Assert.assertEquals(true, count > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountWithEagerCriteria() throws BusinessException {
+	public void testSelectCountWithEagerCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("roleId", 1);
 		// criteria.put("roleName", "SUPER_USER");
@@ -95,8 +97,9 @@ public class UserFunctionalTest extends TestBase {
 		Assert.assertEquals(true, count > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteriaWithLazyMode() throws BusinessException {
+	public void testSelectMultiRecordByCriteriaWithLazyMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -118,8 +121,9 @@ public class UserFunctionalTest extends TestBase {
 		showEntriesOfCollection(results);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteriaWithEagerMode() throws BusinessException {
+	public void testSelectMultiRecordByCriteriaWithEagerMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("roleId", 1);
 		// criteria.put("roleName", "SUPER_USER");
@@ -144,22 +148,25 @@ public class UserFunctionalTest extends TestBase {
 		showEntriesOfCollection(results);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKeyWithLazyMode() throws BusinessException {
+	public void testSelectByPrimaryKeyWithLazyMode() throws Exception {
 		UserBean user = userService.select(1, FetchMode.LAZY);
 		Assert.assertNotNull(user);
 		testLogger.info("User ==> " + user);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKeyWithEagerMode() throws BusinessException {
+	public void testSelectByPrimaryKeyWithEagerMode() throws Exception {
 		UserBean user = userService.select(1, FetchMode.EAGER);
 		Assert.assertNotNull(user);
 		testLogger.info("User ==> " + user);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteriaWithLazyMode() throws BusinessException {
+	public void testSelectSingleRecordByCriteriaWithLazyMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		UserBean user = userService.select(criteria, FetchMode.LAZY);
@@ -167,8 +174,9 @@ public class UserFunctionalTest extends TestBase {
 		testLogger.info("User ==> " + user);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteriaWithEagerMode() throws BusinessException {
+	public void testSelectSingleRecordByCriteriaWithEagerMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		UserBean user = userService.select(criteria, FetchMode.EAGER);
@@ -187,10 +195,9 @@ public class UserFunctionalTest extends TestBase {
 
 	// --------------------------------- for insertion
 
+	@Override
 	@Test(groups = { "insert" })
-	@Transactional
-	@Rollback(true)
-	public void testInsertSingleRecord() throws DuplicatedEntryException, BusinessException {
+	public void testInsertSingleRecord() throws Exception {
 		UserBean user = new UserBean();
 		user.setLoginId("admin");
 		user.setContentId(2);
@@ -208,10 +215,9 @@ public class UserFunctionalTest extends TestBase {
 		testLogger.info("Last inserted ID = " + lastInsertedId);
 	}
 
+	@Override
 	@Test(groups = { "insert" })
-	@Transactional
-	@Rollback(true)
-	public void testInsertMultiRecords() throws DuplicatedEntryException, BusinessException {
+	public void testInsertMultiRecords() throws Exception {
 		List<UserBean> records = new ArrayList<>();
 		UserBean record1 = new UserBean();
 		record1.setLoginId("admin");
@@ -245,10 +251,9 @@ public class UserFunctionalTest extends TestBase {
 
 	// --------------------------------- for update
 
+	@Override
 	@Test(groups = { "update" })
-	@Transactional
-	@Rollback(true)
-	public void testSingleRecordUpdate() throws DuplicatedEntryException, BusinessException {
+	public void testSingleRecordUpdate() throws Exception {
 		UserBean user = new UserBean();
 		user.setId(1);
 		user.setContentId(2);
@@ -263,10 +268,9 @@ public class UserFunctionalTest extends TestBase {
 		testLogger.info("Total effected rows = " + totalEffectedRows);
 	}
 
+	@Override
 	@Test(groups = { "update" })
-	@Transactional
-	@Rollback(true)
-	public void testMultiRecordsUpdate() throws DuplicatedEntryException, BusinessException {
+	public void testMultiRecordsUpdate() throws Exception {
 		List<UserBean> records = new ArrayList<>();
 		UserBean record1 = new UserBean();
 		record1.setId(1);
@@ -294,10 +298,9 @@ public class UserFunctionalTest extends TestBase {
 		userService.update(records, TEST_UPDATE_USER_ID);
 	}
 
+	@Override
 	@Test(groups = { "update" })
-	@Transactional
-	@Rollback(true)
-	public void testUpdateByCriteria() throws BusinessException, DuplicatedEntryException {
+	public void testUpdateByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		criteria.put("ids", new Integer[] { 1, 2, 3 });
@@ -318,19 +321,17 @@ public class UserFunctionalTest extends TestBase {
 
 	// --------------------------------- for delete
 
+	@Override
 	@Test(groups = { "delete" })
-	@Transactional
-	@Rollback(true)
-	public void testDeleteByPrimaryKey() throws ConsistencyViolationException, BusinessException {
+	public void testDeleteByPrimaryKey() throws Exception {
 		long totalEffectedRows = userService.delete(1, TEST_UPDATE_USER_ID);
 		Assert.assertEquals(true, totalEffectedRows > 0);
 		testLogger.info("Total effected rows = " + totalEffectedRows);
 	}
 
+	@Override
 	@Test(groups = { "delete" })
-	@Transactional
-	@Rollback(true)
-	public void testDeleteByCriteria() throws ConsistencyViolationException, BusinessException {
+	public void testDeleteByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		criteria.put("ids", new Integer[] { 1, 2, 3 });

@@ -14,20 +14,19 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.TestBase;
+import com.mycom.products.mywebsite.core.api.JoinedSelectableTest;
 import com.mycom.products.mywebsite.core.bean.config.ActionBean;
 import com.mycom.products.mywebsite.core.dao.config.ActionDao;
-import com.mycom.products.mywebsite.core.exception.DAOException;
-import com.mycom.products.mywebsite.core.unitTest.base.JoinedSelectableUnitTest;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
-public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest {
+public class ActionUnitTest extends TestBase implements JoinedSelectableTest {
 	@Autowired
 	private ActionDao actionDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllWithLazyMode() throws DAOException {
+	public void testSelectAllWithLazyMode() throws Exception {
 		List<ActionBean> results = actionDao.selectList(null, FetchMode.LAZY);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
@@ -36,7 +35,7 @@ public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllWithEagerMode() throws DAOException {
+	public void testSelectAllWithEagerMode() throws Exception {
 		List<ActionBean> results = actionDao.selectList(null, FetchMode.EAGER);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
@@ -45,7 +44,7 @@ public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllCount() throws DAOException {
+	public void testSelectAllCount() throws Exception {
 		long count = actionDao.selectCounts(null, null);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
@@ -53,7 +52,7 @@ public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountWithLazyCriteria() throws DAOException {
+	public void testSelectCountWithLazyCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -68,7 +67,7 @@ public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountWithEagerCriteria() throws DAOException {
+	public void testSelectCountWithEagerCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("roleId", 1);
 		// criteria.put("id", 1);
@@ -84,7 +83,7 @@ public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteriaWithLazyMode() throws DAOException {
+	public void testSelectMultiRecordByCriteriaWithLazyMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -104,7 +103,7 @@ public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteriaWithEagerMode() throws DAOException {
+	public void testSelectMultiRecordByCriteriaWithEagerMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("roleId", 1);
 		// criteria.put("id", 1);
@@ -125,7 +124,7 @@ public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKeyWithLazyMode() throws DAOException {
+	public void testSelectByPrimaryKeyWithLazyMode() throws Exception {
 		ActionBean action = actionDao.select(1, FetchMode.LAZY);
 		Assert.assertNotNull(action);
 		testLogger.info("Action ==> " + action);
@@ -133,7 +132,7 @@ public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKeyWithEagerMode() throws DAOException {
+	public void testSelectByPrimaryKeyWithEagerMode() throws Exception {
 		ActionBean action = actionDao.select(1, FetchMode.EAGER);
 		Assert.assertNotNull(action);
 		testLogger.info("Action ==> " + action);
@@ -141,7 +140,7 @@ public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteriaWithLazyMode() throws DAOException {
+	public void testSelectSingleRecordByCriteriaWithLazyMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		ActionBean action = actionDao.select(criteria, FetchMode.LAZY);
@@ -151,7 +150,7 @@ public class ActionUnitTest extends TestBase implements JoinedSelectableUnitTest
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteriaWithEagerMode() throws DAOException {
+	public void testSelectSingleRecordByCriteriaWithEagerMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		ActionBean action = actionDao.select(criteria, FetchMode.EAGER);

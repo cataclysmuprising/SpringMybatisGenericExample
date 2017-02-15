@@ -18,16 +18,14 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.TestBase;
+import com.mycom.products.mywebsite.core.api.InsertableTest;
+import com.mycom.products.mywebsite.core.api.JoinedSelectableTest;
 import com.mycom.products.mywebsite.core.bean.config.LoginHistoryBean;
 import com.mycom.products.mywebsite.core.dao.config.LoginHistoryDao;
-import com.mycom.products.mywebsite.core.exception.DAOException;
-import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.unitTest.base.InsertableUnitTest;
-import com.mycom.products.mywebsite.core.unitTest.base.JoinedSelectableUnitTest;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
 public class LoginHistoryUnitTest extends TestBase
-		implements JoinedSelectableUnitTest, InsertableUnitTest {
+		implements JoinedSelectableTest, InsertableTest {
 	@Autowired
 	private LoginHistoryDao loginHistoryDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -35,7 +33,7 @@ public class LoginHistoryUnitTest extends TestBase
 	// --------------------------------- for fetching
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllWithLazyMode() throws DAOException {
+	public void testSelectAllWithLazyMode() throws Exception {
 		List<LoginHistoryBean> results = loginHistoryDao.selectList(null, FetchMode.LAZY);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
@@ -43,7 +41,7 @@ public class LoginHistoryUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllWithEagerMode() throws DAOException {
+	public void testSelectAllWithEagerMode() throws Exception {
 		List<LoginHistoryBean> results = loginHistoryDao.selectList(null, FetchMode.EAGER);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
@@ -51,7 +49,7 @@ public class LoginHistoryUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllCount() throws DAOException {
+	public void testSelectAllCount() throws Exception {
 		long count = loginHistoryDao.selectCounts(null, null);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
@@ -59,7 +57,7 @@ public class LoginHistoryUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountWithLazyCriteria() throws DAOException {
+	public void testSelectCountWithLazyCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("userId", 1);
@@ -69,7 +67,7 @@ public class LoginHistoryUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountWithEagerCriteria() throws DAOException {
+	public void testSelectCountWithEagerCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("userId", 1);
@@ -79,7 +77,7 @@ public class LoginHistoryUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteriaWithLazyMode() throws DAOException {
+	public void testSelectMultiRecordByCriteriaWithLazyMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		criteria.put("offset", 0);
@@ -94,7 +92,7 @@ public class LoginHistoryUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteriaWithEagerMode() throws DAOException {
+	public void testSelectMultiRecordByCriteriaWithEagerMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		criteria.put("offset", 0);
@@ -109,7 +107,7 @@ public class LoginHistoryUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKeyWithLazyMode() throws DAOException {
+	public void testSelectByPrimaryKeyWithLazyMode() throws Exception {
 		LoginHistoryBean loginHistory = loginHistoryDao.select(1, FetchMode.LAZY);
 		Assert.assertNotNull(loginHistory);
 		testLogger.info("LoginHistory ==> " + loginHistory);
@@ -118,7 +116,7 @@ public class LoginHistoryUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKeyWithEagerMode() throws DAOException {
+	public void testSelectByPrimaryKeyWithEagerMode() throws Exception {
 		LoginHistoryBean loginHistory = loginHistoryDao.select(1, FetchMode.EAGER);
 		Assert.assertNotNull(loginHistory);
 		testLogger.info("LoginHistory ==> " + loginHistory);
@@ -126,7 +124,7 @@ public class LoginHistoryUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteriaWithLazyMode() throws DAOException {
+	public void testSelectSingleRecordByCriteriaWithLazyMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		LoginHistoryBean loginHistory = loginHistoryDao.select(criteria, FetchMode.LAZY);
@@ -137,7 +135,7 @@ public class LoginHistoryUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteriaWithEagerMode() throws DAOException {
+	public void testSelectSingleRecordByCriteriaWithEagerMode() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		LoginHistoryBean loginHistory = loginHistoryDao.select(criteria, FetchMode.EAGER);
@@ -150,7 +148,7 @@ public class LoginHistoryUnitTest extends TestBase
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertSingleRecord() throws DAOException, DuplicatedEntryException {
+	public void testInsertSingleRecord() throws Exception {
 		LoginHistoryBean loginHistory = new LoginHistoryBean();
 		loginHistory.setIpAddress("192.168.0.1");
 		loginHistory.setLoginDate(LocalDateTime.now());
@@ -166,7 +164,7 @@ public class LoginHistoryUnitTest extends TestBase
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertMultiRecords() throws DAOException, DuplicatedEntryException {
+	public void testInsertMultiRecords() throws Exception {
 		List<LoginHistoryBean> records = new ArrayList<>();
 		LoginHistoryBean record1 = new LoginHistoryBean();
 		record1.setIpAddress("192.168.0.2");

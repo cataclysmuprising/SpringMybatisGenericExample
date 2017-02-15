@@ -195,5 +195,4 @@ public class XGenericServiceImpl<T extends BaseBean> implements XGenericService<
 		serviceLogger.info(BaseBean.LOGBREAKER);
 		return count;
 	}
-
 }

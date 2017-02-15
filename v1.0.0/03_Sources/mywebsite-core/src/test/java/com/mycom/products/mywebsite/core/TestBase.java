@@ -31,12 +31,12 @@ public class TestBase extends AbstractTransactionalTestNGSpringContextTests {
 
 	@BeforeClass
 	public void beforeClass() {
-		baseMapper.disableAllConstraints();
+		// baseMapper.disableAllConstraints();
 	}
 
 	@AfterClass
 	public void afterClass() {
-		baseMapper.enableAllConstraints();
+		// baseMapper.enableAllConstraints();
 	}
 
 	@BeforeMethod

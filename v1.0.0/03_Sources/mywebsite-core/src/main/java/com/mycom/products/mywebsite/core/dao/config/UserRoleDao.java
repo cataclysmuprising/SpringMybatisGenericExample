@@ -146,6 +146,8 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 					removeIds.add(roleId);
 				}
 			}
+		} else {
+			insertIds = roleIds;
 		}
 		if (removeIds.size() > 0) {
 			daoLogger.debug("[START] : $2 --- Removing  related roleIds " + removeIds + "  for userId # " + userId + " these have been no longer used  ---");
@@ -173,7 +175,7 @@ public class UserRoleDao implements XGenericDao<UserRoleBean> {
 			daoLogger.debug("[FINISH] : $3 --- Inserting newly selected roleIds " + insertIds + " for userId # " + userId + " ---");
 		}
 
-		daoLogger.debug("[FINISH] : <<< --- Merging 'UserRole' informations for userId # =" + userId + " with related roleIds =" + roleIds.toArray() + " ---");
+		daoLogger.debug("[FINISH] : <<< --- Merging 'UserRole' informations for userId # =" + userId + " with related roleIds =" + roleIds.toString() + " ---");
 
 	}
 

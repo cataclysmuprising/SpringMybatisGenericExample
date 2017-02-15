@@ -17,35 +17,37 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.TestBase;
+import com.mycom.products.mywebsite.core.api.CommonGenericTest;
+import com.mycom.products.mywebsite.core.api.StandAloneSelectableTest;
 import com.mycom.products.mywebsite.core.bean.master.SettingBean;
-import com.mycom.products.mywebsite.core.exception.BusinessException;
-import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
-import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.service.master.api.SettingService;
 
-public class SettingFunctionalTest extends TestBase {
+public class SettingFunctionalTest extends TestBase implements StandAloneSelectableTest, CommonGenericTest {
 	@Autowired
 	private SettingService settingService;
 	private Logger testLogger = Logger.getLogger(this.getClass());
 	// --------------------------------- for fetching
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAll() throws BusinessException {
+	public void testSelectAll() throws Exception {
 		List<SettingBean> results = settingService.selectList(null);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(true, results.size() > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllCount() throws BusinessException {
+	public void testSelectAllCount() throws Exception {
 		long count = settingService.selectCounts(null);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountByCriteria() throws BusinessException {
+	public void testSelectCountByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -60,8 +62,9 @@ public class SettingFunctionalTest extends TestBase {
 		Assert.assertEquals(true, count > 0);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteria() throws BusinessException {
+	public void testSelectMultiRecordByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -81,15 +84,17 @@ public class SettingFunctionalTest extends TestBase {
 		showEntriesOfCollection(results);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKey() throws BusinessException {
+	public void testSelectByPrimaryKey() throws Exception {
 		SettingBean setting = settingService.select(1);
 		Assert.assertNotNull(setting);
 		testLogger.info("Setting ==> " + setting);
 	}
 
+	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteria() throws BusinessException {
+	public void testSelectSingleRecordByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		SettingBean setting = settingService.select(criteria);
@@ -99,10 +104,11 @@ public class SettingFunctionalTest extends TestBase {
 
 	// --------------------------------- for insertion
 
+	@Override
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertSingleRecord() throws DuplicatedEntryException, BusinessException {
+	public void testInsertSingleRecord() throws Exception {
 		SettingBean setting = new SettingBean();
 		setting.setName("test_name");
 		setting.setValue("test_value");
@@ -114,10 +120,11 @@ public class SettingFunctionalTest extends TestBase {
 		testLogger.info("Last inserted ID = " + lastInsertedId);
 	}
 
+	@Override
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertMultiRecords() throws DuplicatedEntryException, BusinessException {
+	public void testInsertMultiRecords() throws Exception {
 		List<SettingBean> records = new ArrayList<>();
 		SettingBean record1 = new SettingBean();
 		record1.setName("test_name");
@@ -139,10 +146,11 @@ public class SettingFunctionalTest extends TestBase {
 
 	// --------------------------------- for update
 
+	@Override
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testSingleRecordUpdate() throws DuplicatedEntryException, BusinessException {
+	public void testSingleRecordUpdate() throws Exception {
 		SettingBean setting = new SettingBean();
 		setting.setId(1);
 		setting.setName("test_name");
@@ -154,10 +162,11 @@ public class SettingFunctionalTest extends TestBase {
 		testLogger.info("Total effected rows = " + totalEffectedRows);
 	}
 
+	@Override
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testMultiRecordsUpdate() throws DuplicatedEntryException, BusinessException {
+	public void testMultiRecordsUpdate() throws Exception {
 		List<SettingBean> records = new ArrayList<>();
 		SettingBean record1 = new SettingBean();
 		record1.setId(1);
@@ -179,10 +188,11 @@ public class SettingFunctionalTest extends TestBase {
 		settingService.update(records, TEST_UPDATE_USER_ID);
 	}
 
+	@Override
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testUpdateByCriteria() throws DuplicatedEntryException, BusinessException {
+	public void testUpdateByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 280);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -204,19 +214,21 @@ public class SettingFunctionalTest extends TestBase {
 
 	// --------------------------------- for delete
 
+	@Override
 	@Test(groups = { "delete" })
 	@Transactional
 	@Rollback(true)
-	public void testDeleteByPrimaryKey() throws DuplicatedEntryException, ConsistencyViolationException, BusinessException {
+	public void testDeleteByPrimaryKey() throws Exception {
 		long totalEffectedRows = settingService.delete(1, TEST_UPDATE_USER_ID);
 		Assert.assertEquals(true, totalEffectedRows > 0);
 		testLogger.info("Total effected rows = " + totalEffectedRows);
 	}
 
+	@Override
 	@Test(groups = { "delete" })
 	@Transactional
 	@Rollback(true)
-	public void testDeleteByCriteria() throws DuplicatedEntryException, ConsistencyViolationException, BusinessException {
+	public void testDeleteByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 280);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));

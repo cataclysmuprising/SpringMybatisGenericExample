@@ -19,7 +19,6 @@ import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
 import com.mycom.products.mywebsite.core.service.base.api.root.CommonGenericService;
 
 @TXManageable
-
 public class CommonGenericServiceImpl<T extends BaseBean> implements CommonGenericService<T> {
 	private CommonGenericDao<T> dao;
 

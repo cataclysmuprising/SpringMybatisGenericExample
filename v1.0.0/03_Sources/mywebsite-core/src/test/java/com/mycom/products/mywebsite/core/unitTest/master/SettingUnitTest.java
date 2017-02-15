@@ -17,16 +17,13 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.mycom.products.mywebsite.core.TestBase;
+import com.mycom.products.mywebsite.core.api.CommonGenericTest;
+import com.mycom.products.mywebsite.core.api.StandAloneSelectableTest;
 import com.mycom.products.mywebsite.core.bean.master.SettingBean;
 import com.mycom.products.mywebsite.core.dao.master.SettingDao;
-import com.mycom.products.mywebsite.core.exception.ConsistencyViolationException;
-import com.mycom.products.mywebsite.core.exception.DAOException;
-import com.mycom.products.mywebsite.core.exception.DuplicatedEntryException;
-import com.mycom.products.mywebsite.core.unitTest.base.CommonGenericUnitTest;
-import com.mycom.products.mywebsite.core.unitTest.base.StandAloneSelectableUnitTest;
 
 public class SettingUnitTest extends TestBase
-		implements StandAloneSelectableUnitTest, CommonGenericUnitTest {
+		implements StandAloneSelectableTest, CommonGenericTest {
 	@Autowired
 	private SettingDao settingDao;
 	private Logger testLogger = Logger.getLogger(this.getClass());
@@ -34,7 +31,7 @@ public class SettingUnitTest extends TestBase
 	// --------------------------------- for fetching
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAll() throws DAOException {
+	public void testSelectAll() throws Exception {
 		List<SettingBean> results = settingDao.selectList(null);
 		showEntriesOfCollection(results);
 		Assert.assertNotNull(results);
@@ -43,7 +40,7 @@ public class SettingUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectAllCount() throws DAOException {
+	public void testSelectAllCount() throws Exception {
 		long count = settingDao.selectCounts(null);
 		testLogger.info("Total counts ==> " + count);
 		Assert.assertEquals(true, count > 0);
@@ -51,7 +48,7 @@ public class SettingUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectCountByCriteria() throws DAOException {
+	public void testSelectCountByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -68,7 +65,7 @@ public class SettingUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectMultiRecordByCriteria() throws DAOException {
+	public void testSelectMultiRecordByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -90,7 +87,7 @@ public class SettingUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectByPrimaryKey() throws DAOException {
+	public void testSelectByPrimaryKey() throws Exception {
 		SettingBean setting = settingDao.select(1);
 		Assert.assertNotNull(setting);
 		testLogger.info("Setting ==> " + setting);
@@ -98,7 +95,7 @@ public class SettingUnitTest extends TestBase
 
 	@Override
 	@Test(groups = { "fetch" })
-	public void testSelectSingleRecordByCriteria() throws DAOException {
+	public void testSelectSingleRecordByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 1);
 		SettingBean setting = settingDao.select(criteria);
@@ -111,7 +108,7 @@ public class SettingUnitTest extends TestBase
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertSingleRecord() throws DAOException, DuplicatedEntryException {
+	public void testInsertSingleRecord() throws Exception {
 		SettingBean setting = new SettingBean();
 		setting.setName("test_name");
 		setting.setValue("test_value");
@@ -127,7 +124,7 @@ public class SettingUnitTest extends TestBase
 	@Test(groups = { "insert" })
 	@Transactional
 	@Rollback(true)
-	public void testInsertMultiRecords() throws DAOException, DuplicatedEntryException {
+	public void testInsertMultiRecords() throws Exception {
 		List<SettingBean> records = new ArrayList<>();
 		SettingBean record1 = new SettingBean();
 		record1.setName("test_name");
@@ -152,7 +149,7 @@ public class SettingUnitTest extends TestBase
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testSingleRecordUpdate() throws DAOException, DuplicatedEntryException {
+	public void testSingleRecordUpdate() throws Exception {
 		SettingBean setting = new SettingBean();
 		setting.setId(1);
 		setting.setName("test_name");
@@ -168,7 +165,7 @@ public class SettingUnitTest extends TestBase
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testMultiRecordsUpdate() throws DAOException, DuplicatedEntryException {
+	public void testMultiRecordsUpdate() throws Exception {
 		List<SettingBean> records = new ArrayList<>();
 		SettingBean record1 = new SettingBean();
 		record1.setId(1);
@@ -194,7 +191,7 @@ public class SettingUnitTest extends TestBase
 	@Test(groups = { "update" })
 	@Transactional
 	@Rollback(true)
-	public void testUpdateByCriteria() throws DAOException, DuplicatedEntryException {
+	public void testUpdateByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 280);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));
@@ -220,7 +217,7 @@ public class SettingUnitTest extends TestBase
 	@Test(groups = { "delete" })
 	@Transactional
 	@Rollback(true)
-	public void testDeleteByPrimaryKey() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+	public void testDeleteByPrimaryKey() throws Exception {
 		long totalEffectedRows = settingDao.delete(1, TEST_UPDATE_USER_ID);
 		Assert.assertEquals(true, totalEffectedRows > 0);
 		testLogger.info("Total effected rows = " + totalEffectedRows);
@@ -230,7 +227,7 @@ public class SettingUnitTest extends TestBase
 	@Test(groups = { "delete" })
 	@Transactional
 	@Rollback(true)
-	public void testDeleteByCriteria() throws DAOException, DuplicatedEntryException, ConsistencyViolationException {
+	public void testDeleteByCriteria() throws Exception {
 		HashMap<String, Object> criteria = new HashMap<>();
 		criteria.put("id", 280);
 		// criteria.put("ids", Arrays.asList(new Integer[] { 1, 2, 3 }));

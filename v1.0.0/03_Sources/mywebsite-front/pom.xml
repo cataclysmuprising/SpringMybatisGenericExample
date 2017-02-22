@@ -63,14 +63,8 @@
 			<artifactId>mywebsite-core</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itextpdf</artifactId>
-			<version>5.0.6</version>
-		</dependency>
 	</dependencies>
 	<build>
-        <finalName>MyWebSite</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
@@ -91,8 +85,16 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
+                	<finalName>${project.artifactId}-${project.version}</finalName>
                     <warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
                    <outputDirectory>..\05_Release</outputDirectory>
+			        <archive>                   
+			            <manifest>
+			                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+			                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+			            </manifest>
+			        </archive>
+			        <archiveClasses>true</archiveClasses>                   
                 </configuration>
             </plugin>
             <plugin>

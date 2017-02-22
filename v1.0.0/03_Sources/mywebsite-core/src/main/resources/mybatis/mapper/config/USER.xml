@@ -123,12 +123,12 @@
 				        ${item}
 				    </foreach>
 				</if>
+				<if test="criteria.loginId != null">
+					AND usr.login_id = #{criteria.loginId}
+				</if>				
 				<if test="criteria.age != null">
 					AND usr.age = #{criteria.age}
 				</if>									
-				<if test="criteria.loginId != null">
-					AND usr.login_id = #{criteria.loginId}
-				</if>
 				<if test="criteria.name != null">
 					AND usr.name = #{criteria.name}
 				</if>

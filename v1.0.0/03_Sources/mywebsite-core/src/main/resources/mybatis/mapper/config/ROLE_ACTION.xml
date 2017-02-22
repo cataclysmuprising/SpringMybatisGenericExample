@@ -13,8 +13,8 @@
 		<result 	 property="recordUpdId" 	column="record_upd_id"/>
 		<result 	 property="recordRegDate" 	column="record_reg_date"/>
 		<result 	 property="recordUpdDate" 	column="record_upd_date"/>	
-		<association property="role" 			fetchType="lazy"  	resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
-		<association property="action" 			fetchType="lazy"	resultMap="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.Parent_ActionResult" />
+		<association property="role" 			resultMap="com.mycom.products.mywebsite.core.mapper.config.RoleMapper.Parent_RoleResult" />
+		<association property="action" 			resultMap="com.mycom.products.mywebsite.core.mapper.config.ActionMapper.Parent_ActionResult" />
 	</resultMap>
 
 	<sql id="tables">
@@ -69,6 +69,11 @@
 				</if>
 				<if test="criteria.actionId != null">
 					AND roleAction.action_id = #{criteria.actionId}
+				</if>
+				<if test="fetchMode !=null and fetchMode.name() == 'EAGER'">
+					<if test="criteria.module != null">
+						action.module = #{criteria.module}
+					</if>				
 				</if>
 			</where>
 		</if>

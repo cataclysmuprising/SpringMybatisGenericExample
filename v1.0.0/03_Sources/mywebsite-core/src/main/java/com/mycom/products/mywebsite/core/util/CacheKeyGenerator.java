@@ -30,7 +30,7 @@ public class CacheKeyGenerator implements KeyGenerator {
 				}
 			}
 		}
-		logger.debug("Cache Key ==> " + key);
+		// logger.debug("Cache Key ==> " + key);
 		return key;
 	}
 }

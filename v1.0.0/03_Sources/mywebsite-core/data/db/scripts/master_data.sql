@@ -37,23 +37,24 @@ SET IDENTITY_INSERT mjr_action ON;
 INSERT INTO mjr_action 
 (id,	 module,	 		 page,			 action_name,					 display_name,					action_type,	url,											  			description																																					,record_reg_id,record_upd_id,record_reg_date,record_upd_date) 
 VALUES 
-(1,		'back-end',			'User',			'userDetail',					'User detail',						1,			'/config/users/[0-9]{1,}',									'To view the detail informations of each users.'																											,1,1,'2017-01-01','2017-01-01'),
-(2,		'back-end',			'User',			'userProfile',					'User profile',						0,			'/config/users/profile',									'Users can edit their personal informations by themselves.'																									,1,1,'2017-01-01','2017-01-01'),
-(3,		'back-end',			'User',			'userAdd',						'User registeration',				1,			'/config/users/add',										'This action is for to create new User.'																													,1,1,'2017-01-01','2017-01-01'),
-(4,		'back-end',			'User',			'userEdit',						'Edit users',						1,			'/config/users/[0-9]{1,}/edit$',							'This action can edit personal informations of specific user(can also edit informations other users including change or reset password).'					,1,1,'2017-01-01','2017-01-01'),
-(5,		'back-end',			'User',			'userRemove',					'Remove users',						1,			'/config/users/[0-9]{1,}/delete$',							'To remove a specific user from application.'																												,1,1,'2017-01-01','2017-01-01'),
-(6,		'back-end',			'User',			'changedPassword',				'Change password',					1,			'/config/users/[0-9]{1,}/changedPassword$',					'To change existing password with new one.(Note: Old password need to provide.)'																			,1,1,'2017-01-01','2017-01-01'),
-(7,		'back-end',			'User',			'resetPassword',				'Reset password',					1,			'/config/users/[0-9]{1,}/resetPassword$',					'Forcely replace a user''s password with a new password.(Old password is not required to do this action.)'													,1,1,'2017-01-01','2017-01-01'),
+(1,		'back-end',			'User',			'userList',						'User home-page',					0,			'/users',											'Home page to view the all user informations.'																														,1,1,'2017-01-01','2017-01-01'),
+(2,		'back-end',			'User',			'userDetail',					'User detail',						1,			'/users/[0-9]{1,}',									'To view the detail informations of each users.'																													,1,1,'2017-01-01','2017-01-01'),
+(3,		'back-end',			'User',			'userProfile',					'User profile',						0,			'/users/profile',									'Users can edit their personal informations by themselves.'																											,1,1,'2017-01-01','2017-01-01'),
+(4,		'back-end',			'User',			'userAdd',						'User registeration',				1,			'/users/add',										'This action is for to create new User.'																															,1,1,'2017-01-01','2017-01-01'),
+(5,		'back-end',			'User',			'userEdit',						'Edit users',						1,			'/users/[0-9]{1,}/edit$',							'This action can edit personal informations of specific user(can also edit informations other users including change or reset password).'							,1,1,'2017-01-01','2017-01-01'),
+(6,		'back-end',			'User',			'userRemove',					'Remove users',						1,			'/users/[0-9]{1,}/delete$',							'To remove a specific user from application.'																														,1,1,'2017-01-01','2017-01-01'),
+(7,		'back-end',			'User',			'changedPassword',				'Change password',					1,			'/users/[0-9]{1,}/changedPassword$',				'To change existing password with new one.(Note: Old password need to provide.)'																					,1,1,'2017-01-01','2017-01-01'),
+(8,		'back-end',			'User',			'resetPassword',				'Reset password',					1,			'/users/[0-9]{1,}/resetPassword$',					'Forcely replace a user''s password with a new password.(Old password is not required to do this action.)'															,1,1,'2017-01-01','2017-01-01'),
 
-(8,		'back-end',			'Role',			'roleList',						'Role home-page',					0,			'/config/roles',											'Overview informations of all roles provided by application.'																								,1,1,'2017-01-01','2017-01-01'),
-(9,		'back-end',			'Role',			'roleAdd',						'Create Roles',						1,			'/config/roles/add',										'To create a new role for application use.'																													,1,1,'2017-01-01','2017-01-01'),
-(10,	'back-end',			'Role',			'roleEdit',						'Edit roles',						1,			'/config/roles/[0-9]{1,}/edit$',            				'This action is for edit existing role''s information'																										,1,1,'2017-01-01','2017-01-01'),
-(11,	'back-end',			'Role',			'roleRemove',					'Remove roles',						1,			'/config/roles/[0-9]{1,}/delete$',							'To remove a specific role from applcation'																													,1,1,'2017-01-01','2017-01-01'),
+(9,		'back-end',			'Role',			'roleList',						'Role home-page',					0,			'/roles',											'Overview informations of all roles provided by application.'																										,1,1,'2017-01-01','2017-01-01'),
+(10,	'back-end',			'Role',			'roleAdd',						'Create Roles',						1,			'/roles/add',										'To create a new role for application use.'																															,1,1,'2017-01-01','2017-01-01'),
+(11,	'back-end',			'Role',			'roleEdit',						'Edit roles',						1,			'/roles/[0-9]{1,}/edit$',            				'This action is for edit existing role''s information'																												,1,1,'2017-01-01','2017-01-01'),
+(12,	'back-end',			'Role',			'roleRemove',					'Remove roles',						1,			'/roles/[0-9]{1,}/delete$',							'To remove a specific role from applcation'																															,1,1,'2017-01-01','2017-01-01'),
 
-(12,	'back-end',			'Setting',		'settingList',					'Setting home-page',				0,			'/config/settings',											'All constant informations(ie. currency,unit,cities etc;) these are used within entire application.'														,1,1,'2017-01-01','2017-01-01'),
-(13,	'back-end',			'Setting',		'settingAdd',					'Create settings',					1,			'/config/settings/add',										'To create a new constant(or setting) information.'																											,1,1,'2017-01-01','2017-01-01'),
-(14,	'back-end',			'Setting',		'settingEdit',					'Edit settings',					1,			'/config/settings/[0-9]{1,}/edit$',							'To edit existing constant(or setting) information'																											,1,1,'2017-01-01','2017-01-01'),
-(15,	'back-end',			'Setting',		'settingRemove',				'Remove settings',					1,			'/config/settings/[0-9]{1,}/delete$',						'Remove a specific application constant(or setting).'																										,1,1,'2017-01-01','2017-01-01');
+(13,	'back-end',			'Setting',		'settingList',					'Setting home-page',				0,			'/settings',										'All constant informations(ie. currency,unit,cities etc;) these are used within entire application.'																,1,1,'2017-01-01','2017-01-01'),
+(14,	'back-end',			'Setting',		'settingAdd',					'Create settings',					1,			'/settings/add',									'To create a new constant(or setting) information.'																													,1,1,'2017-01-01','2017-01-01'),
+(15,	'back-end',			'Setting',		'settingEdit',					'Edit settings',					1,			'/settings/[0-9]{1,}/edit$',						'To edit existing constant(or setting) information'																													,1,1,'2017-01-01','2017-01-01'),
+(16,	'back-end',			'Setting',		'settingRemove',				'Remove settings',					1,			'/settings/[0-9]{1,}/delete$',						'Remove a specific application constant(or setting).'																												,1,1,'2017-01-01','2017-01-01');
 SET IDENTITY_INSERT mjr_action OFF;
 
 
@@ -61,21 +62,22 @@ SET IDENTITY_INSERT mjr_action OFF;
 INSERT INTO mjr_role_action 
 (role_id,  action_id,	record_reg_id,record_upd_id,record_reg_date,record_upd_date) 
 VALUES 
-(1,			1,			1,1,'2017-01-01','2017-01-01'),	/*userDetail*/
-(1,			2,			1,1,'2017-01-01','2017-01-01'),	/*userProfile*/
-(1,			3,			1,1,'2017-01-01','2017-01-01'),	/*userAdd*/
-(1,			4,			1,1,'2017-01-01','2017-01-01'),	/*userEdit*/
-(1,			5,			1,1,'2017-01-01','2017-01-01'),	/*userRemove*/
-(1,			6,			1,1,'2017-01-01','2017-01-01'),	/*changedPassword*/
-(1,			7,			1,1,'2017-01-01','2017-01-01'),	/*resetPassword*/
-(1,			8,			1,1,'2017-01-01','2017-01-01'),	/*roleList*/
-(1,			9,			1,1,'2017-01-01','2017-01-01'),	/*roleAdd*/
-(1,			10,			1,1,'2017-01-01','2017-01-01'),	/*roleEdit*/
-(1,			11,			1,1,'2017-01-01','2017-01-01'),	/*roleRemove*/
-(1,			12,			1,1,'2017-01-01','2017-01-01'),	/*settingList*/
-(1,			13,			1,1,'2017-01-01','2017-01-01'),	/*settingAdd*/
-(1,			14,			1,1,'2017-01-01','2017-01-01'),	/*settingEdit*/
-(1,			15,			1,1,'2017-01-01','2017-01-01');	/*settingRemove*/
+(1,			1,			1,1,'2017-01-01','2017-01-01'),	
+(1,			2,			1,1,'2017-01-01','2017-01-01'),	
+(1,			3,			1,1,'2017-01-01','2017-01-01'),
+(1,			4,			1,1,'2017-01-01','2017-01-01'),
+(1,			5,			1,1,'2017-01-01','2017-01-01'),
+(1,			6,			1,1,'2017-01-01','2017-01-01'),
+(1,			7,			1,1,'2017-01-01','2017-01-01'),
+(1,			8,			1,1,'2017-01-01','2017-01-01'),
+(1,			9,			1,1,'2017-01-01','2017-01-01'),
+(1,			10,			1,1,'2017-01-01','2017-01-01'),
+(1,			11,			1,1,'2017-01-01','2017-01-01'),
+(1,			12,			1,1,'2017-01-01','2017-01-01'),
+(1,			13,			1,1,'2017-01-01','2017-01-01'),
+(1,			14,			1,1,'2017-01-01','2017-01-01'),
+(1,			15,			1,1,'2017-01-01','2017-01-01'),
+(1,			16,			1,1,'2017-01-01','2017-01-01');
 
 /******      setting       ******/
 INSERT INTO mjr_setting 

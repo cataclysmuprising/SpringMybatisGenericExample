@@ -367,4 +367,4 @@ VALUES
 ('Application',	'Thai Bhat',				'Currency',		'String',		'THB',		1,1,'2017-01-01','2017-01-01'),
 ('Application',	'Vietnamese Dong',			'Currency',		'String',		'VND',		1,1,'2017-01-01','2017-01-01'),
 /******      File upload directory        ******/
-('Application',	'UploadPath',			'File Directory',	'String',	'D:/web-resources/fams/uploadFiles',		1,1,'2017-01-01','2017-01-01');
+('Application',	'UploadPath',			'File Directory',	'String',	'D:/web-resources/mywebsite/uploadFiles',		1,1,'2017-01-01','2017-01-01');

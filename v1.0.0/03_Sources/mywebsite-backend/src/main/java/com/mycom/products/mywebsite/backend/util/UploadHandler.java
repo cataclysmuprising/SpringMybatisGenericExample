@@ -99,6 +99,7 @@ public class UploadHandler extends HttpServlet {
 			fileItem.put("filePath", filePath);
 			fileItem.put("fileSize", fileSize);
 			fileItem.put("fileType", getFileType(format));
+			System.err.println("Reach Here ............");
 			uploadFiles.add(fileItem);
 
 		    }

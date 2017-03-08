@@ -1,5 +1,7 @@
 var ROW_PER_PAGE = 25;
 var SECONDARY_ROW_PER_PAGE = 10;
+var EAGER = "EAGER";
+var LAZY = "LAZY";
 var FILE_SIZE_UNITS = new Array('Bytes', 'KB', 'MB', 'GB');
 
 $(window).on('load', function() {

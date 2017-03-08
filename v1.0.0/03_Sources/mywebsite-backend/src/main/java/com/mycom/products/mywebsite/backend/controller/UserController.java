@@ -51,8 +51,12 @@ public class UserController extends BaseController {
     public @ResponseBody Map<String, Object> search(@RequestParam(required = false) Integer start,
 	    @RequestParam int length, @RequestParam String orderBy, @RequestParam String orderAs,
 	    @RequestParam String word, @RequestParam String loginId, @RequestParam(required = false) String roleId,
-	    @RequestParam(required = false) String includeIds) throws BusinessException {
-
+	    @RequestParam(required = false) String includeIds, @RequestParam(required = false) String fetchMode)
+	    throws BusinessException {
+	FetchMode mode = FetchMode.LAZY;
+	if (fetchMode != null && fetchMode.equals("EAGER")) {
+	    mode = FetchMode.valueOf("EAGER");
+	}
 	Map<String, Object> results = new HashMap<>();
 	Map<String, Object> criteria = new HashMap<>();
 
@@ -77,8 +81,8 @@ public class UserController extends BaseController {
 	    }
 	}
 
-	List<UserBean> users = userService.selectList(criteria, FetchMode.LAZY);
-	results.put("iTotalDisplayRecords", userService.selectCounts(criteria, FetchMode.LAZY));
+	List<UserBean> users = userService.selectList(criteria, mode);
+	results.put("iTotalDisplayRecords", userService.selectCounts(criteria, mode));
 	results.put("aaData", users);
 
 	appLogger.info("Loading ..... finished 'User' informations by AJAX request with criteria ==> " + criteria);

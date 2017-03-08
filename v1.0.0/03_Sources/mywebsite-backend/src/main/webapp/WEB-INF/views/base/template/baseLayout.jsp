@@ -6,7 +6,8 @@
 
 <tiles:importAttribute name="layoutScripts" ignore="false"/>
 <tiles:importAttribute name="pageScripts" ignore="false"/>
-<tiles:importAttribute name="pageStyle" ignore="false"/>
+<tiles:importAttribute name="layoutStyles" ignore="false"/>
+<tiles:importAttribute name="pageStyles" ignore="false"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,19 +20,12 @@
 	<meta name="_csrf_header" content="${_csrf.headerName}"/>	
 	<link rel="shortcut icon" href="${root}/images/favicon.ico" type="image/x-icon"/>	
 	<title>My Website</title>
-	<link href="${root}<c:out value='${pageStyle}' />?v=${projectVersion}" rel="stylesheet/less">
-	<script>
-	  less = {
-	    env: "development",
-	    async: false,
-	    fileAsync: false,
-	    poll: 1000,
-	    functions: {},
-	    dumpLineNumbers: "comments",
-	    relativeUrls: false,
-	  };
-	</script>	
-	<script  type="text/javascript" src="${root}/js/common/less.min.js"></script>	
+	<c:forEach var="attr" items="${layoutStyles}">
+		<link href="${root}<c:out value='${attr}' />?v=${projectVersion}" rel="stylesheet">
+	</c:forEach>
+ 	<c:forEach var="attr" items="${pageStyles}">
+	    <link href="${root}<c:out value='${attr}' />?v=${projectVersion}" rel="stylesheet">
+	</c:forEach>
     <script>
         window.paceOptions = {
             ajax: {

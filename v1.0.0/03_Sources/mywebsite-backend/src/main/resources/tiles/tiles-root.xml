@@ -6,25 +6,30 @@
 	<definition name="baseLayout" template="/WEB-INF/views/base/template/baseLayout.jsp">
 		<put-attribute name="menu" value="/WEB-INF/views/base/template/mainMenu.jsp" />
 		<put-attribute name="content" value="" />
-		<put-attribute name="footer" value="/WEB-INF/views/base/template/footer.jsp" />
-		<put-attribute name="pageStyle" value="" />
 		<put-list-attribute name="layoutScripts">
-			<add-attribute value="/js/common/jquery/jquery-1.12.3.js" />
-			<add-attribute value="/js/common/bootstrap/bootstrap.js" />
-			<add-attribute value="/js/common/bootstrap/bootstrap-select.min.js" />
+			<add-attribute value="/js/jquery/jquery-1.12.3.js" />
+			<add-attribute value="/js/bootstrap/bootstrap.js" />
+			<add-attribute value="/js/bootstrap/bootstrap-select.min.js" />
 			<add-attribute value="/js/common/pace.js" />
 			<add-attribute value="/js/common/lobibox.min.js" />
 			<add-attribute value="/js/common/base.js" />
-		</put-list-attribute>	
+		</put-list-attribute>
+		<put-list-attribute name="layoutStyles">
+			<add-attribute value="/css/bootstrap/bootstrap.css" />
+			<add-attribute value="/css/bootstrap/bootstrap-select.min.css" />
+			<add-attribute value="/css/common/pace.css" />
+			<add-attribute value="/css/common/lobibox.min.css" />
+			<add-attribute value="/css/common/base.css" />
+		</put-list-attribute>			
 	</definition>
 	
 	<definition name="login" template="/WEB-INF/views/base/login.jsp">
 		<put-list-attribute name="layoutScripts">
-			<add-attribute value="/js/common/jquery/jquery-1.12.3.js" />
-			<add-attribute value="/js/common/bootstrap/bootstrap.js" />
+			<add-attribute value="/js/jquery/jquery-1.12.3.js" />
+			<add-attribute value="/js/bootstrap/bootstrap.js" />
 		</put-list-attribute>	
 		<put-list-attribute name="layoutStyles">
-			<add-attribute value="/css/common/bootstrap/bootstrap.less" />
+			<add-attribute value="/css/bootstrap/bootstrap.css" />
 		</put-list-attribute>	
 	</definition>
 	

@@ -1,13 +1,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<artifactId>mywebsite-backend</artifactId>
+	<packaging>war</packaging>
+	<version>1.0.20170308</version>
+	
 	<parent>
 		<groupId>com.mycom.products</groupId>
 		<artifactId>mywebsite</artifactId>
 		<version>1.0</version>
 	</parent>
-	<artifactId>mywebsite-backend</artifactId>
-	<packaging>war</packaging>
+	
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<tiles.version>3.0.7</tiles.version>
+	</properties>	
 
 	<dependencies>
 		<!-- Spring -->
@@ -30,7 +39,8 @@
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-taglibs</artifactId>
 		    <version>${spring.security.version}</version>
-		</dependency>		
+		</dependency>	
+		<!-- Servlet and JSTL -->	
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -43,15 +53,16 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tiles</groupId>
-			<artifactId>tiles-extras</artifactId>
-			<version>3.0.7</version>
-		</dependency>
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jsp-api</artifactId>
 			<version>2.0</version>
 			<scope>provided</scope>
+		</dependency>
+		<!-- apache tiles framework -->		
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-extras</artifactId>
+			<version>${tiles.version}</version>
 		</dependency>
 		<!-- core Module -->
 		<dependency>
@@ -61,29 +72,26 @@
 		</dependency>		
 	</dependencies>
 	<build>
+		<resources>
+			<!-- to get the project version, make to save them in file -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>project.properties</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
         <plugins>
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
                 <configuration>
                 	<finalName>${project.artifactId}-${project.version}</finalName>
                     <warSourceDirectory>${basedir}/src/main/webapp</warSourceDirectory>
                    <outputDirectory>..\05_Release</outputDirectory>
+                   <!-- to get the project version -->
 			        <archive>                   
 			            <manifest>
 			                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
@@ -91,14 +99,6 @@
 			            </manifest>
 			        </archive>
 			        <archiveClasses>true</archiveClasses>                   
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.17</version>
-                <configuration>
-                    <argLine>-XX:-UseSplitVerifier</argLine>
                 </configuration>
             </plugin>
         </plugins>

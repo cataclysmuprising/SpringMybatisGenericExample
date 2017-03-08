@@ -108,7 +108,7 @@
 			}
 		</style>
 
-		<title>Fixed Asset Management System</title>	
+		<title>My Website</title>	
 	</head> 
  	<body>	
 		<div class="container">

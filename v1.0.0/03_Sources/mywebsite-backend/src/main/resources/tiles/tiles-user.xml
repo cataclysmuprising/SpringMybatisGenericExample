@@ -5,10 +5,13 @@
 <tiles-definitions>
 	<definition name="user_home" extends="baseLayout">
 		<put-attribute name="content" value="/WEB-INF/views/user/home.jsp" />
-		<put-attribute name="pageStyle" value="/css/user/home.less" />
 		<put-list-attribute name="pageScripts">
-			<add-attribute value="/js/common/jquery/datatables.min.js" />
-			<add-attribute value="/js/user/home.js" />
+			<add-attribute value="/js/jquery/datatables.min.js" />
+			<add-attribute value="/js/site/user/home.js" />
+		</put-list-attribute>			
+		<put-list-attribute name="pageStyles">
+			<add-attribute value="/css/jquery/datatables.min.css" />
+			<add-attribute value="/css/site/user/home.css" />
 		</put-list-attribute>
 	</definition>	
 </tiles-definitions>

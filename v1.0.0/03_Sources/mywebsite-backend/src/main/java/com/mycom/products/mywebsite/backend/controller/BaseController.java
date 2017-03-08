@@ -29,6 +29,10 @@ public abstract class BaseController {
     private Logger appLogger = Logger.getLogger("AppLogger");
     private Logger errorLogger = Logger.getLogger("ErrorLogger");
 
+    protected enum PageMode {
+	VIEW, CREATE, EDIT;
+    }
+
     @Autowired
     private DbFilterInvocationSecurityMetadataSource securityMetaData;
 

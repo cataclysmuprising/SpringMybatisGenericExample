@@ -117,7 +117,7 @@
 		    		<div class="panel panel-default">
 		    		
 					  	<div class="panel-heading">
-					    	<div class="panel-title">Fixed Asset Management System</div>
+					    	<div class="panel-title">My Website</div>
 					    	<div class="sign-in">Please log in to your account.</div>
 					    </div>
 					    

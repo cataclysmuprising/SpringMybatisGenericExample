@@ -64,6 +64,12 @@
 			<artifactId>tiles-extras</artifactId>
 			<version>${tiles.version}</version>
 		</dependency>
+		<!-- JSON -->
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20160810</version>
+		</dependency>
 		<!-- core Module -->
 		<dependency>
 			<groupId>com.mycom.products</groupId>

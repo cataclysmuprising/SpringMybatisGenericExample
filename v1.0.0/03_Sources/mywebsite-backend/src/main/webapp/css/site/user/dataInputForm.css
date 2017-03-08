@@ -1,0 +1,26 @@
+.profileImagePanel {
+	position:relative;
+	width:150px;
+	height:150px;
+	margin: 0 auto;
+	cursor:pointer;
+	background-color:#333;
+	border-radius:4px;
+	transition: all 0.2s ease-in-out 0s;
+}
+.btn-imageUpload {
+    position: absolute;
+    right: 25px;
+    top: 55px;
+    display:none;
+    z-index: 99999;
+}
+.profileImagePanel:hover .btn-imageUpload{
+	display:block;
+}
+.profileImagePanel:hover img{
+	opacity:0.1;
+}
+.smallPanel {
+	max-width : 800px;
+}

@@ -47,6 +47,14 @@ public class UserController extends BaseController {
 	return "user_home";
     }
 
+    @RequestMapping(value = "add", method = RequestMethod.GET)
+    public String add(Model model) throws BusinessException {
+	appLogger.info("User " + loginUser.getRealName() + " request for 'User Add' page.");
+	model.addAttribute("pageMode", PageMode.CREATE);
+	model.addAttribute("user", new UserBean());
+	return "user_dataForm";
+    }
+
     @RequestMapping(value = "api/search", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> search(@RequestParam(required = false) Integer start,
 	    @RequestParam int length, @RequestParam String orderBy, @RequestParam String orderAs,

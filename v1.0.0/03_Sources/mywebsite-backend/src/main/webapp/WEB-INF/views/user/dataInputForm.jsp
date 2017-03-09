@@ -39,15 +39,15 @@
 <form:form modelAttribute="user" id="userForm" action="${userSubmitUrl}" method="post" class="form-horizontal data-setup" commandName="user">
 	<div class="box box-primary row smallPanel">
 		<div class="box-header with-border">
-			<div class="image-editor">
-				<input type="file" class="cropit-image-input">
-				<div class="cropit-preview"></div>
-				<div class="image-size-label">Resize image</div>
-				<input type="range" class="cropit-image-zoom-input">
-				<button class="rotate-ccw">Rotate counterclockwise</button>
-				<button class="rotate-cw">Rotate clockwise</button>
-
-				<span class="btn btn-primary export" type="button">Export</span>
+			<div class="profileImagePanel">
+				<button type="button" class="btn btn-default btn-imageUpload" id="editImage">Change Picture</button>
+				<form:hidden id="contentId" path="contentId"/>	
+				<form:hidden id="profile_id" path="content.id"/>	
+				<form:hidden id="profile_fileName" path="content.fileName"/>
+				<form:hidden id="profile_filePath" path="content.filePath"/>
+				<form:hidden id="profile_fileSize" path="content.fileSize"/>
+				<form:hidden id="profile_fileType" path="content.fileType"/>					
+				<img class="img-responsive img-thumbnail img-circle" id="profile-img" src="" width="150px" height="150px">
 			</div>
 			<c:if test="${pageMode eq 'EDIT'}">
 				<div class="row center-text" style="padding: 5px;">
@@ -194,30 +194,71 @@
  </div>
 <div class="modal fade" id="resetPasswordModal" role="dialog">
 	<div class="modal-dialog">
-	    <div class="modal-content">
-	        <div class="modal-header">
-	            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	            <h4 class="modal-title">Reset Password</h4>
-	        </div>
-	        <div class="modal-body">
-	        	<form class="form-horizontal" id="reset_PasswordForm" role="form">
-	        		<div class="form-group">
-	        			<label class="control-label col-sm-4 required">New Password : </label>
-	        			<div class="col-sm-8">
-	        				<input type="password" class="form-control input-sm col-sm-8" type="text" id="reset_newPassword" placeholder="Define for new password" />
-	        			</div>	        			
-	        		</div>
-	        		<div class="form-group">
-	        			<label class="control-label col-sm-4 required">Confirm Password : </label>
-	        			<div class="col-sm-8">
-	        				<input type="password" class="form-control input-sm col-sm-8" type="text" id="reset_confirmPassword" placeholder="Write your new password again" />
-	        			</div>	        			
-	        		</div>	
-	        	</form>
-	        </div>
-	        <div class="modal-footer center-text">
-	            <button type="button" id="confirmResetPassword" data-id="${user.loginId}" class="btn btn-primary btn-sm" style="width: 70px;">Save</button>
-	            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" style="width: 70px;">Cancel</button>
-	        </div>
-	    </div>
- </div>
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Reset Password</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" id="reset_PasswordForm" role="form">
+					<div class="form-group">
+						<label class="control-label col-sm-4 required">New
+							Password : </label>
+						<div class="col-sm-8">
+							<input type="password" class="form-control input-sm col-sm-8"
+								type="text" id="reset_newPassword"
+								placeholder="Define for new password" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-4 required">Confirm
+							Password : </label>
+						<div class="col-sm-8">
+							<input type="password" class="form-control input-sm col-sm-8"
+								type="text" id="reset_confirmPassword"
+								placeholder="Write your new password again" />
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer center-text">
+				<button type="button" id="confirmResetPassword"
+					data-id="${user.loginId}" class="btn btn-primary btn-sm"
+					style="width: 70px;">Save</button>
+				<button type="button" class="btn btn-danger btn-sm"
+					data-dismiss="modal" style="width: 70px;">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="profileImageCropper" aria-labelledby="modalLabel" role="dialog" tabindex="-1">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Edit Profile Image</h4>
+			</div>
+			<div class="modal-body">
+				<div>
+					<div class="selected_image_panel">
+						<img class="img-responsive img-thumbnail img-circle" id="selectedImage" src="" width="150px" height="150px" />
+					</div>
+					<div class="row" style="width:600px;height:300px;">
+						<hr/>
+						<img id="imageHolder" src="" style="display:none" alt="" width="600px" height="300px" />
+					</div>
+					<div>
+						<input type="file" id="profilePhotoFileInput" style="display: none;"/>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer center-text">
+				<button type="button" class="btn btn-sm btn-warning" id="btnUploadImage">Upload from my Computer</button>
+				<button type="button" class="btn btn-sm btn-danger" id="btnConfirmImage">Confirm</button>
+				<button type="button" class="btn btn-sm btn-primary" id="btnSetGravatorImage">Use Random Gravator</button>	
+			</div>
+		</div>
+	</div>
+</div>

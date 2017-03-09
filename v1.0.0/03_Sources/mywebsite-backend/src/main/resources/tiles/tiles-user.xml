@@ -22,12 +22,12 @@
 			<add-attribute value="/js/bootstrap/bootstrap-datetimepicker.min.js" />
 			<add-attribute value="/js/common/md5.js" />
 			<add-attribute value="/js/site/user/dataInputForm.js" />
-			<add-attribute value="/js/jquery/jquery.cropit.js" />
+			<add-attribute value="/js/jquery/cropper.min.js" />
 		</put-list-attribute>			
 		<put-list-attribute name="pageStyles">
 			<add-attribute value="/css/bootstrap/bootstrap-datetimepicker.min.css" />
 			<add-attribute value="/css/site/user/dataInputForm.css" />
-			<add-attribute value="/css/jquery/jquery.cropit.css" />
+			<add-attribute value="/css/jquery/cropper.min.css" />
 		</put-list-attribute>
 	</definition>	
 </tiles-definitions>

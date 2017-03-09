@@ -61,13 +61,13 @@ public class UploadHandler extends HttpServlet {
 		for (FileItem item : items) {
 		    if (item.isFormField()) {
 			fileCategory = item.getString();
-			saveDir = fileCategory + fmtYMD.format(today);
-			// creates the directory if it does not exist
-			File uploadDir = new File(uploadPath + saveDir);
-			if (!uploadDir.exists()) {
-			    uploadDir.mkdirs();
-			}
 		    }
+		}
+		saveDir = fileCategory + fmtYMD.format(today);
+		// creates the directory if it does not exist
+		File uploadDir = new File(uploadPath + saveDir);
+		if (!uploadDir.exists()) {
+		    uploadDir.mkdirs();
 		}
 		List<HashMap<String, String>> uploadFiles = new ArrayList<>();
 		for (FileItem item : items) {
@@ -81,16 +81,23 @@ public class UploadHandler extends HttpServlet {
 			    writer.write(json.toString());
 			    writer.flush();
 			}
-			String originalFileName = "", saveFileName = "", format = "", fileSize = "";
+			String originalFileName = "", saveFileName = "", format = ".png", fileSize = "";
+			// can't predict fileName and format would be included.
+			// For instance, blob won't be.
 			try {
-			    UUID uuid = UUID.randomUUID();
 			    originalFileName = item.getName().substring(0, item.getName().lastIndexOf("."));
-			    format = item.getName().substring(item.getName().lastIndexOf("."), item.getName().length());
-			    fileSize = getReadableFileSize(item.getSize());
-			    saveFileName = new File(uuid.toString() + format).getName();
 			} catch (Exception e) {
 			    // Nothing to do. Skip
 			}
+			try {
+			    format = item.getName().substring(item.getName().lastIndexOf("."), item.getName().length());
+			} catch (Exception e) {
+			    // Nothing to do. Skip
+			}
+
+			fileSize = getReadableFileSize(item.getSize());
+			UUID uuid = UUID.randomUUID();
+			saveFileName = new File(uuid.toString() + format).getName();
 			String filePath = uploadPath + saveDir + "/" + saveFileName;
 			saveProfileImage(item, filePath);
 			HashMap<String, String> fileItem = new HashMap<>();
@@ -99,7 +106,6 @@ public class UploadHandler extends HttpServlet {
 			fileItem.put("filePath", filePath);
 			fileItem.put("fileSize", fileSize);
 			fileItem.put("fileType", getFileType(format));
-			System.err.println("Reach Here ............");
 			uploadFiles.add(fileItem);
 
 		    }

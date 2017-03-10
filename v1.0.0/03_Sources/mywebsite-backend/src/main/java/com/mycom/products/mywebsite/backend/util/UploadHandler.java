@@ -1,7 +1,13 @@
 package com.mycom.products.mywebsite.backend.util;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -11,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +27,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -81,7 +89,11 @@ public class UploadHandler extends HttpServlet {
 			    writer.write(json.toString());
 			    writer.flush();
 			}
-			String originalFileName = "", saveFileName = "", format = ".png", fileSize = "";
+			String originalFileName = "", saveFileName = "", format = "", fileSize = "";
+			// set the default format to png when it is profileImage
+			if (fileCategory.equals("profilePicture")) {
+			    format = ".png";
+			}
 			// can't predict fileName and format would be included.
 			// For instance, blob won't be.
 			try {
@@ -99,7 +111,10 @@ public class UploadHandler extends HttpServlet {
 			UUID uuid = UUID.randomUUID();
 			saveFileName = new File(uuid.toString() + format).getName();
 			String filePath = uploadPath + saveDir + "/" + saveFileName;
-			saveProfileImage(item, filePath);
+			if (fileCategory.equals("profilePicture")) {
+			    saveProfileImage(item, filePath);
+			}
+			// else .... other file types go here
 			HashMap<String, String> fileItem = new HashMap<>();
 			fileItem.put("originalFileName", originalFileName + format);
 			fileItem.put("saveFileName", saveFileName);
@@ -127,8 +142,27 @@ public class UploadHandler extends HttpServlet {
 
     private void saveProfileImage(FileItem item, String filePath) throws Exception {
 	File storeFile = new File(filePath);
-	// saves the file on disk
+	// save original image from client side on disk
 	item.write(storeFile);
+	// serverside image resize
+	BufferedImage originalImage;
+	InputStream in = new FileInputStream(storeFile);
+	originalImage = ImageIO.read(in);
+	int imgType = BufferedImage.SCALE_SMOOTH;
+	BufferedImage resizedImage = new BufferedImage(150, 150, imgType);
+	Graphics2D g = resizedImage.createGraphics();
+	g.drawImage(originalImage, 0, 0, 150, 150, null);
+	g.dispose();
+	g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+	g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	// convert BufferedImage to byte array
+	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	ImageIO.write(resizedImage, "JPEG", baos);
+	FileUtils.writeByteArrayToFile(storeFile, baos.toByteArray());
+	baos.flush();
+	baos.close();
+
     }
 
     private String getReadableFileSize(long size) {

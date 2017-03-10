@@ -20,7 +20,7 @@
 }
 .btn-imageUpload {
     position: absolute;
-    right: 25px;
+    right: 13px;
     top: 55px;
     display:none;
     z-index: 2;
@@ -38,3 +38,26 @@
 	padding : 0;
 	border : 0;
 }
+.cropArea {
+	width: 598px;
+	height: 300px;
+	display:none;
+}
+/* Override Cropper's styles */
+/* .cropper-view-box, .cropper-face {
+	border-radius: 50%;
+} */
+.preview {
+	overflow : hidden;
+}
+.docs-toolbar {
+    margin-top: 15px;
+    margin-bottom: -10px;
+    text-align: center;
+    display : none;
+}
+/* .docs-flip-horizontal {
+	-ms-transform: scale(-1, 1);
+	-webkit-transform: scale(-1, 1);
+	transform: scale(-1, 1);
+} */

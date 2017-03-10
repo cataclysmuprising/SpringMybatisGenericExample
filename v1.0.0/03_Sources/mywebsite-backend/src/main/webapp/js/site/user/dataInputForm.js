@@ -4,15 +4,42 @@ var cropBoxData;
 var canvasData;
 var $image;
 function init() {
+    /* Handle image resized events */
+    $(document).on("imageResized", function(event) {
+	if (event.url) {
+	    var image = new Image();
+	    $("#imageHolder").attr("src", event.url);
+	    $(".cropArea,.docs-toolbar").show();
+	    initCropper();
+	}
+    });
+    $(".docs-toolbar").on("click", "[data-method]", function() {
+	var data = $(this).data();
+
+	if (data.method) {
+	    $image.cropper(data.method, data.option);
+	}
+    });
+    $(".docs-toolbar .download").click(function() {
+	if ($image) {
+	    croppedCanvas = $image.cropper('getCroppedCanvas');
+	    window.open(croppedCanvas.toDataURL());
+	}
+    });
     // loadImage();
     $("#profile-img").attr("src", getContextPath() + "/images/avatar/guest.jpg");
     $('#profileImageCropper').on('shown.bs.modal', function() {
+	$("#selectedImage").addClass("img-circle");
+	$(".cropArea,.docs-toolbar").hide();
 	$("#selectedImage").removeAttr("style");
 	$("#selectedImage").attr("src", getContextPath() + "/images/avatar/guest.jpg");
     }).on('hidden.bs.modal', function() {
-	cropBoxData = $image.cropper('getCropBoxData');
-	canvasData = $image.cropper('getCanvasData');
-	$image.cropper('destroy');
+	if ($image) {
+	    cropBoxData = $image.cropper('getCropBoxData');
+	    canvasData = $image.cropper('getCanvasData');
+	    $image.cropper('destroy');
+	    $image = undefined;
+	}
     });
     $('#editImage').on('click', function(e) {
 	$('#profileImageCropper').modal('show');
@@ -36,91 +63,64 @@ function init() {
     $("#btnConfirmImage").on('click', function(e) {
 	var croppedCanvas;
 	var roundedCanvas;
-	croppedCanvas = $image.cropper('getCroppedCanvas');
-	roundedCanvas = getRoundedCanvas(croppedCanvas);
-	$("#profile-img").attr("src", roundedCanvas.toDataURL());
+	if ($image) {
+	    croppedCanvas = $image.cropper('getCroppedCanvas');
+	    $("#profile-img").attr("src", croppedCanvas.toDataURL());
+	} else {
+	    $("#profile-img").attr("src", $('#selectedImage').attr('src'));
+	}
 	$('#profileImageCropper').modal('hide');
     });
-    $("#profilePhotoFileInput").change(function(e) {
-	var fileReader = new FileReader();
-	fileReader.onload = function(e) {
-	    var img = new Image();
-	    img.onload = function() {
-		var MAX_WIDTH = 800;
-		var MAX_HEIGHT = 600;
-		var width = img.width;
-		var height = img.height;
-
-		if (width > height) {
-		    if (width > MAX_WIDTH) {
-			height *= MAX_WIDTH / width;
-			width = MAX_WIDTH;
+    $("#profilePhotoFileInput").change(function(event) {
+	var file = event.target.files[0];
+	// Ensure it's an image
+	if (file.type.match(/image.*/)) {
+	    // Load the image
+	    if (typeof (FileReader) != "undefined") {
+		var reader = new FileReader();
+		reader.onload = function(readerEvent) {
+		    var image = new Image();
+		    image.onload = function(imageEvent) {
+			// Resize the image
+			var canvas = document.createElement('canvas'), max_size = 544, width = image.width, height = image.height;
+			if (width > height) {
+			    if (width > max_size) {
+				height *= max_size / width;
+				width = max_size;
+			    }
+			} else {
+			    if (height > max_size) {
+				width *= max_size / height;
+				height = max_size;
+			    }
+			}
+			canvas.width = width;
+			canvas.height = height;
+			canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+			var dataUrl = canvas.toDataURL('image/jpeg');
+			$.event.trigger({
+			    type : "imageResized",
+			    url : dataUrl
+			});
 		    }
-		} else {
-		    if (height > MAX_HEIGHT) {
-			width *= MAX_HEIGHT / height;
-			height = MAX_HEIGHT;
-		    }
+		    image.src = readerEvent.target.result;
 		}
-
-		var canvas = document.createElement("canvas");
-		canvas.width = width;
-		canvas.height = height;
-		canvas.getContext("2d").drawImage(this, 0, 0, width, height);
-		this.src = canvas.toDataURL();
-		this.id = "imageHolder";
-		console.log(img);
-		// document.body.appendChild(this);// remove this if you don't
-		// want
-		// to show it
+		reader.readAsDataURL(file);
+	    } else {
+		alert("Your browser seems very old. Please update your browser version to support.");
 	    }
-	    img.src = e.target.result;
+	} else {
+	    alert("Please select only Images.");
 	}
-	fileReader.readAsDataURL(e.target.files[0]);
-	fileReader.onloadend = function() {
-	    initCropper();
-	};
-	// readURL(this);
     });
     $("#btnUploadImage").on('click', function(e) {
 	$("#profilePhotoFileInput").trigger("click");
     });
 }
-function readURL(input) {
-    var imgPath = $(input)[0].value;
-    var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
-    var image_holder = $("#imageHolder");
-    image_holder.removeAttr("src");
-    if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg") {
-	if (typeof (FileReader) != "undefined") {
-	    // loop for each file selected for uploaded.
-	    var reader = new FileReader();
-	    reader.onload = function(e) {
-		var img = $("<img />", {
-		    "id" : "imageHolder",
-		    "src" : e.target.result,
-		    "width" : "600px",
-		    "height" : "300px",
-		    "style" : "display:none"
-		});
-		$(image_holder).replaceWith(img);
-	    }
-	    // image_holder.show();
-	    reader.readAsDataURL($(input)[0].files[0]);
-	    reader.onloadend = function() {
-		initCropper();
-	    };
-	} else {
-	    alert("Your browser seems very old. Please update your browser version to support.");
-	}
-    } else {
-	alert("Please select only images");
-    }
-}
 function initCropper() {
     $image = $('#imageHolder');
     var $button = $('#uploadProfilePhoto');
-    var $previews = $('.selected_image_panel');
+    var $previews = $('.preview');
     $image.cropper({
 	aspectRatio : 1,
 	viewMode : 1,
@@ -128,7 +128,7 @@ function initCropper() {
 	ready : function(e) {
 	    $image.cropper('setCanvasData', canvasData);
 	    $image.cropper('setCropBoxData', cropBoxData);
-	    var $clone = $(this).clone().removeClass('cropper-hidden').addClass("img-responsive img-thumbnail img-circle").attr("id", "selectedImage");
+	    var $clone = $(this).clone().removeClass('cropper-hidden').addClass("img-responsive img-thumbnail ").attr("id", "selectedImage");
 	    $clone.css({
 		display : 'block',
 		width : '100%',
@@ -165,9 +165,7 @@ function initCropper() {
 	var croppedCanvas;
 	var roundedCanvas;
 	croppedCanvas = $image.cropper('getCroppedCanvas');
-	roundedCanvas = getRoundedCanvas(croppedCanvas);
-	// $result.html('<img src="' + roundedCanvas.toDataURL() + '">');
-	uploadProfilePicture(roundedCanvas.toDataURL());
+	uploadProfilePicture(croppedCanvas.toDataURL());
 	e.preventDefault();
 	return false;
     });
@@ -189,7 +187,7 @@ function bind() {
 function uploadProfilePicture(imageData) {
     var data = new FormData();
     var blob = dataURItoBlob(imageData);
-    data.append("profileImage", blob);
+    data.append("imageFile", blob);
     data.append("type", "profilePicture");
     jQuery.ajax({
 	url : getContextPath() + '/ajax/upload',
@@ -241,22 +239,4 @@ function loadImage() {
 	var imagePath = $("#profile-img").attr("src");
 	$("#profile-img").attr("src", imagePath);
     }, 500);
-}
-
-function getRoundedCanvas(sourceCanvas) {
-    var canvas = document.createElement('canvas');
-    var context = canvas.getContext('2d');
-    var width = sourceCanvas.width;
-    var height = sourceCanvas.height;
-
-    canvas.width = width;
-    canvas.height = height;
-    context.beginPath();
-    context.arc(width / 2, height / 2, Math.min(width, height) / 2, 0, 2 * Math.PI);
-    context.strokeStyle = 'rgba(0,0,0,0)';
-    context.stroke();
-    context.clip();
-    context.drawImage(sourceCanvas, 0, 0, width, height);
-
-    return canvas;
 }

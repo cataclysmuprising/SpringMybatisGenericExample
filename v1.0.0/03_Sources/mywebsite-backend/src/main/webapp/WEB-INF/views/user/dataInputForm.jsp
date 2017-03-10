@@ -243,21 +243,65 @@
 			<div class="modal-body">
 				<div>
 					<div class="selected_image_panel">
-						<img class="img-responsive img-thumbnail img-circle" id="selectedImage" src="" width="150px" height="150px" />
+						<div class="preview">
+							<img class="img-responsive img-thumbnail img-circle" id="selectedImage" src="" width="150px" height="150px" />
+						</div>
 					</div>
-					<div class="row" style="width:600px;height:300px;">
+					<div class="row cropArea">
 						<hr/>
 						<img id="imageHolder" src="" style="display:none" alt="" width="600px" height="300px" />
+						<input type="file" id="profilePhotoFileInput" accept="image/*" style="display: none;"/>
 					</div>
-					<div>
-						<input type="file" id="profilePhotoFileInput" style="display: none;"/>
+					<div class="docs-toolbar">
+						<div class="btn-group">
+							<button class="btn btn-primary" data-method="zoom" data-option="0.1" type="button" title="Zoom In">
+								<span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="$().cropper(&quot;zoom&quot;, 0.1)">
+									<span class="glyphicon glyphicon-zoom-in"></span>
+								</span>
+							</button>
+							<button class="btn btn-primary" data-method="zoom" data-option="-0.1" type="button" title="Zoom Out">
+								<span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="$().cropper(&quot;zoom&quot;, -0.1)">
+									<span class="glyphicon glyphicon-zoom-out"></span>
+								</span>
+							</button>
+							<!-- <button class="btn btn-primary" data-method="rotate" data-option="-90" type="button" title="Rotate Left">
+								<span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="$().cropper(&quot;rotate&quot;, -90)">
+									<span class="glyphicon glyphicon-share-alt docs-flip-horizontal"></span>
+								</span>
+							</button>
+							<button class="btn btn-primary" data-method="rotate" data-option="90" type="button" title="Rotate Right">
+								<span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="$().cropper(&quot;rotate&quot;, 90)">
+									<span class="glyphicon glyphicon-share-alt"></span>
+								</span>
+							</button> -->
+							<button class="btn btn-primary" data-method="setDragMode" data-option="move" type="button" title="Move">
+								<span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="$().cropper(&quot;setDragMode&quot;, &quot;move&quot;)">
+									<span class="glyphicon glyphicon-move"></span>
+								</span>
+							</button>
+							<button class="btn btn-primary" data-method="setDragMode" data-option="crop" type="button" title="Crop">
+								<span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="$().cropper(&quot;setDragMode&quot;, &quot;crop&quot;)">
+									<span class="glyphicon glyphicon-plus"></span>
+								</span>
+							</button>
+							<button class="btn btn-primary" data-method="clear" type="button" title="Clear">
+								<span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="$().cropper(&quot;clear&quot;)"> 
+									<span class="glyphicon glyphicon-remove"></span>
+								</span>
+							</button>
+							<button class="btn btn-primary download" type="button" title="Download cropped image">
+								<span class="docs-tooltip" data-toggle="tooltip" title=""> 
+									<span class="glyphicon glyphicon-download"></span>
+								</span>
+							</button>
+						</div>					
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer center-text">
 				<button type="button" class="btn btn-sm btn-warning" id="btnUploadImage">Upload from my Computer</button>
 				<button type="button" class="btn btn-sm btn-danger" id="btnConfirmImage">Confirm</button>
-				<button type="button" class="btn btn-sm btn-primary" id="btnSetGravatorImage">Use Random Gravator</button>	
+				<button type="button" class="btn btn-sm btn-info" id="btnSetGravatorImage">Use Random Gravator</button>	
 			</div>
 		</div>
 	</div>

@@ -133,7 +133,7 @@
 			<div class="form-group">
 				<label for="address" class="control-label col-sm-3">Address :</label>
 				<div class="col-sm-8">
-					<form:textarea id="address" path="address" rows="2" class="form-control input-sm col-sm-8"/>
+					<form:textarea id="address" path="address" rows="5" class="form-control input-sm col-sm-8"/>
 				</div>
 			</div>
 			<div class="form-group">

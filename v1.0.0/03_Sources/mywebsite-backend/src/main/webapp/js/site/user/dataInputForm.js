@@ -51,7 +51,7 @@ function init() {
 	var gravatarUrl = imagePath + "?s=128&d=identicon&r=PG&f=1";
 	$('#selectedImage').attr('src', gravatarUrl);
 	$('#selectedImage').error(function() {
-	    if (count < 3) {
+	    if (count < 2) {
 		count++;
 		loadImage();
 	    } else {

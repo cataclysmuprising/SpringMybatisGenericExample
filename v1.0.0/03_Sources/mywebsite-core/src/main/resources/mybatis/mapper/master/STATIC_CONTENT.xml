@@ -139,7 +139,7 @@
 		</choose>
 	</sql>
 	
-	<insert id="insert" parameterType="RoleBean" useGeneratedKeys="true" keyProperty="id">
+	<insert id="insert" parameterType="SettingBean" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO mjr_static_content (
 			<include refid="major_table_columns" />
 			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			
@@ -149,7 +149,7 @@
 		)
 	</insert>
 	
-	<insert id="insertSingleHistoryRecord" parameterType="RoleBean">
+	<insert id="insertSingleHistoryRecord" parameterType="SettingBean">
 		INSERT INTO hst_static_content (
 			<include refid="major_table_columns" />
 			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />
@@ -189,7 +189,7 @@
        </if>			
 	</insert>
 	
-	<update id="update" parameterType="RoleBean">
+	<update id="update" parameterType="SettingBean">
 		UPDATE mjr_static_content
 		<set>
 			record_upd_id = #{recordUpdId},

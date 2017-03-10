@@ -39,16 +39,9 @@ $(document).ajaxError(function(event, jqxhr, settings, thrownError) {
 function baseInit() {
 
     // load profile logo
-    loadProfileLogo();
-
-    var count = 0;
+    // loadProfileLogo();
     $('.img-circle.profile-image').error(function() {
-	if (count < 3) {
-	    count++;
-	    loadProfileLogo();
-	} else {
-	    $(this).attr("src", getContextPath() + "/images/avatar/guest.jpg");
-	}
+	$(this).attr("src", getContextPath() + "/images/avatar/guest.jpg");
     });
 
     $('form').attr('autocomplete', 'off');

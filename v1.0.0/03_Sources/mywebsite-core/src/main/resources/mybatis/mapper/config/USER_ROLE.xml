@@ -89,7 +89,7 @@
 		</choose>
 	</sql>
 	
-	<insert id="insert" parameterType="RoleActionBean">
+	<insert id="insert" parameterType="UserRoleBean">
 		INSERT INTO mjr_user_role (
 			<include refid="major_table_columns" />
 			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			

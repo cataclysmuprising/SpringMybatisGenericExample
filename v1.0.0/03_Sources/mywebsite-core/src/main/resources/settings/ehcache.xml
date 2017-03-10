@@ -2,7 +2,7 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false"
 	monitoring="autodetect" dynamicConfig="true" name="CacheManager"
-	maxBytesLocalHeap="1G" maxBytesLocalDisk="10G">
+	maxBytesLocalHeap="512M" maxBytesLocalDisk="5G">
 	<diskStore path="D:/caches/mywebsite_appCaches" /><!--java.io.tmpdir -->
 	<!-- http://www.codingpedia.org/ama/spring-caching-with-ehcache/	 -->
 	<defaultCache 

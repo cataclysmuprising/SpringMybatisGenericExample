@@ -103,7 +103,7 @@
 		#{record.userAgent}
 	</sql>
 			
-	<insert id="insert" parameterType="UserBean" useGeneratedKeys="true" keyProperty="id">
+	<insert id="insert" parameterType="LoginHistoryBean" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO mjr_login_history (
 			<include refid="major_table_columns" />
 			<include refid="com.mycom.products.mywebsite.core.mapper.BaseMapper.meta_table_columns" />			

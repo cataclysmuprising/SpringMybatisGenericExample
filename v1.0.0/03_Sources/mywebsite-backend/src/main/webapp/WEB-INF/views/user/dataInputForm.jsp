@@ -249,7 +249,7 @@
 					</div>
 					<div class="row cropArea">
 						<hr/>
-						<img id="imageHolder" src="" style="display:none" alt="" width="600px" height="300px" />
+						<img id="imageHolder" src="" style="display:none" alt="" width="600px" height="250px" />
 						<input type="file" id="profilePhotoFileInput" accept="image/*" style="display: none;"/>
 					</div>
 					<div class="docs-toolbar">

@@ -4,6 +4,9 @@ var cropBoxData;
 var canvasData;
 var $image;
 function init() {
+    if (!url.match(/edit/) && !url.match(/profile/)) {
+	getRoles();
+    }
     /* Handle image resized events */
     $(document).on("imageResized", function(event) {
 	if (event.url) {
@@ -22,7 +25,7 @@ function init() {
     });
     $(".docs-toolbar .download").click(function() {
 	if ($image) {
-	    croppedCanvas = $image.cropper('getCroppedCanvas');
+	    var croppedCanvas = $image.cropper('getCroppedCanvas');
 	    window.open(croppedCanvas.toDataURL());
 	}
     });
@@ -45,26 +48,27 @@ function init() {
 	$('#profileImageCropper').modal('show');
     });
     $("#btnSetGravatorImage").on('click', function(e) {
+	if ($image) {
+	    $image.cropper('destroy');
+	    $image = undefined;
+	    $(".cropArea,.docs-toolbar").hide();
+	    $("#selectedImage").removeAttr("style");
+	    $("#selectedImage").addClass("img-circle");
+	}
 	var count = 0;
 	var email = new Date().getTime() + "@gmail.com";
+	// http://en.gravatar.com/site/implement/images/
 	imagePath = 'http://www.gravatar.com/avatar/' + md5(email);
-	var gravatarUrl = imagePath + "?s=128&d=identicon&r=PG&f=1";
+	var gravatarUrl = imagePath + "?s=150&d=identicon&r=g&f=1";
 	$('#selectedImage').attr('src', gravatarUrl);
 	$('#selectedImage').error(function() {
-	    if (count < 2) {
-		count++;
-		loadImage();
-	    } else {
-		alert("Can't retrieve avator image.Check your internet connection.");
-		$("#selectedImage").attr("src", getContextPath() + "/images/avatar/guest.jpg");
-	    }
+	    alert("Can't retrieve avator image.Check your internet connection.");
+	    $("#selectedImage").attr("src", getContextPath() + "/images/avatar/guest.jpg");
 	});
     });
     $("#btnConfirmImage").on('click', function(e) {
-	var croppedCanvas;
-	var roundedCanvas;
 	if ($image) {
-	    croppedCanvas = $image.cropper('getCroppedCanvas');
+	    var croppedCanvas = $image.cropper('getCroppedCanvas');
 	    $("#profile-img").attr("src", croppedCanvas.toDataURL());
 	} else {
 	    $("#profile-img").attr("src", $('#selectedImage').attr('src'));
@@ -97,7 +101,7 @@ function init() {
 			canvas.width = width;
 			canvas.height = height;
 			canvas.getContext('2d').drawImage(image, 0, 0, width, height);
-			var dataUrl = canvas.toDataURL('image/jpeg');
+			var dataUrl = canvas.toDataURL('image/png');
 			$.event.trigger({
 			    type : "imageResized",
 			    url : dataUrl
@@ -160,15 +164,6 @@ function initCropper() {
 	    });
 	}
     });
-
-    $button.on('click', function(e) {
-	var croppedCanvas;
-	var roundedCanvas;
-	croppedCanvas = $image.cropper('getCroppedCanvas');
-	uploadProfilePicture(croppedCanvas.toDataURL());
-	e.preventDefault();
-	return false;
-    });
 }
 function bind() {
     $('[type="password"]').tooltip({
@@ -182,9 +177,35 @@ function bind() {
 	showClear : true
     });
 
+    $("#btnSave").on("click", function(e) {
+	e.preventDefault();
+	uploadProfilePicture($("#profile-img").attr("src"));
+    });
+
 }
 
-function uploadProfilePicture(imageData) {
+function uploadProfilePicture(imageUrl) {
+    if (imageUrl) {
+	if (imageUrl.indexOf("http://www.gravatar.com/avatar") > -1 || imageUrl.indexOf("images/avatar/guest.jpg") > -1) {
+	    var img = new Image();
+	    img.setAttribute('crossOrigin', 'anonymous');
+	    img.onload = function() {
+		var canvas = document.createElement("canvas");
+		canvas.width = this.width;
+		canvas.height = this.height;
+		var ctx = canvas.getContext("2d");
+		ctx.drawImage(this, 0, 0);
+		var dataURL = canvas.toDataURL("image/png");
+		uploadImage(dataURL);
+	    };
+	    img.src = imageUrl;
+
+	} else {
+	    uploadImage(imageUrl);
+	}
+    }
+}
+function uploadImage(imageData) {
     var data = new FormData();
     var blob = dataURItoBlob(imageData);
     data.append("imageFile", blob);
@@ -203,6 +224,7 @@ function uploadProfilePicture(imageData) {
 		    $('#profile_filePath').val(fileItem.filePath);
 		    $('#profile_fileSize').val(fileItem.fileSize);
 		    $('#profile_fileType').val(fileItem.fileType);
+		    $("#userForm").submit();
 		});
 	    } else {
 		alert(data.result.errorMessage);
@@ -232,6 +254,26 @@ function dataURItoBlob(dataURI) {
 	type : mimeString
     });
     return blob;
+}
+
+function getRoles() {
+    $.ajax({
+	type : "POST",
+	contentType : "application/json",
+	url : getContextPath() + "/roles/api/searchAll",
+	dataType : 'json',
+	timeout : 100000,
+	success : function(data) {
+	    $.each(data.aaData, function(key, value) {
+		$("#roles").append("<option value='" + value.id + "'>" + value.name + "</option>");
+	    });
+	    var selectedRoleString = $("#selectedRoles").val();
+	    selectedRoleString = selectedRoleString.replace('[', '');
+	    selectedRoleString = selectedRoleString.replace(']', '');
+	    var selectedRoles = selectedRoleString.split(",");
+	    $('#roles').selectpicker('val', selectedRoles);
+	}
+    });
 }
 
 function loadImage() {

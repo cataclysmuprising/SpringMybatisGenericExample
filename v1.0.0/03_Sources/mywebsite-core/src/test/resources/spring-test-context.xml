@@ -23,7 +23,27 @@
   		 
 	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" 
 	                p:cache-manager-ref="ehcache"/>
+	                
 	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
                 p:config-location="classpath:settings/ehcache.xml" p:shared="true"/> 
+       
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>messages</value>
+			</list>
+		</property>
+	    <property name="useCodeAsDefaultMessage" value="false"/>  
+	    <property name="defaultEncoding" value="UTF-8"/>  
+	    <property name="cacheSeconds" value="60"/>		
+	</bean>   
+	             
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="validationMessageSource" ref="messageSource" />
+	</bean>
+	
+	<bean id="messageAccessor" class="org.springframework.context.support.MessageSourceAccessor">
+		<constructor-arg index="0" ref="messageSource" />
+	</bean>                
                 
 </beans>

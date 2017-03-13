@@ -11,14 +11,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mycom.products.mywebsite.core.bean.config.UserBean;
 import com.mycom.products.mywebsite.core.exception.BusinessException;
 import com.mycom.products.mywebsite.core.service.config.api.UserService;
+import com.mycom.products.mywebsite.core.util.Cryptographic;
 import com.mycom.products.mywebsite.core.util.FetchMode;
 
 @Controller
@@ -55,6 +58,34 @@ public class UserController extends BaseController {
 	return "user_dataForm";
     }
 
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public String add(Model model, RedirectAttributes redirectAttributes, @ModelAttribute("user") UserBean user)
+	    throws BusinessException {
+
+	appLogger.info(LOGBREAKER);
+	appLogger.info(
+		"User '" + loginUser.getRealName() + "' adds new user " + "information with the values ==> " + user);
+	user.setPassword(Cryptographic.getSha256CheckSum(user.getPassword()));
+	System.err.println("User >>> " + user);
+
+	// try {
+	// userService.insert(user, loginUser.getId());
+	// } catch (DuplicatedEntryException e) {
+	// e.printStackTrace();
+	// }
+
+	redirectAttributes.addFlashAttribute("msg_title", "success");
+	redirectAttributes.addFlashAttribute("msg_code", "1001");
+	redirectAttributes.addFlashAttribute("msg_param", "Adding User");
+	redirectAttributes.addFlashAttribute("msg_style", "style");
+
+	appLogger.info("New 'User' information has been successfully added by '" + loginUser.getRealName()
+		+ "' with Id = " + user.getId());
+	appLogger.info(LOGBREAKER);
+
+	return "redirect:/users";
+    }
+
     @RequestMapping(value = "api/search", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> search(@RequestParam(required = false) Integer start,
 	    @RequestParam int length, @RequestParam String orderBy, @RequestParam String orderAs,
@@ -85,7 +116,7 @@ public class UserController extends BaseController {
 	    try {
 		criteria.put("roleId", Integer.parseInt(roleId));
 	    } catch (NumberFormatException e) {
-		// ignore this error , just just parse exception
+		// ignore this error , just parse exception
 	    }
 	}
 

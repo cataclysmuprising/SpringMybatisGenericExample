@@ -1,7 +1,7 @@
 var dataTable;
 
 function init() {
-    // getRoles();
+    getRoles();
     initDataTable();
 }
 

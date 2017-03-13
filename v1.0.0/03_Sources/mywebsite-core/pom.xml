@@ -94,6 +94,12 @@
 		    <artifactId>tomcat-jdbc</artifactId>
 		    <version>8.0.9</version>
 		</dependency>
+		<!-- Used in FieldMathValidator -->
+		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
+		    <version>1.9.3</version>
+		</dependency>
         <!-- for caching support -->
 		<dependency>
 			<groupId>org.ehcache</groupId>

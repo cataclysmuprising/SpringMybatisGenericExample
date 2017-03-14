@@ -6,4 +6,9 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 	<context:component-scan base-package="com.mycom.products.mywebsite.backend" />
 	<import resource="classpath:spring/spring-security-context.xml"/>
+	
+    <!-- Store preferred language configuration in a cookie -->
+    <bean class="org.springframework.web.servlet.i18n.CookieLocaleResolver" id="localeResolver">
+        <property name="defaultLocale" value="en" />
+    </bean>		
 </beans>

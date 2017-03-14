@@ -22,15 +22,18 @@ import org.hibernate.validator.constraints.Range;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.mycom.products.mywebsite.core.annotation.FieldMatch;
+import com.mycom.products.mywebsite.core.annotation.UniqueEmail;
 import com.mycom.products.mywebsite.core.bean.BaseBean;
 import com.mycom.products.mywebsite.core.bean.master.StaticContentBean;
 import com.mycom.products.mywebsite.core.util.LocalDateTimeSerializer;
+import com.mycom.products.mywebsite.core.validator.base.ValidationGroup;
+import com.mycom.products.mywebsite.core.validator.base.ValidationOrder;
 
 // http://stackoverflow.com/questions/1972933/cross-field-validation-with-hibernate-validator-jsr-303
 //http://stackoverflow.com/questions/7239897/spring-3-annotation-based-validation-password-and-confirm-password
 //http://stackoverflow.com/questions/4613055/hibernate-unique-key-validation
 @FieldMatch.List({
-	@FieldMatch(first = "password", second = "confirmPassword", message = "{Validation.common.Field.MismatchPasswords}") })
+	@FieldMatch(first = "password", second = "confirmPassword", message = "{Validation.UserBean.Field.MismatchPasswords}", groups = ValidationGroup.Create.class) })
 public class UserBean extends BaseBean implements Serializable {
     private static final long serialVersionUID = -6106913047232092123L;
 
@@ -42,8 +45,9 @@ public class UserBean extends BaseBean implements Serializable {
     @Min(value = 18, message = "Age {Validation.common.Field.Min.Number}")
     private Integer age;
 
-    @NotBlank(message = "Login Id {Validation.common.Field.Required}")
-    @Range(min = 5, max = 50, message = "Login Id {Validation.common.Field.InvalidRange.String}")
+    @NotBlank(message = "Login Id {Validation.common.Field.Required}", groups = { ValidationGroup.Create.class })
+    @Range(min = 5, max = 50, message = "Login Id {Validation.common.Field.InvalidRange.String}", groups = {
+	    ValidationGroup.Create.class })
     private String loginId;
 
     @NotBlank(message = "Name {Validation.common.Field.Required}")
@@ -51,17 +55,22 @@ public class UserBean extends BaseBean implements Serializable {
     private String name;
 
     @NotBlank(message = "Email address {Validation.common.Field.Required}")
-    @Email(message = "{Validation.common.Field.InvalidEmail}")
+    @Email(message = "{Validation.common.Field.InvalidEmail}", groups = { ValidationOrder.Second.class })
+    @UniqueEmail(message = "{Validation.UserBean.Field.UniqueEmail}", columnName = "email", groups = {
+	    ValidationOrder.Third.class })
     private String email;
 
     @JsonIgnore
-    @NotBlank(message = "Password {Validation.common.Field.Required}")
-    @Min(value = 8, message = "Password {Validation.common.Field.Min.String}")
+    @NotBlank(message = "Password {Validation.common.Field.Required}", groups = { ValidationGroup.Create.class })
+    @Min(value = 8, message = "Password {Validation.common.Field.Min.String}", groups = {
+	    ValidationGroup.Create.class })
     private String password;
 
     @JsonIgnore
-    @NotBlank(message = "Confirm password {Validation.common.Field.Required}")
-    @Min(value = 8, message = "Confirm password {Validation.common.Field.Min.String}")
+    @NotBlank(message = "Confirm password {Validation.common.Field.Required}", groups = {
+	    ValidationGroup.Create.class })
+    @Min(value = 8, message = "Confirm password {Validation.common.Field.Min.String}", groups = {
+	    ValidationGroup.Create.class })
     private String confirmPassword;
 
     @NotBlank(message = "Phone number {Validation.common.Field.Required}")
@@ -72,7 +81,7 @@ public class UserBean extends BaseBean implements Serializable {
     @Max(value = 50, message = "NRC number {Validation.common.Field.Max.String}")
     private String nrc;
 
-    @NotEmpty(message = "{Validation.common.Field.ChooseOne} role.")
+    @NotEmpty(message = "{Validation.common.Field.ChooseOne} role.", groups = { ValidationGroup.Create.class })
     private List<Integer> roleIds;
 
     @NotNull(message = "{Validation.common.Field.Specify} gender.")

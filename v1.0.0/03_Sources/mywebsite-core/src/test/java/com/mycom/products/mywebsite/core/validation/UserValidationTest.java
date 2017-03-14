@@ -13,10 +13,10 @@ public class UserValidationTest extends ValidationTestBase {
     public void testValidation() {
 	UserBean user = new UserBean();
 	user.setAge(10);
-	user.setEmail("abc");
-	user.setLoginId("a");
-	user.setPassword("11111111");
-	user.setConfirmPassword("22222222");
+	// user.setEmail("superuser@gmail.com");
+	user.setLoginId("1");
+	user.setPassword("1");
+	user.setConfirmPassword("2");
 	user.setPhone("111111111122222222223333333333444444444455555555556666666666");
 	BindingResult errors = new BeanPropertyBindingResult(user, "user");
 	validator.validate(user, errors);

@@ -4,14 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,11 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.mycom.products.mywebsite.backend.validator.site.UserValidator;
 import com.mycom.products.mywebsite.core.bean.config.UserBean;
 import com.mycom.products.mywebsite.core.exception.BusinessException;
 import com.mycom.products.mywebsite.core.service.config.api.UserService;
 import com.mycom.products.mywebsite.core.util.FetchMode;
-import com.mycom.products.mywebsite.core.validator.base.ValidationGroup.OrderedChecks;
 
 @Controller
 @RequestMapping("/users")
@@ -36,9 +37,12 @@ public class UserController extends BaseController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserValidator validator;
 
     @InitBinder("user")
     public void initBinder(WebDataBinder binder) {
+	binder.setValidator(this.validator);
 	binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
@@ -62,16 +66,15 @@ public class UserController extends BaseController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String add(Model model, RedirectAttributes redirectAttributes,
-	    @ModelAttribute("user") @Validated(OrderedChecks.class) UserBean user, BindingResult bindResult)
-	    throws BusinessException {
+    public String add(Model model, RedirectAttributes redirectAttributes, @ModelAttribute("user") @Valid UserBean user,
+	    BindingResult bindResult) throws BusinessException {
 	appLogger.info(LOGBREAKER);
 	appLogger.info(
 		"User '" + loginUser.getRealName() + "' adds new user " + "information with the values ==> " + user);
 	if (bindResult.hasErrors()) {
-	    List<ObjectError> errorFields = bindResult.getAllErrors();
+	    List<FieldError> errorFields = bindResult.getFieldErrors();
 	    errorFields.forEach(item -> {
-		System.err.println(item.getObjectName() + " >>> " + item.getDefaultMessage());
+		System.err.println(item.getDefaultMessage());
 	    });
 	}
 	// user.setPassword(Cryptographic.getSha256CheckSum(user.getPassword()));

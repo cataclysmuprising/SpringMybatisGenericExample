@@ -1,3 +1,8 @@
+/*
+ * @author Mg Than Htike Aung {@literal <rage.cataclysm@gmail.com@address>}
+ * @Since 1.0
+ * 
+ */
 package com.mycom.products.mywebsite.backend.validator;
 
 import java.net.MalformedURLException;
@@ -14,6 +19,27 @@ import org.springframework.validation.Validator;
 @Component
 public abstract class BaseValidator implements Validator, MessageSourceAware {
     protected static MessageSource messageSource;
+
+    public static class UnSupportedValidationCheckException extends RuntimeException {
+	private static final long serialVersionUID = 8506363193459502634L;
+
+	public UnSupportedValidationCheckException() {
+	    super();
+	}
+
+	public UnSupportedValidationCheckException(final String message) {
+	    super(message);
+	}
+
+	public UnSupportedValidationCheckException(final String message, final Throwable cause) {
+	    super(message, cause);
+	}
+
+	public UnSupportedValidationCheckException(final Throwable cause) {
+	    super(cause);
+	}
+
+    }
 
     @Override
     public void setMessageSource(MessageSource messageSource) {
@@ -33,6 +59,19 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.Required", new Object[] { displayName }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
+	}
+    }
+
+    public static void validateIsEqual(String fieldName, FieldValidator fieldValidator1, FieldValidator fieldValidator2,
+	    Errors errors) {
+	validateIsEmpty(fieldValidator1);
+	validateIsEmpty(fieldValidator2);
+
+	if (!fieldValidator1.getTarget().equals(fieldValidator2.getTarget())) {
+	    errors.rejectValue(fieldName, "", getLocalizedMessage("Validation.common.Field.DoNotMatch",
+		    new Object[] { fieldValidator1.getDisplayName(), fieldValidator2.getDisplayName() }));
 	}
     }
 
@@ -55,6 +94,8 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 		errors.rejectValue(fieldName, "", getLocalizedMessage("Validation.common.Field.Min.Number",
 			new Object[] { displayName, number }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
@@ -77,6 +118,8 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 		errors.rejectValue(fieldName, "", getLocalizedMessage("Validation.common.Field.Max.Number",
 			new Object[] { displayName, number }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
@@ -98,6 +141,8 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 		errors.rejectValue(fieldName, "", getLocalizedMessage("Validation.common.Field.Range.Number",
 			new Object[] { displayName, min, max }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
@@ -112,11 +157,13 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
     // http://stackoverflow.com/questions/15111420/how-to-check-if-a-string-contains-only-digits-in-java#15111450
-    public static void validateIsValidPositiveNumbers(FieldValidator fieldValidator) {
+    public static void validateIsValidUnSignDigits(FieldValidator fieldValidator) {
 	validateIsEmpty(fieldValidator);
 	String fieldName = fieldValidator.getFieldName();
 	String displayName = fieldValidator.getDisplayName();
@@ -127,6 +174,8 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
@@ -137,13 +186,16 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 	if (fieldValidator.getTarget() instanceof String) {
 	    String target = (String) fieldValidator.getTarget();
 	    Errors errors = fieldValidator.getErrors();
-	    if (!Pattern.matches("^[a-zA-Z]+$", target)) {
+	    if (!Pattern.matches("^[a-zA-Z_ ]+$", target)) {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
+    // include space and underscore
     public static void validateIsValidAlphaNumerics(FieldValidator fieldValidator) {
 	validateIsEmpty(fieldValidator);
 	String fieldName = fieldValidator.getFieldName();
@@ -151,10 +203,29 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 	if (fieldValidator.getTarget() instanceof String) {
 	    String target = (String) fieldValidator.getTarget();
 	    Errors errors = fieldValidator.getErrors();
-	    if (!Pattern.matches("^[\\w]+$", target)) {
+	    if (!Pattern.matches("^[a-zA-Z_0-9 ]+$", target)) {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
+	}
+    }
+
+    // to validate for sql queries
+    public static void validateIsValidQueryString(FieldValidator fieldValidator) {
+	validateIsEmpty(fieldValidator);
+	String fieldName = fieldValidator.getFieldName();
+	String displayName = fieldValidator.getDisplayName();
+	if (fieldValidator.getTarget() instanceof String) {
+	    String target = (String) fieldValidator.getTarget();
+	    Errors errors = fieldValidator.getErrors();
+	    if (!Pattern.matches("^[a-zA-Z_0-9 \\/\\-\\.\\@]+$", target)) {
+		errors.rejectValue(fieldName, "",
+			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
+	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
@@ -169,6 +240,8 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
@@ -183,6 +256,8 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
@@ -198,6 +273,8 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
@@ -209,11 +286,14 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 	if (fieldValidator.getTarget() instanceof String) {
 	    String target = (String) fieldValidator.getTarget();
 	    Errors errors = fieldValidator.getErrors();
-	    String emailPattern = "(?:(?:\\r\\n)?[ \\t])*(?:(?:(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*|(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\&lt;(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\&gt;(?:(?:\\r\\n)?[ \\t])*)|(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*:(?:(?:\\r\\n)?[ \\t])*(?:(?:(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*|(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\&lt;(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\&gt;(?:(?:\\r\\n)?[ \\t])*)(?:,\\s*(?:(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*|(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)*\\&lt;(?:(?:\\r\\n)?[ \\t])*(?:@(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*(?:,@(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*)*:(?:(?:\\r\\n)?[ \\t])*)?(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\"(?:[^\\\"\\r\\\\]|\\\\.|(?:(?:\\r\\n)?[ \\t]))*\"(?:(?:\\r\\n)?[ \\t])*))*@(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*)(?:\\.(?:(?:\\r\\n)?[ \\t])*(?:[^()&lt;&gt;@,;:\\\\\".\\[\\] \\000-\\031]+(?:(?:(?:\\r\\n)?[ \\t])+|\\Z|(?=[\\[\"()&lt;&gt;@,;:\\\\\".\\[\\]]))|\\[([^\\[\\]\\r\\\\]|\\\\.)*\\](?:(?:\\r\\n)?[ \\t])*))*\\&gt;(?:(?:\\r\\n)?[ \\t])*))*)?;\\s*)";
-	    if (!Pattern.matches(emailPattern, target)) {
+	    String emailPattern = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
+	    Pattern pattern = Pattern.compile(emailPattern, Pattern.CASE_INSENSITIVE);
+	    if (!pattern.matcher(target).find()) {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
@@ -231,6 +311,8 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 
@@ -242,18 +324,20 @@ public abstract class BaseValidator implements Validator, MessageSourceAware {
 	Errors errors = fieldValidator.getErrors();
 	if (fieldValidator.getTarget() instanceof Double) {
 	    Double target = (Double) fieldValidator.getTarget();
-	    if (!Pattern.matches("[\\-\\+]?^[0-9]+(\\.[0-9]{1," + precision + "})?$", target.toString())) {
+	    if (!Pattern.matches("[\\-\\+]?[0-9]+(\\.[0-9]{1," + precision + "})?$", target.toString())) {
 		errors.rejectValue(fieldName, "",
 			getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 	    }
 	} else if (fieldValidator.getTarget() instanceof Float) {
 	    if (fieldValidator.getTarget() instanceof Double) {
 		Float target = (Float) fieldValidator.getTarget();
-		if (!Pattern.matches("[\\-\\+]?^[0-9]+(\\.[0-9]{1," + precision + "})?$", target.toString())) {
+		if (!Pattern.matches("[\\-\\+]?[0-9]+(\\.[0-9]{1," + precision + "})?$", target.toString())) {
 		    errors.rejectValue(fieldName, "",
 			    getLocalizedMessage("Validation.common.Field.InvalidNumber", new Object[] { displayName }));
 		}
 	    }
+	} else {
+	    throw new UnSupportedValidationCheckException();
 	}
     }
 

@@ -187,8 +187,18 @@
 				</otherwise>
 			</choose>
 			FROM mjr_role_action roleAction
-			<include refid="criterias" />	
-			<include refid="orders" />		
+			<if test="criteria != null and criteria.keySet().size() > 0">
+				<where>
+					<choose>
+						<when test="criteria.roleId != null">
+							roleAction.role_id = #{criteria.roleId}
+						</when>
+						<otherwise>
+							roleAction.action_id = #{criteria.actionId}
+						</otherwise>
+					</choose>				
+				</where>
+			</if>		
 		</if>
 	</select>	
 	

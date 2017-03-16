@@ -182,8 +182,18 @@
 				</otherwise>
 			</choose>
 			FROM mjr_user_role userRole
-			<include refid="criterias" />	
-			<include refid="orders" />		
+			<if test="criteria != null and criteria.keySet().size() > 0">
+				<where>
+					<choose>
+						<when test="criteria.userId != null">
+							userRole.user_id = #{criteria.userId}
+						</when>
+						<otherwise>
+							userRole.role_id = #{criteria.roleId}
+						</otherwise>
+					</choose>				
+				</where>
+			</if>		
 		</if>
 	</select>	
 	

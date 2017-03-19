@@ -1,2 +1,0 @@
-################ Generate war ####################
-mvn clean install package -DskipTests
